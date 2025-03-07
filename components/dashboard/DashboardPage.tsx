@@ -6,13 +6,13 @@ import SplitPane, { Pane } from "split-pane-react";
 import 'split-pane-react/esm/themes/default.css';
 
 export default function DashboardPage() {
-  const [sizes, setSizes] = useState([50, 50]); 
-  const [sizes2, setSizes2] = useState([50, 50]); 
+  const [sizes, setSizes] = useState([50, 50]);
+  const [sizes2, setSizes2] = useState([50, 50]);
   const [sizes3, setSizes3] = useState([50, 50]);
 
 
   return (
-    <div className="h-[100vh]">
+    <div className="h-full w-full">
       <SplitPane
         split='vertical'
         sizes={sizes}

@@ -6,7 +6,7 @@ export default function Page() {
 
 
   return (
-    <div className="h-full w-full">
+    <div className="h-[100vh] w-[100vw]">
       <DashboardPage />
     </div>
   );

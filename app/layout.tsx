@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider, SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/sidebar/AppSidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,22 +26,34 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <header className="flex justify-end items-center p-4 gap-4 h-16">
-          <SignedOut>
-            <SignInButton  />
-            <SignUpButton />
-          </SignedOut>
-          <SignedIn>
-            <UserButton />
-          </SignedIn>
-        </header>
-        {children}
+    <html className="w-[100vw]">
+      <body className="w-[100vw]">
+        <SidebarProvider defaultOpen={false}>
+          <ClerkProvider>
+            <AppSidebar />
+
+            <div >
+              <div className="flex justify-end items-center p-4 gap-4 h-16" >
+                <SignedOut>
+                  <SignInButton />
+                  <SignUpButton />
+                </SignedOut>
+                <SignedIn>
+                  <UserButton />
+                </SignedIn>
+              </div>
+              <SidebarTrigger />
+
+              {children}
+            </div>
+          </ClerkProvider>
+        </SidebarProvider>
       </body>
     </html>
-  </ClerkProvider>
+
+
+
+
 
   );
 }
