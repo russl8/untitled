@@ -4,6 +4,7 @@ import "./globals.css";
 import { ClerkProvider, SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/sidebar/AppSidebar";
+import { StoreProvider } from "@/store/StoreProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,30 +27,30 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html className="w-[100vw]">
-      <body className="w-[100vw]">
-        <SidebarProvider defaultOpen={false}>
-          <ClerkProvider>
-            <AppSidebar />
-
-            <div >
-              <div className="flex justify-end items-center p-4 gap-4 h-16" >
-                <SignedOut>
-                  <SignInButton />
-                  <SignUpButton />
-                </SignedOut>
-                <SignedIn>
-                  <UserButton />
-                </SignedIn>
+    <StoreProvider>
+      <ClerkProvider>
+        <html className="">
+          <body className="">
+            <SidebarProvider defaultOpen={false}>
+              <AppSidebar />
+              <div >
+                <div className="flex justify-end items-center p-4 gap-4 h-16" >
+                  <SignedOut>
+                    <SignInButton />
+                    <SignUpButton />
+                  </SignedOut>
+                  <SignedIn>
+                    <UserButton />
+                  </SignedIn>
+                </div>
+                <SidebarTrigger />
+                {children}
               </div>
-              <SidebarTrigger />
-
-              {children}
-            </div>
-          </ClerkProvider>
-        </SidebarProvider>
-      </body>
-    </html>
+            </SidebarProvider>
+          </body>
+        </html>
+      </ClerkProvider>
+    </StoreProvider>
 
 
 
