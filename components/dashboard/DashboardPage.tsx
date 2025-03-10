@@ -1,66 +1,64 @@
 "use client"
-import { currentUser } from "@clerk/nextjs/server";
-import Image from "next/image";
-import { useState } from "react";
-import SplitPane, { Pane } from "split-pane-react";
+import { DisplayId } from "@/store/features/dashboard/displaySlice";
+import { useEffect, useState } from "react";
 import 'split-pane-react/esm/themes/default.css';
+import SplitPaneCustom from "./SplitPaneCustom";
 
 export default function DashboardPage() {
-  const [sizes, setSizes] = useState([50, 50]);
-  const [sizes2, setSizes2] = useState([50, 50]);
-  const [sizes3, setSizes3] = useState([50, 50]);
-
+  const [boxes, setBoxes] = useState<Array<DisplayId>>([1, 2, 3])
+  const [initialSizes, setInitialSizes] = useState<any>(() => {
+    let sizes;
+    if (boxes.length === 1) {
+      sizes = {
+        vertical1: [100, 0],
+        horizontal1: [100, 0],
+        horizontal2: [0.0001,0.00001]
+      }
+    } else if (boxes.length === 2) {
+      sizes = {
+        vertical1: [50, 50],
+        horizontal1: [100, 0],
+        horizontal2: [100, 0]
+      }
+    } else if (boxes.length === 3) {
+      sizes = {
+        vertical1: [50, 50],
+        horizontal1: [100, 0],
+        horizontal2: [50, 50]
+      }
+    } else if (boxes.length === 4) {
+      sizes = {
+        vertical1: [50, 50],
+        horizontal1: [50, 50],
+        horizontal2: [50, 50]
+      }
+    }
+    return sizes
+  })
 
   return (
     <div className="h-full w-full">
-      <SplitPane
-        split='vertical'
-        sizes={sizes}
-        allowResize={true}
-        sashRender={() => <></>}
-        onChange={setSizes}
-        resizerSize={10}
-      >
-        <div className="h-full w-full" >
-          <SplitPane
-            split='horizontal'
-            sizes={sizes2}
-            allowResize={true}
-            sashRender={() => <></>}
-            onChange={setSizes2}
-            resizerSize={10}>
+      <SplitPaneCustom orientation="vertical" initialSize={initialSizes["vertical1"]}>
+        <SplitPaneCustom orientation="horizontal" initialSize={initialSizes["horizontal1"]}>
+          {boxes.length > 0 && <Box boxId={boxes[0]} />}
+          {boxes.length > 3 && <Box boxId={boxes[3]} />}
 
-            <div className="h-full bg-amber-300" >
+        </SplitPaneCustom>
+        <SplitPaneCustom orientation="horizontal" initialSize={initialSizes["horizontal2"]}>
+          {boxes.length > 1 && <Box boxId={boxes[1]} />}
+          {boxes.length > 2 && <Box boxId={boxes[2]} />}
 
-            </div>
-
-            <div className="h-full bg-blue-300">
-
-            </div>
-          </SplitPane>
-        </div>
-        <div className="h-full w-full" >
-          <SplitPane
-            split='horizontal'
-            sizes={sizes3}
-            allowResize={true}
-            sashRender={() => <></>}
-            onChange={setSizes3}
-            resizerSize={10}>
-
-
-            <div className="h-full bg-red-300">
-
-            </div>
-
-            <div className="h-full bg-green-300">
-
-            </div>
-          </SplitPane>
-        </div>
-
-
-      </SplitPane>
+        </SplitPaneCustom>
+      </SplitPaneCustom>
     </div>
-  );
+  )
+
+}
+
+const Box = ({ boxId }: { boxId: DisplayId }) => {
+  return (
+    <div className={`h-full w-full from-red-500 to-blue-500 bg-gradient-to-l`}>
+      Box {boxId}
+    </div>
+  )
 }
