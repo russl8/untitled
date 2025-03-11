@@ -7,7 +7,7 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar"
 import SidebarCheckbox from "./SidebarCheckbox"
-
+import { displays } from "@/lib/constants"
 
 
 export function AppSidebar() {
@@ -22,12 +22,12 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel>Dashboard</SidebarGroupLabel>
 
-          <SidebarCheckbox displayName="Box1" displayId={1} />
-          <SidebarCheckbox displayName="Box2" displayId={2} />
-
-          <SidebarCheckbox displayName="Box3" displayId={3} />
-          <SidebarCheckbox displayName="Box4" displayId={4} />
-
+          {Object.values(displays).map(d=>(
+            <SidebarCheckbox
+            key={d.displayId} 
+            display={d}
+            />
+          ))}
         </SidebarGroup>
         <SidebarGroup />
       </SidebarContent>

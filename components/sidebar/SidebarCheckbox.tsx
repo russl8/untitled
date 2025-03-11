@@ -4,16 +4,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { DisplayId } from "@/store/features/dashboard/displaySlice";
 import { toggleDisplay } from "@/store/features/dashboard/displaySlice";
+import { Display } from "../displays/types";
 
-interface SidebarCheckboxProps {
-    displayName: string;
-    displayId: DisplayId
-}
 
-const SidebarCheckbox = ({ displayName, displayId }: SidebarCheckboxProps) => {
+
+const SidebarCheckbox = ({display}: {display:Display}) => {
     const displayState = useSelector((state: RootState) => state.displayReducer)
     const dispatch = useDispatch()
 
+    const displayId=display.displayId
 
     const handleCheckedChange = (checked: boolean) => {
         dispatch(toggleDisplay(displayId))
@@ -22,16 +21,16 @@ const SidebarCheckbox = ({ displayName, displayId }: SidebarCheckboxProps) => {
         <div
             className="flex items-center my-0.5 px-2 ">
             <Checkbox
-                id={`${displayName}${displayId}`}
+                id={""+displayId}
                 checked={displayState.includes(displayId)}
                 onCheckedChange={handleCheckedChange}
 
             />
             <label
-                htmlFor={`${displayName}${displayId}`}
+                htmlFor={""+displayId}
                 className=" ml-2 text-xs leading-none cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
-                Box {displayId}
+                {display.displayAlias}
             </label>
 
 
