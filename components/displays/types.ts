@@ -5,3 +5,5 @@ export type Display = {
   displayAlias: string;
   displayName: string;
 };
+
+export type displaySize = "quartersize" | "halfsize" | "fullsize" | undefined;
