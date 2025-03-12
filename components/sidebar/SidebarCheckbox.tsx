@@ -21,7 +21,7 @@ const SidebarCheckbox = ({display}: {display:Display}) => {
     };
     return (
         <div
-            className="flex items-center my-0.5 px-2 cursor-pointer ">
+            className="flex items-center my-0.5 px-2 ">
             <Checkbox
                 disabled={!pathnameIsDashboard}
                 id={""+displayId}

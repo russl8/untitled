@@ -1,12 +1,11 @@
 import { DisplayId } from "@/store/features/dashboard/displaySlice";
 import { displays } from "@/lib/constants";
-import BookmarkManager from "./BookmarkManager";
+import BookmarkManager from "./BookmarkManager/BookmarkManager";
 
 const DashboardDisplay = ({displayId}: {displayId:DisplayId}) => {
     const display = displays[displayId];
     return (
-        <div id="dashboardDisplayTitle" className="h-full w-full from-red-500 to-blue-500 bg-gradient-to-l">
-            {display.displayAlias}
+        <div id="dashboardDisplayTitle" className="h-full w-full border-2 border-black">
             {displayId===1 && <BookmarkManager/>}
         </div>
     );
