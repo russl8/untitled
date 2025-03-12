@@ -31,9 +31,10 @@ export default function RootLayout({
       <ClerkProvider>
         <html className="">
           <body className="">
-            <SidebarProvider defaultOpen={false}>
+            <SidebarProvider defaultOpen={true}>
               <AppSidebar />
-              <div >
+              <div className="w-full h-full">
+                {/* header bar. plan to remove this and integrate into nav bar */}
                 <div className="flex justify-end items-center p-4 gap-4 h-16" >
                   <SignedOut>
                     <SignInButton />
