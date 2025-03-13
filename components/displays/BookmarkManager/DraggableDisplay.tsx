@@ -17,10 +17,12 @@ import {
 } from "@dnd-kit/sortable";
 
 import SortableItem from "./BookmarkItem";
-import { Box } from "grommet";
+import { displaySize } from "../types";
 
-const DraggableDisplay = () => {
+const DraggableDisplay = ({ displaySize }: { displaySize: displaySize }) => {
     const [activeId, setActiveId] = useState(null);
+    const [isEditing, setIsEditing] = useState<boolean>(true);
+
     const [items, setItems] = useState([
         "0",
         "1",
@@ -60,6 +62,7 @@ const DraggableDisplay = () => {
         })
     );
 
+
     const handleDragStart = (event: any) => {
         setActiveId(event.active.id);
     };
@@ -87,12 +90,20 @@ const DraggableDisplay = () => {
             onDragEnd={handleDragEnd}
             onDragStart={handleDragStart}
         >
-            <div className="flex flex-wrap flex-row w-full overflow-ellipsis"
+            <div className="flex flex-wrap flex-row h-full items-center justify-center w-full overflow-ellipsis"
             >
                 <SortableContext items={items} strategy={rectSortingStrategy}>
-                    {items.map((id) => (
-                        <SortableItem key={id} id={id} handle={true} value={id} />
-                    ))}
+                    {items.slice(0, 5).map((id, index) => (
+                        <SortableItem 
+                        imageSrc="/squareImage.jpg"
+                        bookmarkName="eclass"
+                        key={id}
+                         id={id} 
+                         handle={true} 
+                         value={id} 
+                         isEditing={isEditing} />
+                    )
+                    )}
                 </SortableContext>
             </div>
         </DndContext>
