@@ -7,6 +7,8 @@ import { useMemo } from "react";
 import { displaySize } from "./types";
 
 const DashboardDisplay = ({ displayId }: { displayId: DisplayId }) => {
+
+
     // const display = displays[displayId];
     const selectedBoxes = useSelector((state: RootState) => state.displayReducer);
 
@@ -23,6 +25,8 @@ const DashboardDisplay = ({ displayId }: { displayId: DisplayId }) => {
         }
         return "quartersize"
     }, [selectedBoxes]);
+
+    
 
     return (
         <div id="dashboardDisplayTitle"

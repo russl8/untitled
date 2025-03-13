@@ -8,6 +8,7 @@ const BookmarkManager = ({ displaySize }: { displaySize: displaySize }) => {
     return (
         <div className="p-10 flex flex-col items-start justify-start w-full h-full overflow-visible">
             {/* <p className="">Bookmark manager</p> */}
+
             <DraggableDisplay displaySize={displaySize} />
         </div>
     );
