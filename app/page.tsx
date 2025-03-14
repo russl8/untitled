@@ -1,5 +1,5 @@
 import DashboardPage from "@/components/dashboard/DashboardPage";
-import Component from "@/components/displays/BookmarkManager/test";
+import ImageForm from "@/components/displays/BookmarkManager/ImageForm";
 import ExampleReduxComponent from "@/store/features/example/ExampleReduxComponent";
 
 export default function Page() {
@@ -7,8 +7,8 @@ export default function Page() {
 
   return (
     <div className="h-[100vh]">
-      {/* <Component/> */}
-      <DashboardPage />
+      <ImageForm/>
+      {/* <DashboardPage /> */}
     </div>
   );
 }
