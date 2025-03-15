@@ -9,15 +9,32 @@ import { z } from "zod";
 
 export async function createBookmark(formData: FormData) {
   try {
-    //upload image to s3 and get the public file key
-    const [s3ImageUploadResponse, s3FileKey] = await uploadImageToS3(formData);
-    if (s3ImageUploadResponse && !s3ImageUploadResponse?.ok) {
-      throw new Error("Error occurred with file upload");
+    if (
+      !formData.get("bookmarkImage") ||
+      !formData.get("bookmarkName") ||
+      !formData.get("bookmarkLink")
+    ) {
+      return { error: "Missing required fields" };
     }
+
+    //upload image to s3 and get the public file key
+    const uploadImageResponse = await uploadImageToS3(formData);
+    if (uploadImageResponse.error) {
+      return { error: "File upload to S3 failed" };
+    }
+    const s3FileKey = uploadImageResponse.s3FileKey || "";
+
     const res = await uploadBookmarkToMongoDB(s3FileKey, formData);
-    console.log(res)
+    if (!res) {
+      return { error: "Database upload failed" };
+    }
+
+    return {
+      success: true,
+    };
   } catch (e: any) {
     console.error(e);
+    return { error: "Unexpected server error" };
   }
 }
 
@@ -45,11 +62,19 @@ export async function uploadImageToS3(formData: FormData) {
 
     const textResponse = await s3ImageUploadResponse.text();
     console.log(textResponse);
-    return [s3ImageUploadResponse, s3FileKey];
+    if (!s3ImageUploadResponse.ok) {
+      return {
+        error: "Error uploading image to s3",
+      };
+    }
+    return {
+      success: true,
+      s3FileKey: s3FileKey,
+    };
   } catch (e) {
     console.error(e);
+    return { error: "Error uploding image to s3" };
   }
-  return [null, null];
 }
 
 export async function uploadBookmarkToMongoDB(
@@ -71,7 +96,9 @@ export async function uploadBookmarkToMongoDB(
     // connect to mongodbclient
     const mongoDbClient = await clientPromise;
     if (!mongoDbClient) {
-      throw new Error("Error with setting up mongodb client");
+      return {
+        error: "Mongodb client does not exist",
+      };
     }
 
     const db = mongoDbClient.db("untitled");
@@ -81,9 +108,16 @@ export async function uploadBookmarkToMongoDB(
       bookmarkImage: publicImageUrl,
       bookmarkLink: formData.get("bookmarkLink") as string,
     };
-    const res = await db.collection("bookmarks").insertOne(bookmark);
-    return res;
+    const mongoDbResponse = await db
+      .collection("bookmarks")
+      .insertOne(bookmark);
+    return {
+      success: true,
+      mongoDbResponse: mongoDbResponse,
+    };
   } catch (e) {
-    console.error(e);
+    return {
+      error: "Error with uploading to db: " + e,
+    };
   }
 }

@@ -5,6 +5,7 @@ import { ClerkProvider, SignedIn, SignedOut, SignInButton, SignUpButton, UserBut
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/sidebar/AppSidebar";
 import { StoreProvider } from "@/store/StoreProvider";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -49,6 +50,8 @@ export default function RootLayout({
                   </SignedIn>
                 </div>
                 <SidebarTrigger />
+                <Toaster position="bottom-center" />
+
                 {children}
               </div>
             </SidebarProvider>

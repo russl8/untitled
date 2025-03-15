@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { imageFormSchema } from "./schema"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import toast from "react-hot-toast";
 
 
 const AddBookmarkModal = () => {
@@ -45,12 +46,22 @@ const BookmarkForm = () => {
         },
     })
     async function onSubmit(values: z.infer<typeof imageFormSchema>) {
+        /**
+         * Create a formdata object and pass it to the server action.
+         * 
+         * The server action uses the form data to add the image to s3, then 
+         * uploads the rest of the bookmark along with the link to mongodb.
+         */
         const formData = new FormData()
         formData.append("bookmarkImage", values.bookmarkImage)
         formData.append("bookmarkName", values.bookmarkName)
         formData.append("bookmarkLink", values.bookmarkLink)
-        await createBookmark(formData)
-        console.log(values)
+        const response = await createBookmark(formData);
+        if (response.success) {
+            toast.success('Boomark uploaded');
+        } else {
+            toast.error("Error with adding bookmark: " + response.error)
+        }
     }
     return (
         <div>
@@ -95,6 +106,7 @@ const BookmarkForm = () => {
                                 <FormLabel>Bookmark Image</FormLabel>
                                 <FormControl>
                                     <Input
+                                        className="cursor-pointer"
                                         type="file"
                                         accept="image/png, image/jpeg, image/jpg, image/svg+xml, image/gif"
                                         onChange={(event) => {
