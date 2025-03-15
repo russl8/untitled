@@ -56,6 +56,7 @@ const BookmarkForm = () => {
         formData.append("bookmarkImage", values.bookmarkImage)
         formData.append("bookmarkName", values.bookmarkName)
         formData.append("bookmarkLink", values.bookmarkLink)
+        // TODO: loading state
         const response = await createBookmark(formData);
         if (response.success) {
             toast.success('Boomark uploaded');

@@ -22,8 +22,11 @@ export async function createBookmark(formData: FormData) {
     if (uploadImageResponse.error) {
       return { error: "File upload to S3 failed" };
     }
-    const s3FileKey = uploadImageResponse.s3FileKey || "";
+    const s3FileKey = uploadImageResponse.s3FileKey
 
+    if (!s3FileKey || s3FileKey==="") {
+      return {error: "Missing s3 fle key"}
+    }
     const res = await uploadBookmarkToMongoDB(s3FileKey, formData);
     if (!res) {
       return { error: "Database upload failed" };
