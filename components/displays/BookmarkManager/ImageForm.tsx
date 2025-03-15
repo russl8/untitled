@@ -1,43 +1,99 @@
-
-import clientPromise from "@/lib/mongodb"
-import { S3Client } from "@aws-sdk/client-s3"
-import { createPresignedPost } from "@aws-sdk/s3-presigned-post"
-import { nanoid } from "nanoid"
-import { currentUser } from "@clerk/nextjs/server";
+"use client"
+import { createBookmark, uploadBookmarkToMongoDB, uploadImageToS3 } from "@/actions/dashboard/bookmarkActions";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import {
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form"
 import { z } from "zod"
-import { uploadBookmarkToMongoDB, uploadImageToS3 } from "@/app/(dashboard)/actions/bookmarkActions";
-
-
-
-
-async function onSubmit(formData: FormData) {
-    'use server'
-    try {
-        //upload image to s3 and get the public file key
-        const [s3ImageUploadResponse, s3FileKey] = await uploadImageToS3(formData)
-        if (s3ImageUploadResponse && !s3ImageUploadResponse?.ok) {
-            throw new Error("Error occurred with file upload")
-        }
-        const res = await uploadBookmarkToMongoDB(s3FileKey, formData)
-        console.log(res)
-    } catch (e: any) {
-        console.error(e)
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { imageFormSchema } from "./schema"
+const ImageForm = () => {
+    const form = useForm<z.infer<typeof imageFormSchema>>({
+        resolver: zodResolver(imageFormSchema),
+        defaultValues: {
+            bookmarkName: "",
+            bookmarkImage: undefined,
+            bookmarkLink: "https://"
+        },
+    })
+    async function onSubmit(values: z.infer<typeof imageFormSchema>) {
+        const formData = new FormData()
+        formData.append("bookmarkImage", values.bookmarkImage)
+        formData.append("bookmarkName", values.bookmarkName)
+        formData.append("bookmarkLink", values.bookmarkLink)
+        await createBookmark(formData)
+        console.log(values)
     }
-}
-
-const ImageForm = async () => {
-
     return (
         <div>
-            <form action={onSubmit}>
-                bookmarkname
-                <input className="border-2 border-black" type="text" name="bookmarkName" />
-                link
-                <input className="border-2 border-black" type="text" name="bookmarkLink" />
-                <input className="border-2 border-black" type="file" name="bookmarkImage" />
-                <button type="submit" value="upload">Submit</button>
-            </form>
-            {/* <img src="https://untitled-bookmarks.s3.us-east-2.amazonaws.com/fUTACChohjNiwvJeqgDV_" /> */}
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                    <FormField
+                        control={form.control}
+                        name="bookmarkName"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Bookmark Name</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="shadcn" {...field} />
+                                </FormControl>
+                                <FormDescription>
+                                    This is your public display name.
+                                </FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="bookmarkLink"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Bookmark Link</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="shadcn" {...field} />
+                                </FormControl>
+                                <FormDescription>
+                                    Bookmark Link
+                                </FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="bookmarkImage"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Bookmark Image</FormLabel>
+                                <FormControl>
+                                    <Input
+                                        type="file"
+                                        accept="image/png, image/jpeg, image/jpg, image/svg+xml, image/gif"
+                                        onChange={(event) => {
+                                            const file = event.target.files?.[0];
+                                            field.onChange(file);
+                                        }}
+                                    />
+                                </FormControl>
+                                <FormDescription>Upload an image for your bookmark.</FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <Button type="submit">Submit</Button>
+                </form>
+            </Form>
         </div>
     );
 }

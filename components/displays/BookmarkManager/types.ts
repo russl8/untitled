@@ -2,6 +2,6 @@
 type Bookmark = {
     userId:string;
     bookmarkName:string;
-    imagePath:string;
-    url:string;
+    bookmarkImage:string;
+    bookmarkLink:string;
 }
