@@ -15,7 +15,27 @@ import { z } from "zod"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { imageFormSchema } from "./schema"
-const ImageForm = () => {
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+
+
+const AddBookmarkModal = () => {
+    return (
+        <Dialog>
+            <DialogTrigger >
+                <div className=" text-sm px-4 py-2 rounded-lg cursor-pointer bg-primary text-primary-foreground shadow-xs hover:bg-primary/90" >Add</div>
+            </DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Add new bookmark</DialogTitle>
+                </DialogHeader>
+                <BookmarkForm />
+            </DialogContent>
+        </Dialog>
+    )
+}
+
+
+const BookmarkForm = () => {
     const form = useForm<z.infer<typeof imageFormSchema>>({
         resolver: zodResolver(imageFormSchema),
         defaultValues: {
@@ -43,11 +63,8 @@ const ImageForm = () => {
                             <FormItem>
                                 <FormLabel>Bookmark Name</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="shadcn" {...field} />
+                                    <Input  {...field} />
                                 </FormControl>
-                                <FormDescription>
-                                    This is your public display name.
-                                </FormDescription>
                                 <FormMessage />
                             </FormItem>
                         )}
@@ -63,7 +80,7 @@ const ImageForm = () => {
                                     <Input placeholder="shadcn" {...field} />
                                 </FormControl>
                                 <FormDescription>
-                                    Bookmark Link
+                                    Must start with "http://" or "https://"
                                 </FormDescription>
                                 <FormMessage />
                             </FormItem>
@@ -86,7 +103,7 @@ const ImageForm = () => {
                                         }}
                                     />
                                 </FormControl>
-                                <FormDescription>Upload an image for your bookmark.</FormDescription>
+                                <FormDescription>Accepted types: .png, .jpeg, .jpg, .svg, .gif</FormDescription>
                                 <FormMessage />
                             </FormItem>
                         )}
@@ -98,4 +115,4 @@ const ImageForm = () => {
     );
 }
 
-export default ImageForm;
+export default AddBookmarkModal;
