@@ -8,12 +8,12 @@ import { cn } from "@/lib/utils";
 interface BookmarkItemProps {
   id: any;
   isEditing: boolean;
-  handle: boolean;
   value: string;
-  imageSrc:string;
-  bookmarkName:string
+  imageSrc: string;
+  bookmarkName: string;
+  bookmarkLink: string;
 }
-const BookmarkItem = ({ id, isEditing, handle ,imageSrc,bookmarkName}: BookmarkItemProps) => {
+const BookmarkItem = ({ id, isEditing, imageSrc, bookmarkName, bookmarkLink }: BookmarkItemProps) => {
   const {
     attributes,
     listeners,
@@ -31,12 +31,13 @@ const BookmarkItem = ({ id, isEditing, handle ,imageSrc,bookmarkName}: BookmarkI
   };
 
   const [a, l] = isEditing ? [attributes, listeners] : [null, null]
+
   return (
     <div
       onClick={(e) => {
         if (!isEditing) {
           e.stopPropagation(); // Prevent dnd-kit interference
-          window.open("https://github.com/", "_blank", "noopener,noreferrer");
+          window.open(bookmarkLink, "_blank", "noopener,noreferrer");
         }
       }}
       className={cn("flex flex-col justify-center h-20 w-14 mx-2  cursor-pointer", {
@@ -48,7 +49,7 @@ const BookmarkItem = ({ id, isEditing, handle ,imageSrc,bookmarkName}: BookmarkI
       {...a}
       {...l}
     >
-      <div className="object-contain overflow-hidden h-14 w-14 rounded-sm">
+      <div className="object-cover overflow-hidden h-14 w-14 rounded-sm">
         <Image
           draggable={false}
           alt="image"

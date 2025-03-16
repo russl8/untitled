@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import {
     DndContext,
     closestCenter,
@@ -7,7 +7,8 @@ import {
     PointerSensor,
     useSensor,
     useSensors,
-    DragOverlay
+    DragOverlay,
+    DragEndEvent
 } from "@dnd-kit/core";
 import {
     arrayMove,
@@ -20,40 +21,17 @@ import SortableItem from "./BookmarkItem";
 import { displaySize } from "../types";
 
 const BookmarkGrid = ({ displaySize }: { displaySize: displaySize }) => {
-    const [isEditing, setIsEditing] = useState<boolean>(true);
 
-    const [items, setItems] = useState([
-        "0",
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-        "10",
-        "11",
-        "12",
-        "13",
-        "14",
-        "15",
-        "16",
-        "17",
-        "18",
-        "19",
-        "20",
-        "21",
-        "22",
-        "23",
-        "24",
-        "25",
-        "26",
-        "27",
-        "28",
-        "29"
-    ]);
+    const [isEditing, setIsEditing] = useState<boolean>(true);
+    const [items, setItems] = useState<Array<Bookmark>>([]);
+    useEffect(() => {
+        fetch("/api/dashboard/bookmarkManager")
+            .then(res => res.json())
+            .then(json =>{ console.log(json.bookmarks);setItems(json.bookmarks)})
+            .catch(err => console.error(err))
+
+    }, [])
+
     const sensors = useSensors(
         useSensor(PointerSensor),
         useSensor(KeyboardSensor, {
@@ -66,16 +44,15 @@ const BookmarkGrid = ({ displaySize }: { displaySize: displaySize }) => {
     //     setActiveId(event.active.id);
     // };
 
-    const handleDragEnd = (event: any) => {
+    const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
 
         if (!over) return;
 
         if (active.id !== over.id) {
             setItems((items) => {
-                const oldIndex = items.indexOf(active.id);
-                const newIndex = items.indexOf(over.id);
-
+                const oldIndex = items.findIndex(item => item._id === active.id);
+                const newIndex = items.findIndex(item => item._id === over.id);
                 return arrayMove(items, oldIndex, newIndex);
             });
         }
@@ -90,19 +67,20 @@ const BookmarkGrid = ({ displaySize }: { displaySize: displaySize }) => {
         >
             <div className="flex flex-wrap flex-row h-full items-center justify-center w-full overflow-ellipsis"
             >
-                <SortableContext items={items} strategy={rectSortingStrategy}>
-                    {items.slice(0, 5).map((id, index) => (
-                        <SortableItem
-                            imageSrc="/squareImage.jpg"
-                            bookmarkName="eclass"
-                            key={id}
-                            id={id}
-                            handle={true}
-                            value={id}
-                            isEditing={isEditing} />
-                    )
-                    )}
-                </SortableContext>
+                {items.length > 0 &&
+                    <SortableContext items={items.map(item => item._id)} strategy={rectSortingStrategy}>
+                        {items.map((item, index) => (
+                            <SortableItem
+                                bookmarkLink={item.bookmarkLink}
+                                imageSrc={item.bookmarkImage}
+                                bookmarkName={item.bookmarkName}
+                                key={item._id}
+                                id={item._id}
+                                value={item._id}
+                                isEditing={true} />
+                        )
+                        )}
+                    </SortableContext>}
             </div>
         </DndContext>
     );
