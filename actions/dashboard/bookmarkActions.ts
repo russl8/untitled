@@ -4,8 +4,7 @@ import clientPromise from "@/lib/mongodb";
 import { S3Client } from "@aws-sdk/client-s3";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
 import { nanoid } from "nanoid";
-import { currentUser } from "@clerk/nextjs/server";
-import { z } from "zod";
+import { getCurrentUserOrGuestID } from "@/app/api/helpers";
 
 export async function createBookmark(formData: FormData) {
   try {
@@ -86,13 +85,7 @@ export async function uploadBookmarkToMongoDB(
 ) {
   try {
     // see if user is signed in. if not, they are treated as a guest
-    const user = await currentUser();
-    let userId;
-    if (!user) {
-      userId = "guest";
-    } else {
-      userId = user.id;
-    }
+    const userId = await getCurrentUserOrGuestID();
     // is response is ok, upload bookmark to mongodb
     const publicImageUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${s3FileKey}`;
 

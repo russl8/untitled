@@ -19,7 +19,7 @@ import {
 import SortableItem from "./BookmarkItem";
 import { displaySize } from "../types";
 
-const DraggableDisplay = ({ displaySize }: { displaySize: displaySize }) => {
+const BookmarkGrid = ({ displaySize }: { displaySize: displaySize }) => {
     const [isEditing, setIsEditing] = useState<boolean>(true);
 
     const [items, setItems] = useState([
@@ -108,4 +108,4 @@ const DraggableDisplay = ({ displaySize }: { displaySize: displaySize }) => {
     );
 };
 
-export default DraggableDisplay
+export default BookmarkGrid
