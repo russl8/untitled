@@ -17,6 +17,8 @@ import { Input } from "@/components/ui/input";
 import { imageFormSchema } from "./schema"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import toast from "react-hot-toast";
+import { revalidatePath } from "next/cache";
+import { useRouter } from 'next/navigation'
 
 
 const AddBookmarkModal = () => {
@@ -45,6 +47,8 @@ const BookmarkForm = () => {
             bookmarkLink: "https://"
         },
     })
+
+    // const router=useRouter()
     async function onSubmit(values: z.infer<typeof imageFormSchema>) {
         /**
          * Create a formdata object and pass it to the server action.
@@ -60,6 +64,8 @@ const BookmarkForm = () => {
         const response = await createBookmark(formData);
         if (response.success) {
             toast.success('Boomark uploaded');
+            form.reset()
+
         } else {
             toast.error("Error with adding bookmark: " + response.error)
         }

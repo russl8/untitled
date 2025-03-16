@@ -1,10 +1,12 @@
 "use server";
 
-import clientPromise from "@/lib/mongodb";
 import { S3Client } from "@aws-sdk/client-s3";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
 import { nanoid } from "nanoid";
 import { getCurrentUserOrGuestID } from "@/app/api/helpers";
+import { revalidatePath } from "next/cache";
+import mongoose from "mongoose";
+import Bookmark from "@/Model/bookmark";
 
 export async function createBookmark(formData: FormData) {
   try {
@@ -86,30 +88,30 @@ export async function uploadBookmarkToMongoDB(
   try {
     // see if user is signed in. if not, they are treated as a guest
     const userId = await getCurrentUserOrGuestID();
+
     // is response is ok, upload bookmark to mongodb
     const publicImageUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${s3FileKey}`;
 
-    // connect to mongodbclient
-    const mongoDbClient = await clientPromise;
-    if (!mongoDbClient) {
+    try {
+      await mongoose.connect(process.env.MONGODB_URI || "", {
+        dbName: "untitled",
+      });
+    } catch (e) {
       return {
-        error: "Mongodb client does not exist",
+        error: "Could not connect to mongodb.",
       };
     }
-
-    const db = mongoDbClient.db("untitled");
-    const bookmark: Bookmark = {
-      bookmarkName: formData.get("bookmarkName") as string,
-      userId: userId,
+    const newBookmark = await Bookmark.create({
+      userId,
+      bookmarkName: formData.get("bookmarkName"),
       bookmarkImage: publicImageUrl,
-      bookmarkLink: formData.get("bookmarkLink") as string,
-    };
-    const mongoDbResponse = await db
-      .collection("bookmarks")
-      .insertOne(bookmark);
+      bookmarkLink: formData.get("bookmarkLink"),
+    });
+
+    revalidatePath("/api/dashboard/bookmarkManager");
     return {
       success: true,
-      mongoDbResponse: mongoDbResponse,
+      mongoDbResponse: newBookmark,
     };
   } catch (e) {
     return {
