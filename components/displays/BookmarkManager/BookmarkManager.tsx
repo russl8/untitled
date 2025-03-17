@@ -19,7 +19,7 @@ const BookmarkManager = ({ displaySize }: { displaySize: displaySize }) => {
     return (
         <div className="p-10 flex flex-col items-start justify-start w-full h-full overflow-visible">
             {/* <p className="">Bookmark manager</p> */}
-            <AddBookmarkModal triggerStateRefresh={triggerStateRefresh} />
+            <AddBookmarkModal triggerParentStateRefresh={triggerStateRefresh} />
             <BookmarkGrid
                 refreshKey={refreshKey}
                 displaySize={displaySize}

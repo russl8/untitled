@@ -17,13 +17,11 @@ import { Input } from "@/components/ui/input";
 import { imageFormSchema } from "./schema"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import toast from "react-hot-toast";
-import { revalidatePath } from "next/cache";
-import { useRouter } from 'next/navigation'
 
 interface BookmarkFormProps {
-    triggerStateRefresh: () => void
+    triggerParentStateRefresh: () => void
 }
-const AddBookmarkModal = ({ triggerStateRefresh }: BookmarkFormProps) => {
+const AddBookmarkModal = ({ triggerParentStateRefresh }: BookmarkFormProps) => {
     return (
         <Dialog>
             <DialogTrigger >
@@ -33,14 +31,14 @@ const AddBookmarkModal = ({ triggerStateRefresh }: BookmarkFormProps) => {
                 <DialogHeader>
                     <DialogTitle>Add new bookmark</DialogTitle>
                 </DialogHeader>
-                <BookmarkForm triggerStateRefresh={triggerStateRefresh} />
+                <BookmarkForm triggerParentStateRefresh={triggerParentStateRefresh} />
             </DialogContent>
         </Dialog>
     )
 }
 
 
-const BookmarkForm = ({ triggerStateRefresh }: BookmarkFormProps) => {
+const BookmarkForm = ({ triggerParentStateRefresh }: BookmarkFormProps) => {
     const form = useForm<z.infer<typeof imageFormSchema>>({
         resolver: zodResolver(imageFormSchema),
         defaultValues: {
@@ -68,7 +66,7 @@ const BookmarkForm = ({ triggerStateRefresh }: BookmarkFormProps) => {
             toast.success('Boomark uploaded');
 
             form.reset()
-            triggerStateRefresh()
+            triggerParentStateRefresh()
 
         } else {
             toast.error("Error with adding bookmark: " + response.error)
