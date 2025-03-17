@@ -1,5 +1,4 @@
 "use client"
-import { DisplayId } from "@/store/features/dashboard/displaySlice";
 import 'split-pane-react/esm/themes/default.css';
 import SplitPaneCustom from "./SplitPaneCustom";
 import { RootState } from "@/store/store";
@@ -8,7 +7,6 @@ import { useMemo } from "react";
 import DashboardDisplay from "../displays/DashboardDisplay";
 export default function DashboardPage() {
   const boxes = useSelector((state: RootState) => state.displayReducer);
-
   // Use computed state directly instead of updating via useEffect
   const initialSizes = useMemo<any>(() => {
     return getDimensionsBasedOnBoxesLength(boxes.length);

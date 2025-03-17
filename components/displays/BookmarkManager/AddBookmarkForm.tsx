@@ -20,8 +20,10 @@ import toast from "react-hot-toast";
 import { revalidatePath } from "next/cache";
 import { useRouter } from 'next/navigation'
 
-
-const AddBookmarkModal = () => {
+interface BookmarkFormProps {
+    onBookmarkAdded: () => void
+}
+const AddBookmarkModal = ({ onBookmarkAdded }: BookmarkFormProps) => {
     return (
         <Dialog>
             <DialogTrigger >
@@ -31,14 +33,14 @@ const AddBookmarkModal = () => {
                 <DialogHeader>
                     <DialogTitle>Add new bookmark</DialogTitle>
                 </DialogHeader>
-                <BookmarkForm />
+                <BookmarkForm onBookmarkAdded={onBookmarkAdded} />
             </DialogContent>
         </Dialog>
     )
 }
 
 
-const BookmarkForm = () => {
+const BookmarkForm = ({ onBookmarkAdded }: BookmarkFormProps) => {
     const form = useForm<z.infer<typeof imageFormSchema>>({
         resolver: zodResolver(imageFormSchema),
         defaultValues: {
@@ -64,7 +66,9 @@ const BookmarkForm = () => {
         const response = await createBookmark(formData);
         if (response.success) {
             toast.success('Boomark uploaded');
+
             form.reset()
+            onBookmarkAdded()
 
         } else {
             toast.error("Error with adding bookmark: " + response.error)

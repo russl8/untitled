@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
     DndContext,
     closestCenter,
@@ -20,17 +19,26 @@ import {
 import SortableItem from "./BookmarkItem";
 import { displaySize } from "../types";
 
-const BookmarkGrid = ({ displaySize }: { displaySize: displaySize }) => {
+const BookmarkGrid = ({ displaySize, refreshKey }: { displaySize: displaySize, refreshKey: number }) => {
 
     const [isEditing, setIsEditing] = useState<boolean>(true);
     const [items, setItems] = useState<Array<Bookmark>>([]);
+    const sliceAmount = useMemo(() => {
+        console.log("display size change")
+        if (displaySize === "fullsize") {
+            return 50
+        } else if (displaySize === "halfsize") {
+            return 15
+        } else {
+            return 5
+        }
+    }, [displaySize])
     useEffect(() => {
         fetch("/api/dashboard/bookmarkManager")
             .then(res => res.json())
-            .then(json =>{ console.log(json.bookmarks);setItems(json.bookmarks)})
+            .then(json => { setItems(json.bookmarks) })
             .catch(err => console.error(err))
-
-    }, [])
+    }, [refreshKey])
 
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -38,11 +46,6 @@ const BookmarkGrid = ({ displaySize }: { displaySize: displaySize }) => {
             coordinateGetter: sortableKeyboardCoordinates
         })
     );
-
-
-    // const handleDragStart = (event: any) => {
-    //     setActiveId(event.active.id);
-    // };
 
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
@@ -63,13 +66,14 @@ const BookmarkGrid = ({ displaySize }: { displaySize: displaySize }) => {
             sensors={sensors}
             collisionDetection={closestCenter}
             onDragEnd={handleDragEnd}
-        // onDragStart={handleDragStart}
         >
             <div className="flex flex-wrap flex-row h-full items-center justify-center w-full overflow-ellipsis"
             >
                 {items.length > 0 &&
-                    <SortableContext items={items.map(item => item._id)} strategy={rectSortingStrategy}>
-                        {items.map((item, index) => (
+                    <SortableContext
+                        items={items.map(item => item._id)}
+                        strategy={rectSortingStrategy}>
+                        {items.slice(0, sliceAmount).map((item, index) => (
                             <SortableItem
                                 bookmarkLink={item.bookmarkLink}
                                 imageSrc={item.bookmarkImage}
