@@ -21,9 +21,9 @@ import { revalidatePath } from "next/cache";
 import { useRouter } from 'next/navigation'
 
 interface BookmarkFormProps {
-    onBookmarkAdded: () => void
+    triggerStateRefresh: () => void
 }
-const AddBookmarkModal = ({ onBookmarkAdded }: BookmarkFormProps) => {
+const AddBookmarkModal = ({ triggerStateRefresh }: BookmarkFormProps) => {
     return (
         <Dialog>
             <DialogTrigger >
@@ -33,14 +33,14 @@ const AddBookmarkModal = ({ onBookmarkAdded }: BookmarkFormProps) => {
                 <DialogHeader>
                     <DialogTitle>Add new bookmark</DialogTitle>
                 </DialogHeader>
-                <BookmarkForm onBookmarkAdded={onBookmarkAdded} />
+                <BookmarkForm triggerStateRefresh={triggerStateRefresh} />
             </DialogContent>
         </Dialog>
     )
 }
 
 
-const BookmarkForm = ({ onBookmarkAdded }: BookmarkFormProps) => {
+const BookmarkForm = ({ triggerStateRefresh }: BookmarkFormProps) => {
     const form = useForm<z.infer<typeof imageFormSchema>>({
         resolver: zodResolver(imageFormSchema),
         defaultValues: {
@@ -68,7 +68,7 @@ const BookmarkForm = ({ onBookmarkAdded }: BookmarkFormProps) => {
             toast.success('Boomark uploaded');
 
             form.reset()
-            onBookmarkAdded()
+            triggerStateRefresh()
 
         } else {
             toast.error("Error with adding bookmark: " + response.error)
