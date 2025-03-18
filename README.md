@@ -11,6 +11,6 @@
 **Backend:**\
   Next.js (server actions)\
   Clerk for user authentication \
-  MongoDB (future: dynamodb) for general storage\
+  MongoDB \
   Amazon S3 for storing image files\
   Redis for caching
