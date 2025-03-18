@@ -1,7 +1,13 @@
-import clientPromise from "@/lib/mongodb";
 import { getCurrentUserOrGuestID } from "../../helpers";
 import { NextResponse } from "next/server";
-import { getListFromRedis, getRedisBookmarkKey, setRedisValueToList, redis } from "@/lib/redis";
+import {
+  getListFromRedis,
+  getRedisBookmarkKey,
+  setRedisValueToList,
+  redis,
+} from "@/lib/redis";
+import { connectToDatabase } from "@/lib/db";
+import Bookmark from "@/Model/bookmark";
 
 export async function GET(request: Request) {
   try {
@@ -20,23 +26,12 @@ export async function GET(request: Request) {
       );
     }
 
-    const mongoDbClient = await clientPromise;
-    if (!mongoDbClient) {
-      return NextResponse.json(
-        { error: "Server error, Mongodb client not found" },
-        { status: 500 }
-      );
-    }
-
     // if bookmarks not in cache, query the db
-    const db = mongoDbClient.db("untitled");
-    const userBookmarks = await db
-      .collection("bookmarks")
-      .find({ userId: id })
-      .toArray();
+    await connectToDatabase();
+    const userBookmarks = await Bookmark.find({ userId: id }).exec();
 
     // add queried bookmarks to cache
-    await setRedisValueToList(redisKey, userBookmarks)
+    await setRedisValueToList(redisKey, userBookmarks);
     return NextResponse.json(
       { message: "Success", bookmarks: userBookmarks },
       { status: 200 }

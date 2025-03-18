@@ -11,7 +11,6 @@ const getRedisUrl = () => {
 export const getListFromRedis = async (redisKey: string) => {
   const cachedBookmarks = await redis.lrange(redisKey, 0, -1); // Fetch all items from list
   const res = cachedBookmarks.map((b) => JSON.parse(b));
-  console.log(typeof res);
   return res;
 };
 

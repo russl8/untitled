@@ -4,11 +4,9 @@ import { S3Client } from "@aws-sdk/client-s3";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
 import { nanoid } from "nanoid";
 import { getCurrentUserOrGuestID } from "@/app/api/helpers";
-import { revalidatePath } from "next/cache";
-import mongoose from "mongoose";
 import Bookmark from "@/Model/bookmark";
 import { getListFromRedis, getRedisBookmarkKey, redis } from "@/lib/redis";
-
+import { connectToDatabase } from "@/lib/db";
 export async function createBookmark(formData: FormData) {
   try {
     if (
@@ -92,16 +90,8 @@ export async function uploadBookmarkToMongoDB(
 
     // is response is ok, upload bookmark to mongodb
     const publicImageUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${s3FileKey}`;
+    await connectToDatabase();
 
-    try {
-      await mongoose.connect(process.env.MONGODB_URI || "", {
-        dbName: process.env.MONGODB_BUCKET_NAME || "",
-      });
-    } catch (e) {
-      return {
-        error: "Could not connect to mongodb.",
-      };
-    }
     const newBookmark = await Bookmark.create({
       userId,
       bookmarkName: formData.get("bookmarkName"),
