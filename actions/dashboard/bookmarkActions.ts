@@ -8,6 +8,11 @@ import Bookmark from "@/Model/bookmark";
 import { getListFromRedis, getRedisBookmarkKey, redis } from "@/lib/redis";
 import { connectToDatabase } from "@/lib/db";
 export async function createBookmark(formData: FormData) {
+  /**
+   * 1. get fields from form
+   * 2. upload image to s3 and get the image's key
+   * 3. then upload the bookmark to mongodb using the key as one of the attributes
+   */
   try {
     if (
       !formData.get("bookmarkImage") ||
