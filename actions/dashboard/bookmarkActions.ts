@@ -7,6 +7,7 @@ import { getCurrentUserOrGuestID } from "@/app/api/helpers";
 import { revalidatePath } from "next/cache";
 import mongoose from "mongoose";
 import Bookmark from "@/Model/bookmark";
+import { getListFromRedis, getRedisBookmarkKey, redis } from "@/lib/redis";
 
 export async function createBookmark(formData: FormData) {
   try {
@@ -94,7 +95,7 @@ export async function uploadBookmarkToMongoDB(
 
     try {
       await mongoose.connect(process.env.MONGODB_URI || "", {
-        dbName: "untitled",
+        dbName: process.env.MONGODB_BUCKET_NAME || "",
       });
     } catch (e) {
       return {
@@ -108,7 +109,19 @@ export async function uploadBookmarkToMongoDB(
       bookmarkLink: formData.get("bookmarkLink"),
     });
 
-    revalidatePath("/api/dashboard/bookmarkManager");
+    /**
+     * See if this user's bookmarks exist in redis.
+     * if they do, append to the existing redis list.
+     */
+    const redisKey = getRedisBookmarkKey(userId);
+    const cachedBookmarks = await getListFromRedis(userId);
+    const stringifiedBookmark = JSON.stringify(newBookmark);
+
+    if (cachedBookmarks) {
+      await redis.rpush(redisKey, stringifiedBookmark);
+    }
+
+    // revalidatePath("/api/dashboard/bookmarkManager");
     return {
       success: true,
       mongoDbResponse: newBookmark,

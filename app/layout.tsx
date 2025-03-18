@@ -41,7 +41,6 @@ export default function RootLayout({
               <div className="w-full h-full">                
                 <SidebarTrigger className="absolute hover:bg-transparent cursor-pointer hover:text-gray-600 z-[99999]" />
                 <Toaster position="bottom-center" />
-
                 {children}
               </div>
             </SidebarProvider>
