@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, Suspense, SetStateAction } from "react";
 import {
     DndContext,
     closestCenter,
@@ -18,13 +18,22 @@ import {
 
 import SortableItem from "./BookmarkItem";
 import { displaySize } from "../types";
+import { Button } from "@/components/ui/button";
 
-const BookmarkGrid = ({ displaySize, refreshKey }: { displaySize: displaySize, refreshKey: number }) => {
+interface BookmarkGridProps {
+    displaySize: displaySize;
+    setItems: (value: SetStateAction<Bookmark[]>) => void;
+    items: Array<Bookmark>;
+}
 
-    const [isEditing, setIsEditing] = useState<boolean>(true);
-    const [items, setItems] = useState<Array<Bookmark>>([]);
+
+const BookmarkGrid = ({ displaySize, setItems, items }: BookmarkGridProps) => {
+
+    const [isEditing, setIsEditing] = useState<boolean>(false);
+    // const [items, setItems] = useState<Array<Bookmark>>([]);
+    // const [loading, setLoading] = useState(true);
+
     const sliceAmount = useMemo(() => {
-        console.log("display size change")
         if (displaySize === "fullsize") {
             return 50
         } else if (displaySize === "halfsize") {
@@ -33,12 +42,6 @@ const BookmarkGrid = ({ displaySize, refreshKey }: { displaySize: displaySize, r
             return 5
         }
     }, [displaySize])
-    useEffect(() => {
-        fetch("/api/dashboard/bookmarkManager")
-            .then(res => res.json())
-            .then(json => { setItems(json.bookmarks) })
-            .catch(err => console.error(err))
-    }, [refreshKey])
 
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -60,33 +63,42 @@ const BookmarkGrid = ({ displaySize, refreshKey }: { displaySize: displaySize, r
             });
         }
     };
+    // if (loading) return <p>Loading feed...</p>; // Show loading state
 
     return (
-        <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-        >
-            <div className="flex flex-wrap flex-row h-full items-center justify-center w-full overflow-ellipsis"
+        <Suspense fallback={<p>Loading feed...</p>}>
+            <Button
+                onClick={() => setIsEditing(!isEditing)}
+                variant={isEditing ? "destructive" : "default"}
+            >Edit Bookmarks</Button>
+            <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
             >
-                {items.length > 0 &&
-                    <SortableContext
-                        items={items.map(item => item._id)}
-                        strategy={rectSortingStrategy}>
-                        {items.slice(0, sliceAmount).map((item, index) => (
-                            <SortableItem
-                                bookmarkLink={item.bookmarkLink}
-                                imageSrc={item.bookmarkImage}
-                                bookmarkName={item.bookmarkName}
-                                key={item._id}
-                                id={item._id}
-                                value={item._id}
-                                isEditing={true} />
-                        )
-                        )}
-                    </SortableContext>}
-            </div>
-        </DndContext>
+                <div className="flex flex-wrap flex-row h-full items-center justify-center w-full overflow-ellipsis"
+                >
+                    {items.length > 0 &&
+                        <SortableContext
+
+                            items={items.map(item => item._id)}
+                            strategy={rectSortingStrategy}>
+                            {items.slice(0, sliceAmount).map((item, index) => (
+                                <SortableItem
+                                    bookmarkLink={item.bookmarkLink}
+                                    imageSrc={item.bookmarkImage}
+                                    bookmarkName={item.bookmarkName}
+                                    key={item._id}
+                                    id={item._id}
+                                    value={item._id}
+                                    isEditing={isEditing} />
+                            )
+                            )}
+                        </SortableContext>}
+                </div>
+            </DndContext>
+
+        </Suspense>
     );
 };
 

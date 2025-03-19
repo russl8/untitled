@@ -4,7 +4,7 @@ import { CSS } from "@dnd-kit/utilities";
 import Image from "next/image";
 import { redirect } from "next/dist/server/api-utils";
 import { cn } from "@/lib/utils";
-
+import { X } from "lucide-react";
 interface BookmarkItemProps {
   id: any;
   isEditing: boolean;
@@ -30,6 +30,10 @@ const BookmarkItem = ({ id, isEditing, imageSrc, bookmarkName, bookmarkLink }: B
     opacity: isDragging ? 0.3 : 1
   };
 
+  const handleDeleteBookmark = () => {
+    alert("todo: delete item " + id)
+  }
+
   const [a, l] = isEditing ? [attributes, listeners] : [null, null]
 
   return (
@@ -41,7 +45,7 @@ const BookmarkItem = ({ id, isEditing, imageSrc, bookmarkName, bookmarkLink }: B
         }
       }}
       className={cn("flex flex-col justify-center h-20 w-14 mx-2  cursor-pointer", {
-        "cursor-grab active:cursor-grabbing": isEditing
+        "cursor-grab active:cursor-grabbing ": isEditing
       })}
 
       ref={isEditing ? setNodeRef : null}
@@ -49,15 +53,28 @@ const BookmarkItem = ({ id, isEditing, imageSrc, bookmarkName, bookmarkLink }: B
       {...a}
       {...l}
     >
-      <div className="object-cover overflow-hidden h-14 w-14 rounded-sm">
-        <Image
-          draggable={false}
-          alt="image"
-          src={imageSrc}
-          width={4000}
-          height={4000} />
+      <div className={cn("", { "animate-pulse": isEditing })}>
+        {/* Delete button */}
+        {isEditing &&
+          <div className="w-full relative">
+            <X
+              className="absolute w-5 h-5 p-1 right-0 bg-gray-900 text-white cursor-pointer rounded-full hover:bg-gray-400"
+              onPointerDown={(e) => {
+                e.stopPropagation();
+                handleDeleteBookmark();
+              }}
+            />
+          </div>}
+        <div className="object-cover overflow-hidden h-14 w-14 rounded-sm  ">
+          <Image
+            draggable={false}
+            alt="image"
+            src={imageSrc}
+            width={4000}
+            height={4000} />
+        </div>
+        <p className=" text-center text-sm">{bookmarkName}</p>
       </div>
-      <p className=" text-center text-sm">{bookmarkName}</p>
     </div>
   );
 };
