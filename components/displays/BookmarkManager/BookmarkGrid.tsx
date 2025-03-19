@@ -30,8 +30,7 @@ interface BookmarkGridProps {
 const BookmarkGrid = ({ displaySize, setItems, items }: BookmarkGridProps) => {
 
     const [isEditing, setIsEditing] = useState<boolean>(false);
-    // const [items, setItems] = useState<Array<Bookmark>>([]);
-    // const [loading, setLoading] = useState(true);
+
 
     const sliceAmount = useMemo(() => {
         if (displaySize === "fullsize") {
@@ -63,7 +62,6 @@ const BookmarkGrid = ({ displaySize, setItems, items }: BookmarkGridProps) => {
             });
         }
     };
-    // if (loading) return <p>Loading feed...</p>; // Show loading state
 
     return (
         <Suspense fallback={<p>Loading feed...</p>}>
