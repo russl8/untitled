@@ -6,6 +6,7 @@ import { redirect } from "next/dist/server/api-utils";
 import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
 import { deleteBookmark } from "@/actions/dashboard/bookmarkActions";
+import toast from "react-hot-toast";
 interface BookmarkItemProps {
   id: any;
   isEditing: boolean;
@@ -13,8 +14,10 @@ interface BookmarkItemProps {
   imageSrc: string;
   bookmarkName: string;
   bookmarkLink: string;
+  triggerParentStateRefresh: () => void
+
 }
-const BookmarkItem = ({ id, isEditing, imageSrc, bookmarkName, bookmarkLink }: BookmarkItemProps) => {
+const BookmarkItem = ({ id, isEditing, imageSrc, bookmarkName, bookmarkLink,triggerParentStateRefresh }: BookmarkItemProps) => {
   const {
     attributes,
     listeners,
@@ -33,7 +36,13 @@ const BookmarkItem = ({ id, isEditing, imageSrc, bookmarkName, bookmarkLink }: B
 
   const handleDeleteBookmark = async () => {
     const response = await deleteBookmark(id);
-    alert("todo: delete item " + id)
+    if (response.success) {
+      toast.success('Boomark deleted');
+      triggerParentStateRefresh()
+
+    } else {
+      toast.error("Error with deleting bookmark: " + response?.error)
+    }
   }
 
   const [a, l] = isEditing ? [attributes, listeners] : [null, null]

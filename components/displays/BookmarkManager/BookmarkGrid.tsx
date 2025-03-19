@@ -24,10 +24,12 @@ interface BookmarkGridProps {
     displaySize: displaySize;
     setItems: (value: SetStateAction<Bookmark[]>) => void;
     items: Array<Bookmark>;
+    triggerParentStateRefresh: () => void
+
 }
 
 
-const BookmarkGrid = ({ displaySize, setItems, items }: BookmarkGridProps) => {
+const BookmarkGrid = ({ displaySize, setItems, items ,triggerParentStateRefresh}: BookmarkGridProps) => {
 
     const [isEditing, setIsEditing] = useState<boolean>(false);
 
@@ -83,6 +85,7 @@ const BookmarkGrid = ({ displaySize, setItems, items }: BookmarkGridProps) => {
                             strategy={rectSortingStrategy}>
                             {items.slice(0, sliceAmount).map((item, index) => (
                                 <SortableItem
+                                triggerParentStateRefresh={triggerParentStateRefresh}
                                     bookmarkLink={item.bookmarkLink}
                                     imageSrc={item.bookmarkImage}
                                     bookmarkName={item.bookmarkName}

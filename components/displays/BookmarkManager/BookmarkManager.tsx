@@ -33,6 +33,7 @@ const BookmarkManager = ({ displaySize }: { displaySize: displaySize }) => {
             {/* <p className="">Bookmark manager</p> */}
             <AddBookmarkModal triggerParentStateRefresh={triggerStateRefresh} />
             <BookmarkGrid
+                triggerParentStateRefresh={triggerStateRefresh}
                 items={items}
                 setItems={setItems}
                 displaySize={displaySize}

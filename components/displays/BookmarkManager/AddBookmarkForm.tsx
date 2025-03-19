@@ -64,7 +64,6 @@ const BookmarkForm = ({ triggerParentStateRefresh }: BookmarkFormProps) => {
         const response = await createBookmark(formData);
         if (response.success) {
             toast.success('Boomark uploaded');
-
             form.reset()
             triggerParentStateRefresh()
 

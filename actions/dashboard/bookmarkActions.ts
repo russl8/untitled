@@ -22,7 +22,6 @@ export async function deleteBookmark(bookmarkId: string) {
       return { error: "Deleting bookmark but does not exist: " + bookmarkId };
     }
     const s3FileKey = bookmark?.s3FileKey || "";
-    console.log(s3FileKey);
 
     const client = new S3Client({
       region: process.env.AWS_REGION,
@@ -40,10 +39,19 @@ export async function deleteBookmark(bookmarkId: string) {
     //Delete bookmark from cache if cache exists
     const userId = await getCurrentUserOrGuestID();
     const redisKey = getRedisBookmarkKey(userId);
-    const cachedBookmarks = await getListFromRedis(userId);
-    const stringifiedBookmark = JSON.stringify(bookmark);
-    if (cachedBookmarks) {
-      await redis.lrem(redisKey, 0, stringifiedBookmark);
+    const cachedBookmarks = await redis.lrange(redisKey, 0, -1);
+    if (cachedBookmarks.length > 0) {
+
+      const bookmarkToRemove = cachedBookmarks.find((b) => {
+        const parsedBookmark = JSON.parse(b);
+        return parsedBookmark._id === bookmarkId;
+      });
+
+      if (bookmarkToRemove) {
+        const removedCount = await redis.lrem(redisKey, 0, bookmarkToRemove);
+      } else {
+        console.log("Bookmark not found in cache");
+      }
     }
     return {
       success: true,
