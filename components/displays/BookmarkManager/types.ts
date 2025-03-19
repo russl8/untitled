@@ -5,4 +5,5 @@ type Bookmark = {
   bookmarkName: string;
   bookmarkImage: string;
   bookmarkLink: string;
+  s3FileKey:string
 };

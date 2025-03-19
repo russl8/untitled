@@ -1,12 +1,61 @@
 "use server";
 
-import { S3Client } from "@aws-sdk/client-s3";
+import {
+  DeleteObjectCommand,
+  HeadObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
 import { nanoid } from "nanoid";
 import { getCurrentUserOrGuestID } from "@/app/api/helpers";
 import Bookmark from "@/Model/bookmark";
 import { getListFromRedis, getRedisBookmarkKey, redis } from "@/lib/redis";
 import { connectToDatabase } from "@/lib/db";
+import { Book } from "lucide-react";
+import BookmarkItem from "@/components/displays/BookmarkManager/BookmarkItem";
+
+export async function deleteBookmark(bookmarkId: string) {
+  try {
+    await connectToDatabase();
+    const bookmark: Bookmark | null = await Bookmark.findById(bookmarkId);
+    if (!bookmark) {
+      return { error: "Deleting bookmark but does not exist: " + bookmarkId };
+    }
+    const s3FileKey = bookmark?.s3FileKey || "";
+    console.log(s3FileKey);
+
+    const client = new S3Client({
+      region: process.env.AWS_REGION,
+    });
+
+    const deleteObjectCommand = new DeleteObjectCommand({
+      Bucket: process.env.AWS_BUCKET_NAME || "",
+      Key: s3FileKey,
+    });
+
+    // delete bookmark from s3 and mongodb
+    await client.send(deleteObjectCommand);
+    await Bookmark.findByIdAndDelete(bookmarkId);
+
+    //Delete bookmark from cache if cache exists
+    const userId = await getCurrentUserOrGuestID();
+    const redisKey = getRedisBookmarkKey(userId);
+    const cachedBookmarks = await getListFromRedis(userId);
+    const stringifiedBookmark = JSON.stringify(bookmark);
+    if (cachedBookmarks) {
+      await redis.lrem(redisKey, 0, stringifiedBookmark);
+    }
+    return {
+      success: true,
+      message: "Item deleted from s3, mongodb, cache",
+    };
+  } catch (e) {
+    return {
+      error: "An exception occured with deleting bookmark: " + e,
+    };
+  }
+}
+
 export async function createBookmark(formData: FormData) {
   /**
    * 1. get fields from form
@@ -102,6 +151,7 @@ export async function uploadBookmarkToMongoDB(
       bookmarkName: formData.get("bookmarkName"),
       bookmarkImage: publicImageUrl,
       bookmarkLink: formData.get("bookmarkLink"),
+      s3FileKey: s3FileKey,
     });
 
     /**

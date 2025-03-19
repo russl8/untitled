@@ -5,6 +5,7 @@ import Image from "next/image";
 import { redirect } from "next/dist/server/api-utils";
 import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
+import { deleteBookmark } from "@/actions/dashboard/bookmarkActions";
 interface BookmarkItemProps {
   id: any;
   isEditing: boolean;
@@ -30,7 +31,8 @@ const BookmarkItem = ({ id, isEditing, imageSrc, bookmarkName, bookmarkLink }: B
     opacity: isDragging ? 0.3 : 1
   };
 
-  const handleDeleteBookmark = () => {
+  const handleDeleteBookmark = async () => {
+    const response = await deleteBookmark(id);
     alert("todo: delete item " + id)
   }
 

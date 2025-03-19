@@ -15,6 +15,10 @@ const BookmarkSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    s3FileKey: {
+      type: String,
+      required: true,
+    },
     bookmarkLink: {
       type: String,
       required: true,
@@ -24,6 +28,7 @@ const BookmarkSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Bookmark = mongoose.models.Bookmark || mongoose.model("Bookmark", BookmarkSchema);
+const Bookmark =
+  mongoose.models.Bookmark || mongoose.model("Bookmark", BookmarkSchema);
 
 export default Bookmark;

@@ -20,11 +20,13 @@ const BookmarkManager = ({ displaySize }: { displaySize: displaySize }) => {
     useEffect(() => {
         fetch("/api/dashboard/bookmarkManager")
             .then(res => res.json())
-            .then(json => setItems(json.bookmarks))
+            .then(json => {
+                setItems(json.bookmarks || [])
+            })
             .catch(err => console.error(err))
             .finally(() => setLoading(false));
     }, [refreshKey])
-    if (loading) return <DisplayLoading />; 
+    if (loading) return <DisplayLoading />;
 
     return (
         <div className="p-10 flex flex-col items-start justify-start w-full h-full overflow-visible">

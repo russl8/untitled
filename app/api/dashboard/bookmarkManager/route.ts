@@ -29,9 +29,11 @@ export async function GET(request: Request) {
     // if bookmarks not in cache, query the db
     await connectToDatabase();
     const userBookmarks = await Bookmark.find({ userId: id }).exec();
+    if (userBookmarks.length > 0) {
+      // add queried bookmarks to cache
+      await setRedisValueToList(redisKey, userBookmarks);
+    }
 
-    // add queried bookmarks to cache
-    await setRedisValueToList(redisKey, userBookmarks);
     return NextResponse.json(
       { message: "Success", bookmarks: userBookmarks },
       { status: 200 }
