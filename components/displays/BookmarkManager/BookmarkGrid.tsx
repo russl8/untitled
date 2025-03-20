@@ -16,9 +16,12 @@ import {
     rectSortingStrategy
 } from "@dnd-kit/sortable";
 
+import { Edit } from "lucide-react";
 import SortableItem from "./BookmarkItem";
 import { displaySize } from "../types";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import AddBookmarkModal from "./AddBookmarkForm";
 
 interface BookmarkGridProps {
     displaySize: displaySize;
@@ -29,7 +32,7 @@ interface BookmarkGridProps {
 }
 
 
-const BookmarkGrid = ({ displaySize, setItems, items ,triggerParentStateRefresh}: BookmarkGridProps) => {
+const BookmarkGrid = ({ displaySize, setItems, items, triggerParentStateRefresh }: BookmarkGridProps) => {
 
     const [isEditing, setIsEditing] = useState<boolean>(false);
 
@@ -66,11 +69,17 @@ const BookmarkGrid = ({ displaySize, setItems, items ,triggerParentStateRefresh}
     };
 
     return (
-        <Suspense fallback={<p>Loading feed...</p>}>
-            <Button
-                onClick={() => setIsEditing(!isEditing)}
-                variant={isEditing ? "destructive" : "default"}
-            >Edit Bookmarks</Button>
+        <>
+            <div className="flex flex-row ">
+                <AddBookmarkModal triggerParentStateRefresh={triggerParentStateRefresh} />
+                <Button
+                    onClick={() => setIsEditing(!isEditing)}
+                    className={cn("cursor-pointer ml-1 w-6 h-6 ", { "animate-pulse": isEditing })}
+                >
+                    <Edit />
+                </Button>
+            </div>
+
             <DndContext
                 sensors={sensors}
                 collisionDetection={closestCenter}
@@ -85,7 +94,7 @@ const BookmarkGrid = ({ displaySize, setItems, items ,triggerParentStateRefresh}
                             strategy={rectSortingStrategy}>
                             {items.slice(0, sliceAmount).map((item, index) => (
                                 <SortableItem
-                                triggerParentStateRefresh={triggerParentStateRefresh}
+                                    triggerParentStateRefresh={triggerParentStateRefresh}
                                     bookmarkLink={item.bookmarkLink}
                                     imageSrc={item.bookmarkImage}
                                     bookmarkName={item.bookmarkName}
@@ -99,7 +108,7 @@ const BookmarkGrid = ({ displaySize, setItems, items ,triggerParentStateRefresh}
                 </div>
             </DndContext>
 
-        </Suspense>
+        </>
     );
 };
 

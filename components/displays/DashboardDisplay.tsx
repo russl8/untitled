@@ -30,7 +30,7 @@ const DashboardDisplay = ({ displayId }: { displayId: DisplayId }) => {
 
     return (
         <div id="dashboardDisplayTitle"
-            className="h-full w-full border-2 border-black"
+            className="h-full w-full bg-[#D3D3D3] border-2 rounded-xl"
         >
             {displayId === 1 && <BookmarkManager displaySize={displaySize}/>}
         </div>

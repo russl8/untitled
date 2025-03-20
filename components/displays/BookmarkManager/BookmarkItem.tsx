@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import Image from "next/image";
@@ -17,7 +17,8 @@ interface BookmarkItemProps {
   triggerParentStateRefresh: () => void
 
 }
-const BookmarkItem = ({ id, isEditing, imageSrc, bookmarkName, bookmarkLink,triggerParentStateRefresh }: BookmarkItemProps) => {
+const BookmarkItem = ({ id, isEditing, imageSrc, bookmarkName, bookmarkLink, triggerParentStateRefresh }: BookmarkItemProps) => {
+
   const {
     attributes,
     listeners,
@@ -26,7 +27,7 @@ const BookmarkItem = ({ id, isEditing, imageSrc, bookmarkName, bookmarkLink,trig
     transition,
     isDragging
   } = useSortable({ id: id });
-
+  const [isDeleting, setIsDeleting] = useState(false);
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -35,6 +36,7 @@ const BookmarkItem = ({ id, isEditing, imageSrc, bookmarkName, bookmarkLink,trig
   };
 
   const handleDeleteBookmark = async () => {
+    setIsDeleting(true)
     const response = await deleteBookmark(id);
     if (response.success) {
       toast.success('Boomark deleted');
@@ -43,6 +45,7 @@ const BookmarkItem = ({ id, isEditing, imageSrc, bookmarkName, bookmarkLink,trig
     } else {
       toast.error("Error with deleting bookmark: " + response?.error)
     }
+    setIsDeleting(false)
   }
 
   const [a, l] = isEditing ? [attributes, listeners] : [null, null]
@@ -55,7 +58,7 @@ const BookmarkItem = ({ id, isEditing, imageSrc, bookmarkName, bookmarkLink,trig
           window.open(bookmarkLink, "_blank", "noopener,noreferrer");
         }
       }}
-      className={cn("flex flex-col justify-center h-20 w-14 mx-2  cursor-pointer", {
+      className={cn("flex flex-col justify-center overflow-ellipsis h-20 w-14 mx-2  cursor-pointer", {
         "cursor-grab active:cursor-grabbing ": isEditing
       })}
 
@@ -64,19 +67,23 @@ const BookmarkItem = ({ id, isEditing, imageSrc, bookmarkName, bookmarkLink,trig
       {...a}
       {...l}
     >
-      <div className={cn("", { "animate-pulse": isEditing })}>
+      <div className={cn("overflow-ellipsis", { "animate-pulse": isEditing })}>
         {/* Delete button */}
         {isEditing &&
           <div className="w-full relative">
             <X
-              className="absolute w-5 h-5 p-1 right-0 bg-gray-900 text-white cursor-pointer rounded-full hover:bg-gray-400"
+              className={cn("absolute w-5 h-5 p-1 right-0 bg-gray-900 text-white cursor-pointer rounded-full hover:bg-gray-400",
+                { "cursor-not-allowed": isDeleting }
+              )}
               onPointerDown={(e) => {
                 e.stopPropagation();
-                handleDeleteBookmark();
+                if (!isDeleting) {
+                  handleDeleteBookmark();
+                }
               }}
             />
           </div>}
-        <div className="object-cover overflow-hidden h-14 w-14 rounded-sm  ">
+        <div className="object-cover overflow-hidden h-14 w-14 rounded-sm   ">
           <Image
             draggable={false}
             alt="image"
@@ -84,7 +91,7 @@ const BookmarkItem = ({ id, isEditing, imageSrc, bookmarkName, bookmarkLink,trig
             width={4000}
             height={4000} />
         </div>
-        <p className=" text-center text-sm">{bookmarkName}</p>
+        <p className=" text-center text-sm flex flex-col overflow-auto">{bookmarkName}</p>
       </div>
     </div>
   );

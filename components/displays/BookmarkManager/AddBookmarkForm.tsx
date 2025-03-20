@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { imageFormSchema } from "./schema"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import toast from "react-hot-toast";
+import { Plus } from "lucide-react";
 
 interface BookmarkFormProps {
     triggerParentStateRefresh: () => void
@@ -25,7 +26,9 @@ const AddBookmarkModal = ({ triggerParentStateRefresh }: BookmarkFormProps) => {
     return (
         <Dialog>
             <DialogTrigger >
-                <div className=" text-sm px-4 py-2 rounded-lg cursor-pointer bg-primary text-primary-foreground shadow-xs hover:bg-primary/90" >Add</div>
+                <div className=" text-sm rounded-lg cursor-pointer bg-primary text-primary-foreground shadow-xs hover:bg-primary/90" >
+                <Plus/>
+                </div>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
