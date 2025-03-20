@@ -18,16 +18,19 @@ import { imageFormSchema } from "./schema"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import toast from "react-hot-toast";
 import { Plus } from "lucide-react";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 interface BookmarkFormProps {
     triggerParentStateRefresh: () => void
 }
+
 const AddBookmarkModal = ({ triggerParentStateRefresh }: BookmarkFormProps) => {
     return (
         <Dialog>
             <DialogTrigger >
                 <div className=" text-sm rounded-lg cursor-pointer bg-primary text-primary-foreground shadow-xs hover:bg-primary/90" >
-                <Plus/>
+                    <Plus />
                 </div>
             </DialogTrigger>
             <DialogContent>
@@ -42,6 +45,7 @@ const AddBookmarkModal = ({ triggerParentStateRefresh }: BookmarkFormProps) => {
 
 
 const BookmarkForm = ({ triggerParentStateRefresh }: BookmarkFormProps) => {
+    const [isSubmitting, setIsSubmitting] = useState(false)
     const form = useForm<z.infer<typeof imageFormSchema>>({
         resolver: zodResolver(imageFormSchema),
         defaultValues: {
@@ -59,6 +63,7 @@ const BookmarkForm = ({ triggerParentStateRefresh }: BookmarkFormProps) => {
          * The server action uses the form data to add the image to s3, then 
          * uploads the rest of the bookmark along with the link to mongodb.
          */
+        setIsSubmitting(true)
         const formData = new FormData()
         formData.append("bookmarkImage", values.bookmarkImage)
         formData.append("bookmarkName", values.bookmarkName)
@@ -73,11 +78,12 @@ const BookmarkForm = ({ triggerParentStateRefresh }: BookmarkFormProps) => {
         } else {
             toast.error("Error with adding bookmark: " + response.error)
         }
+        setIsSubmitting(false)
     }
     return (
         <div>
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <form onSubmit={!isSubmitting ? form.handleSubmit(onSubmit) : null} className="space-y-8">
                     <FormField
                         control={form.control}
                         name="bookmarkName"
@@ -131,7 +137,7 @@ const BookmarkForm = ({ triggerParentStateRefresh }: BookmarkFormProps) => {
                             </FormItem>
                         )}
                     />
-                    <Button type="submit">Submit</Button>
+                    <Button className={cn({ "cursor-not-allowed": isSubmitting })} type="submit">Submit</Button>
                 </form>
             </Form>
         </div>
