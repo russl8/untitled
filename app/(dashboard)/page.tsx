@@ -6,7 +6,7 @@ export default function Page() {
 
 
   return (
-    <div className="h-[100vh]">
+    <div className="h-full">
       <DashboardPage />
     </div>
   );

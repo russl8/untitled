@@ -56,7 +56,6 @@ const BookmarkForm = ({ }: BookmarkFormProps) => {
     })
     const fetchBookmarks: () => void = useContext(FetchBookmarksContext)
 
-    // const router=useRouter()
     async function onSubmit(values: z.infer<typeof imageFormSchema>) {
         /**
          * Create a formdata object and pass it to the server action.

@@ -2,7 +2,6 @@
 
 import {
   DeleteObjectCommand,
-  HeadObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
@@ -11,8 +10,6 @@ import { getCurrentUserOrGuestID } from "@/app/api/helpers";
 import Bookmark from "@/Model/bookmark";
 import { getListFromRedis, getRedisBookmarkKey, redis } from "@/lib/redis";
 import { connectToDatabase } from "@/lib/db";
-import { Book } from "lucide-react";
-import BookmarkItem from "@/components/displays/BookmarkManager/BookmarkItem";
 
 export async function deleteBookmark(bookmarkId: string) {
   try {
