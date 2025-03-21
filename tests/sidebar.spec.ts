@@ -2,7 +2,7 @@ import {test,expect} from "@playwright/test"
 import { createPrerenderSearchParamsForClientPage } from "next/dist/server/request/search-params"
 
 
-test.describe("dashboard",()=>{
+test.describe("Dashboard",()=>{
     test.beforeEach(async ({page})=> {
         await page.goto("http://localhost:3000/")
     }) 
@@ -16,7 +16,6 @@ test.describe("dashboard",()=>{
     test("clicking checkbox button should bring it up to/off of display", async({page})=>{
         // get count of displays up currently
         const initialNumberOfDisplays = await page.locator("id=dashboardDisplayTitle").count()
-
         // get whether the bookmark manager box is checked
         const bookmarkManagerCheckboxIsChecked = await page.getByRole("checkbox",{name:"Bookmark Manager"}).isChecked()
 
@@ -32,3 +31,4 @@ test.describe("dashboard",()=>{
         }
     })
 })
+
