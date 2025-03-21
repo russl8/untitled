@@ -1,9 +1,12 @@
 import BookmarkGrid from "./BookmarkGrid";
 import { displaySize } from "../types";
 import AddBookmarkModal from "./AddBookmarkForm";
-import useRefresh from "@/hooks/useRefresh";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import DisplayLoading from "../DisplayLoading";
+import { createContext } from "react";
+
+
+export const FetchBookmarksContext = createContext<(() => void)>(() => { });
 
 const BookmarkManager = ({ displaySize }: { displaySize: displaySize }) => {
 
@@ -13,11 +16,9 @@ const BookmarkManager = ({ displaySize }: { displaySize: displaySize }) => {
      * when a bookmark is added in AddBookmarkModal, triggerStateRefresh is invoked
      * which causes the below refreshKey state to change in this component to force useEffect to run again.
      */
-    const [refreshKey, triggerStateRefresh] = useRefresh()
     const [loading, setLoading] = useState(true);
     const [items, setItems] = useState<Array<Bookmark>>([]);
-
-    useEffect(() => {
+    const fetchBookmarks = useCallback(() => {
         fetch("/api/dashboard/bookmarkManager")
             .then(res => res.json())
             .then(json => {
@@ -25,18 +26,25 @@ const BookmarkManager = ({ displaySize }: { displaySize: displaySize }) => {
             })
             .catch(err => console.error(err))
             .finally(() => setLoading(false));
-    }, [refreshKey])
+    }, [])
+    useEffect(() => {
+        fetchBookmarks();
+    }, [])
+
     if (loading) return <DisplayLoading />;
 
     return (
         <div className="p-2 flex flex-col items-start justify-start w-full h-full overflow-visible">
-            {/* <p className="">Bookmark manager</p> */}
-            <BookmarkGrid
-                triggerParentStateRefresh={triggerStateRefresh}
-                items={items}
-                setItems={setItems}
-                displaySize={displaySize}
-            />
+
+            <FetchBookmarksContext.Provider value={fetchBookmarks}>
+                {/* <p className="">Bookmark manager</p> */}
+                <BookmarkGrid
+                    // triggerParentStateRefresh={triggerStateRefresh}
+                    items={items}
+                    setItems={setItems}
+                    displaySize={displaySize}
+                />
+            </FetchBookmarksContext.Provider>
         </div>
     );
 }

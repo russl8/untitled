@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import Image from "next/image";
@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
 import { deleteBookmark } from "@/actions/dashboard/bookmarkActions";
 import toast from "react-hot-toast";
+import { FetchBookmarksContext } from "./BookmarkManager";
 interface BookmarkItemProps {
   id: any;
   isEditing: boolean;
@@ -14,10 +15,8 @@ interface BookmarkItemProps {
   imageSrc: string;
   bookmarkName: string;
   bookmarkLink: string;
-  triggerParentStateRefresh: () => void
-
 }
-const BookmarkItem = ({ id, isEditing, imageSrc, bookmarkName, bookmarkLink, triggerParentStateRefresh }: BookmarkItemProps) => {
+const BookmarkItem = ({ id, isEditing, imageSrc, bookmarkName, bookmarkLink }: BookmarkItemProps) => {
 
   const {
     attributes,
@@ -28,6 +27,7 @@ const BookmarkItem = ({ id, isEditing, imageSrc, bookmarkName, bookmarkLink, tri
     isDragging
   } = useSortable({ id: id });
   const [isDeleting, setIsDeleting] = useState(false);
+  const fetchBookmarks: () => void = useContext(FetchBookmarksContext)
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -39,8 +39,8 @@ const BookmarkItem = ({ id, isEditing, imageSrc, bookmarkName, bookmarkLink, tri
     setIsDeleting(true)
     const response = await deleteBookmark(id);
     if (response.success) {
-      toast.success('Boomark deleted');
-      triggerParentStateRefresh()
+      toast.success('Bookmark deleted');
+      fetchBookmarks();
 
     } else {
       toast.error("Error with deleting bookmark: " + response?.error)
@@ -52,6 +52,7 @@ const BookmarkItem = ({ id, isEditing, imageSrc, bookmarkName, bookmarkLink, tri
 
   return (
     <div
+      id="bookmarkItem"
       onClick={(e) => {
         if (!isEditing) {
           e.stopPropagation(); // Prevent dnd-kit interference

@@ -18,17 +18,17 @@ import { imageFormSchema } from "./schema"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import toast from "react-hot-toast";
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { cn } from "@/lib/utils";
+import { FetchBookmarksContext } from "./BookmarkManager";
 
 interface BookmarkFormProps {
-    triggerParentStateRefresh: () => void
 }
 
-const AddBookmarkModal = ({ triggerParentStateRefresh }: BookmarkFormProps) => {
+const AddBookmarkModal = ({ }: BookmarkFormProps) => {
     return (
         <Dialog>
-            <DialogTrigger >
+            <DialogTrigger id="addBookmarkModalTrigger" >
                 <div className=" text-sm rounded-lg cursor-pointer bg-primary text-primary-foreground shadow-xs hover:bg-primary/90" >
                     <Plus />
                 </div>
@@ -37,14 +37,14 @@ const AddBookmarkModal = ({ triggerParentStateRefresh }: BookmarkFormProps) => {
                 <DialogHeader>
                     <DialogTitle>Add new bookmark</DialogTitle>
                 </DialogHeader>
-                <BookmarkForm triggerParentStateRefresh={triggerParentStateRefresh} />
+                <BookmarkForm />
             </DialogContent>
         </Dialog>
     )
 }
 
 
-const BookmarkForm = ({ triggerParentStateRefresh }: BookmarkFormProps) => {
+const BookmarkForm = ({ }: BookmarkFormProps) => {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const form = useForm<z.infer<typeof imageFormSchema>>({
         resolver: zodResolver(imageFormSchema),
@@ -54,6 +54,7 @@ const BookmarkForm = ({ triggerParentStateRefresh }: BookmarkFormProps) => {
             bookmarkLink: "https://"
         },
     })
+    const fetchBookmarks: () => void = useContext(FetchBookmarksContext)
 
     // const router=useRouter()
     async function onSubmit(values: z.infer<typeof imageFormSchema>) {
@@ -73,7 +74,7 @@ const BookmarkForm = ({ triggerParentStateRefresh }: BookmarkFormProps) => {
         if (response.success) {
             toast.success('Boomark uploaded');
             form.reset()
-            triggerParentStateRefresh()
+            fetchBookmarks()
 
         } else {
             toast.error("Error with adding bookmark: " + response.error)
@@ -83,7 +84,7 @@ const BookmarkForm = ({ triggerParentStateRefresh }: BookmarkFormProps) => {
     return (
         <div>
             <Form {...form}>
-                <form onSubmit={!isSubmitting ? form.handleSubmit(onSubmit) : null} className="space-y-8">
+                <form onSubmit={!isSubmitting ? form.handleSubmit(onSubmit) : () => { }} className="space-y-8">
                     <FormField
                         control={form.control}
                         name="bookmarkName"
@@ -91,7 +92,7 @@ const BookmarkForm = ({ triggerParentStateRefresh }: BookmarkFormProps) => {
                             <FormItem>
                                 <FormLabel>Bookmark Name</FormLabel>
                                 <FormControl>
-                                    <Input  {...field} />
+                                    <Input id="addBookmarkNameInput" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -105,7 +106,7 @@ const BookmarkForm = ({ triggerParentStateRefresh }: BookmarkFormProps) => {
                             <FormItem>
                                 <FormLabel>Bookmark Link</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="shadcn" {...field} />
+                                    <Input id="addBookmarkLinkInput" placeholder="shadcn" {...field} />
                                 </FormControl>
                                 <FormDescription>
                                     Must start with "http://" or "https://"
@@ -123,6 +124,8 @@ const BookmarkForm = ({ triggerParentStateRefresh }: BookmarkFormProps) => {
                                 <FormLabel>Bookmark Image</FormLabel>
                                 <FormControl>
                                     <Input
+                                        placeholder="addBookmarkImage"
+                                        id="addBookmarkFileInput"
                                         className="cursor-pointer"
                                         type="file"
                                         accept="image/png, image/jpeg, image/jpg, image/svg+xml, image/gif"
