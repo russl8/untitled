@@ -71,9 +71,10 @@ const BookmarkGrid = ({ displaySize, setItems, items }: BookmarkGridProps) => {
             <div className="flex flex-row">
                 <AddBookmarkModal />
                 <Button
+                    id="editBookmarksButton"
                     onClick={() => setIsEditing(!isEditing)}
                     className={cn("cursor-pointer ml-1 w-6 h-6 ", { "animate-pulse": isEditing })}>
-                    <Edit />
+                    <Edit  />
                 </Button>
             </div>
             <DndContext
