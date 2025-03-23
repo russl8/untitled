@@ -21,7 +21,6 @@ export const displaySlice = createSlice({
         } else {
             newArr = [...newArr, displayId]
         }
-        console.log(newArr)
         return newArr
     },
   },

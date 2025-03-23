@@ -18,7 +18,7 @@ import {
 
 import { Edit } from "lucide-react";
 import SortableItem from "./BookmarkItem";
-import { displaySize } from "../types";
+import { displaySize } from "../../widgetDisplay/types";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import AddBookmarkModal from "./AddBookmarkForm";

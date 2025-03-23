@@ -1,8 +1,8 @@
 import BookmarkGrid from "./BookmarkGrid";
-import { displaySize } from "../types";
+import { displaySize } from "../../widgetDisplay/types";
 import AddBookmarkModal from "./AddBookmarkForm";
 import { useCallback, useEffect, useState } from "react";
-import DisplayLoading from "../DisplayLoading";
+import DisplayLoading from "../../widgetDisplay/DisplayLoading";
 import { createContext } from "react";
 
 

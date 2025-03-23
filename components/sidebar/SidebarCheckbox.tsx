@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { DisplayId } from "@/store/features/dashboard/displaySlice";
 import { toggleDisplay } from "@/store/features/dashboard/displaySlice";
-import { Display } from "../displays/types";
+import { Display } from "../widgetDisplay/types";
 import { usePathname } from "next/navigation";
 
 

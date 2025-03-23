@@ -4,7 +4,7 @@ import SplitPaneCustom from "./SplitPaneCustom";
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
 import { useMemo } from "react";
-import DashboardDisplay from "../displays/DashboardDisplay";
+import DashboardDisplay from "../widgetDisplay/Display";
 export default function DashboardPage() {
   const boxes = useSelector((state: RootState) => state.displayReducer);
   // Use computed state directly instead of updating via useEffect

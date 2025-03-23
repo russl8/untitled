@@ -1,10 +1,11 @@
 import { DisplayId } from "@/store/features/dashboard/displaySlice";
 import { displays } from "@/lib/constants";
-import BookmarkManager from "./BookmarkManager/BookmarkManager";
+import BookmarkManager from "../widgets/bookmarkManager/BookmarkManager";
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
 import { useMemo } from "react";
 import { displaySize } from "./types";
+import WorkoutTracker from "../widgets/workoutTracker/WorkoutTracker";
 
 const DashboardDisplay = ({ displayId }: { displayId: DisplayId }) => {
 
@@ -26,13 +27,15 @@ const DashboardDisplay = ({ displayId }: { displayId: DisplayId }) => {
         return "quartersize"
     }, [selectedBoxes]);
 
-    
+
 
     return (
         <div id="dashboardDisplayTitle"
             className="h-full w-full bg-[#D3D3D3] border-2 rounded-xl"
         >
-            {displayId === 1 && <BookmarkManager displaySize={displaySize}/>}
+            {displayId === 1 && <BookmarkManager displaySize={displaySize} />}
+            {displayId === 2 && <WorkoutTracker displaySize={displaySize} />}
+
         </div>
     );
 }

@@ -1,4 +1,4 @@
-import { Display } from "@/components/displays/types";
+import { Display } from "@/components/widgetDisplay/types";
 import { DisplayId } from "@/store/features/dashboard/displaySlice";
 
 export const displays:Record<DisplayId, Display> = {
