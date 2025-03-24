@@ -9,9 +9,7 @@ import WorkoutTracker from "../widgets/workoutTracker/WorkoutTracker";
 
 const DashboardDisplay = ({ displayId }: { displayId: DisplayId }) => {
 
-
-    // const display = displays[displayId];
-    const selectedBoxes = useSelector((state: RootState) => state.displayReducer);
+    const selectedBoxes: Array<DisplayId> = useSelector((state: RootState) => state.displayReducer);
 
     //get the size of the current display based on num of boxes selected and order of displayID
     const displaySize: displaySize = useMemo(() => {

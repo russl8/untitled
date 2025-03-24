@@ -74,7 +74,7 @@ const BookmarkForm = ({ }: BookmarkFormProps) => {
             toast.success('Boomark uploaded');
             form.reset()
             fetchBookmarks()
-
+            
         } else {
             toast.error("Error with adding bookmark: " + response.error)
         }
