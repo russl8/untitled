@@ -61,9 +61,9 @@ export function WorkoutCombobox({ formField }: { formField: any }) {
                         name={formField.name}
                         data-slot="input"
                         readOnly
-                        className="disabled:opacity-100 border-none bg-transparent shadow-none"
+                        className="disabled:opacity-100  focus:border-none border-none bg-transparent shadow-none"
                         placeholder="Select a workout"
-                        value={formField.value
+                        value={formField.valu
                             ? frameworks.find((framework) => framework.value === formField.value)?.label
                             : ""}
                         {...formField}

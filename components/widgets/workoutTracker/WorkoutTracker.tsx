@@ -27,7 +27,7 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
                 </DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Add a workout</DialogTitle>
+                        <DialogTitle>Add workout</DialogTitle>
                     </DialogHeader>
                     <AddWorkoutForm />
                 </DialogContent>
