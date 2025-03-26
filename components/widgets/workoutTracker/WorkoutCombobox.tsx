@@ -55,7 +55,7 @@ export function WorkoutCombobox({ formField }: { formField: any }) {
                     variant="outline"
                     role="combobox"
                     aria-expanded={open}
-                    className="w-[200px] justify-between"
+                    className="justify-between"
                 >
                     <Input
                         name={formField.name}
