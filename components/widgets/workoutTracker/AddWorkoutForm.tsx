@@ -9,22 +9,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { WorkoutCombobox } from "./WorkoutCombobox";
 import { useState } from "react";
+import { workoutFormSchema } from "@/actions/createWorkout/schema";
+import createWorkout from "@/actions/createWorkout";
+import toast from "react-hot-toast";
 
-const exerciseSchema = z.object({
-    exerciseName: z.string().min(1, "Required"),
-    sets: z.number().min(1, "Must be at least 1"),
-    reps: z.number().min(1, "Must be at least 1"),
-    extraInfo: z.string().optional()
-});
 
-const formSchema = z.object({
-    workoutName: z.string().min(2).max(50),
-    exercises: z.array(exerciseSchema).min(1, "At least one exercise is required")
-});
 
 const AddWorkoutForm = () => {
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<z.infer<typeof workoutFormSchema>>({
+        resolver: zodResolver(workoutFormSchema),
         defaultValues: {
             workoutName: "",
             exercises: [{ exerciseName: "", sets: 1, reps: 1, extraInfo: "" }]
@@ -37,8 +30,14 @@ const AddWorkoutForm = () => {
         name: "exercises"
     });
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values);
+    function onSubmit(values: z.infer<typeof workoutFormSchema>) {
+        createWorkout(values)
+        .then(res => {
+            toast.success("Workout added!")
+        })
+        .catch(err=>{
+            toast.error("Error... workout could not be added :(")
+        })
     }
 
     return (
@@ -88,12 +87,12 @@ const AddWorkoutForm = () => {
                         )}
                     />}
 
-                <div className="grid grid-cols-8 gap-2">
+                <div className="grid grid-cols-8 gap-2 max-h-[200px] overflow-auto scroll-m-1">
                     <div className="col-span-2">Exercise</div>
                     <div className="col-span-1">Sets</div>
                     <div className="col-span-1">Reps</div>
                     <div className="col-span-4">Notes</div>
-
+                        
                     {fields.map((field, index) => (
                         <div key={field.id} className="contents">
                             <FormField

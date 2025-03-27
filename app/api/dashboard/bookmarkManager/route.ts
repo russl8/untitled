@@ -7,7 +7,7 @@ import {
   redis,
 } from "@/lib/redis";
 import { connectToDatabase } from "@/lib/db";
-import Bookmark from "@/Model/bookmark";
+import Bookmark from "@/model/bookmark";
 
 export async function GET(request: Request) {
   try {

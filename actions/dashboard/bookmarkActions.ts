@@ -1,13 +1,10 @@
 "use server";
 
-import {
-  DeleteObjectCommand,
-  S3Client,
-} from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
 import { nanoid } from "nanoid";
 import { getCurrentUserOrGuestID } from "@/app/api/helpers";
-import Bookmark from "@/Model/bookmark";
+import Bookmark from "@/model/bookmark";
 import { getListFromRedis, getRedisBookmarkKey, redis } from "@/lib/redis";
 import { connectToDatabase } from "@/lib/db";
 
@@ -38,7 +35,6 @@ export async function deleteBookmark(bookmarkId: string) {
     const redisKey = getRedisBookmarkKey(userId);
     const cachedBookmarks = await redis.lrange(redisKey, 0, -1);
     if (cachedBookmarks.length > 0) {
-
       const bookmarkToRemove = cachedBookmarks.find((b) => {
         const parsedBookmark = JSON.parse(b);
         return parsedBookmark._id === bookmarkId;
