@@ -19,7 +19,7 @@ const BookmarkManager = ({ displaySize }: { displaySize: displaySize }) => {
     const [loading, setLoading] = useState(true);
     const [items, setItems] = useState<Array<Bookmark>>([]);
     const fetchBookmarks = useCallback(() => {
-        fetch("/api/dashboard/bookmarkManager")
+        fetch("/api/bookmarkManager")
             .then(res => res.json())
             .then(json => {
                 setItems(json.bookmarks || [])

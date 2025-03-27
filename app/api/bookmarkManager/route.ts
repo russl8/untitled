@@ -1,4 +1,4 @@
-import { getCurrentUserOrGuestID } from "../../helpers";
+import { getCurrentUserOrGuestID } from "../helpers";
 import { NextResponse } from "next/server";
 import {
   getListFromRedis,
