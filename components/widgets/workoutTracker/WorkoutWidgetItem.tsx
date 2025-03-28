@@ -1,28 +1,42 @@
 import { Workout } from "@/actions/createWorkout/schema";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { getmmdd } from "@/lib/utils";
+import WorkoutDetails from "./WorkoutDetails";
 
 interface WorkoutwidgetItemProps {
     workout: Workout
+    fetchWorkouts: () => void
 }
-const WorkoutWidgetItem = ({ workout }: WorkoutwidgetItemProps) => {
+const WorkoutWidgetItem = ({ workout, fetchWorkouts }: WorkoutwidgetItemProps) => {
     return (
-        <TooltipProvider    >
-            <Tooltip>
-                <TooltipTrigger >
-                    <div className=" py-1 px-4 my-1 rounded-lg  cursor-pointer text-gray-600 hover:bg-white hover:opacity-50">
-                        <p>{getmmdd(workout.lastUpdated)}: {workout.workoutName}</p>
-                    </div>
-                </TooltipTrigger>
-                <TooltipContent sideOffset={-10} className="m-0 p-0">
-                    <div className="flex flex-col p-0 m-0">
-                        <Button className="h-6 hover:text-gray-400 cursor-pointer p-4 m-0">View details</Button>
-                        <Button className="h-6 hover:text-gray-400 cursor-pointer  p-4 m-0">Delete</Button>
-                    </div>
-                </TooltipContent>
-            </Tooltip>
-        </TooltipProvider>
+        <Dialog >
+
+            <TooltipProvider    >
+                <Tooltip>
+                    <TooltipTrigger >
+                        <div className=" py-1 px-4 my-1 rounded-lg  cursor-pointer text-gray-600 hover:bg-white hover:opacity-50">
+                            <p>{getmmdd(workout.lastUpdated)}: {workout.workoutName}</p>
+                        </div>
+                    </TooltipTrigger>
+                    <TooltipContent sideOffset={-10} className="m-0 p-0">
+                        <div className="flex flex-col p-0 m-0">
+                            <DialogTrigger id="workoutDetailsModalTrigger" className="">
+                                <div className="h-6 flex justify-center hover:text-gray-400 cursor-pointer px-4 py-2 m-0">View details</div>
+                            </DialogTrigger>
+                            <div className="h-6 flex justify-center hover:text-gray-400 cursor-pointer mb-2  px-4 py-2 m-0">Delete</div>
+                        </div>
+                    </TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
+
+            <DialogContent>
+                <DialogHeader>
+                    <WorkoutDetails workout={workout} fetchWorkouts={fetchWorkouts} />
+                </DialogHeader>
+            </DialogContent>
+        </Dialog>
     );
 }
 

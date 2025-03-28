@@ -25,19 +25,19 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
     });
     const [isNewWorkout, setIsNewWorkout] = useState<boolean>(false)
     const { control, handleSubmit } = form;
-    const { fields, append, remove } = useFieldArray({
+    const { fields, append, remove } = useFieldArray({  
         control,
         name: "exercises"
     });
 
     function onSubmit(values: z.infer<typeof workoutFormSchema>) {
         createWorkout(values)
-            .then(res => {
+            .then(_ => {
                 toast.success("Workout added!")
                 fetchWorkouts();
             })
             .catch(err => {
-                toast.error("Error... workout could not be added :(")
+                toast.error("Error... workout could not be added :( " + err)
             })
     }
 

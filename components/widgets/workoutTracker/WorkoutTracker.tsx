@@ -36,7 +36,6 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
                 <p>You havent worked out today!</p>
             </div>
 
-
             <Dialog >
                 <DialogTrigger id="addWorkoutModalTrigger" className="my-2">
                     <div className="flex flex-row py-2 px-2 cursor-pointer border border-input bg-background shadow-xs hover:bg-accent rounded-md hover:text-accent-foreground">
@@ -56,6 +55,7 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
                 {recentWorkouts.map(workout => {
                     return (
                         <WorkoutWidgetItem
+                            fetchWorkouts={fetchWorkouts}
                             workout={workout}
                             key={workout._id}
                         />

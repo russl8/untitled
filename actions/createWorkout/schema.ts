@@ -21,6 +21,12 @@ export const exerciseSchema = z.object({
   extraInfo: z.string().optional().default(""),
 });
 
+export const updateFormSchema = z.object({
+  exercises: z
+    .array(exerciseSchema)
+    .min(1, "At least one exercise is required"),
+});
+
 export const workoutFormSchema = z.object({
   workoutName: z.string().min(2).max(50),
   exercises: z
