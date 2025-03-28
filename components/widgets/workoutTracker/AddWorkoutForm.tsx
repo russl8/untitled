@@ -15,7 +15,7 @@ import toast from "react-hot-toast";
 
 
 
-const AddWorkoutForm = () => {
+const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
     const form = useForm<z.infer<typeof workoutFormSchema>>({
         resolver: zodResolver(workoutFormSchema),
         defaultValues: {
@@ -32,12 +32,13 @@ const AddWorkoutForm = () => {
 
     function onSubmit(values: z.infer<typeof workoutFormSchema>) {
         createWorkout(values)
-        .then(res => {
-            toast.success("Workout added!")
-        })
-        .catch(err=>{
-            toast.error("Error... workout could not be added :(")
-        })
+            .then(res => {
+                toast.success("Workout added!")
+                fetchWorkouts();
+            })
+            .catch(err => {
+                toast.error("Error... workout could not be added :(")
+            })
     }
 
     return (
@@ -92,7 +93,7 @@ const AddWorkoutForm = () => {
                     <div className="col-span-1">Sets</div>
                     <div className="col-span-1">Reps</div>
                     <div className="col-span-4">Notes</div>
-                        
+
                     {fields.map((field, index) => (
                         <div key={field.id} className="contents">
                             <FormField

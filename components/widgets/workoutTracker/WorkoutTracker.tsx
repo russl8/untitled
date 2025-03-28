@@ -2,29 +2,32 @@ import { Button } from "@/components/ui/button";
 import DisplayLoading from "@/components/widgetDisplay/DisplayLoading";
 import { displaySize } from "@/components/widgetDisplay/types";
 import { Plus, PlusCircle, ReceiptText } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import WorkoutWidgetItem from "./WorkoutWidgetItem";
 import { DialogHeader } from "@/components/ui/dialog";
 import { Dialog, DialogTrigger, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import AddWorkoutForm from "./AddWorkoutForm";
 import { Workout } from "@/actions/createWorkout/schema";
 type WorkoutItem = {
-    
+
 }
 const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
-    
-    const [recentWorkouts, setRecentWorokouts] = useState<Array<Workout>>([])
+
+    const [recentWorkouts, setRecentWorkouts] = useState<Array<Workout>>([])
     const [loading, setLoading] = useState(true);
-    console.log(recentWorkouts)
-    useEffect(() => {
-        setLoading(true)
+    const fetchWorkouts = useCallback(() => {
         fetch("api/workoutTracker")
             .then(res => res.json())
             .then(data => {
-                setRecentWorokouts(data.mostRecentWorkouts)
+                setRecentWorkouts(data.mostRecentWorkouts)
             })
             .catch(error => console.error(error))
-        setLoading(false)
+            .finally(() => {
+                if (loading) setLoading(false)
+            });
+    }, [])
+    useEffect(() => {
+        fetchWorkouts()
     }, [])
     if (loading) return <DisplayLoading />;
     return (
@@ -45,17 +48,17 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
                     <DialogHeader>
                         <DialogTitle>Add workout</DialogTitle>
                     </DialogHeader>
-                    <AddWorkoutForm />
+                    <AddWorkoutForm fetchWorkouts={fetchWorkouts} />
                 </DialogContent>
             </Dialog>
 
             <div className="flex flex-col">
                 {recentWorkouts.map(workout => {
                     return (
-                        <WorkoutWidgetItem 
-                        workout={workout}
-                        key={workout._id}
-                         />
+                        <WorkoutWidgetItem
+                            workout={workout}
+                            key={workout._id}
+                        />
                     )
                 })}
             </div>

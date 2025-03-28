@@ -9,7 +9,7 @@ import { createContext } from "react";
 export const FetchBookmarksContext = createContext<(() => void)>(() => { });
 
 const BookmarkManager = ({ displaySize }: { displaySize: displaySize }) => {
-
+    
     /**
      * usage:
      * 

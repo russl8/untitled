@@ -26,7 +26,7 @@ const DashboardDisplay = ({ displayId }: { displayId: DisplayId }) => {
     }, [selectedBoxes]);
 
 
-
+    console.log("rerender")
     return (
         <div id="dashboardDisplayTitle"
             className="h-full w-full bg-[#D3D3D3] border-2 rounded-xl"

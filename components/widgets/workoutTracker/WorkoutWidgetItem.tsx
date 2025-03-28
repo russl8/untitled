@@ -12,7 +12,7 @@ const WorkoutWidgetItem = ({ workout }: WorkoutwidgetItemProps) => {
             <Tooltip>
                 <TooltipTrigger >
                     <div className=" py-1 px-4 my-1 rounded-lg  cursor-pointer text-gray-600 hover:bg-white hover:opacity-50">
-                        <p>{getmmdd(workout.lastUpdated)} {workout.workoutName}</p>
+                        <p>{getmmdd(workout.lastUpdated)}: {workout.workoutName}</p>
                     </div>
                 </TooltipTrigger>
                 <TooltipContent sideOffset={-10} className="m-0 p-0">
