@@ -1,5 +1,4 @@
 import { DisplayId } from "@/store/features/dashboard/displaySlice";
-import { displays } from "@/lib/constants";
 import BookmarkManager from "../widgets/bookmarkManager/BookmarkManager";
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
