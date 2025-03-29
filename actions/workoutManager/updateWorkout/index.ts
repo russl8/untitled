@@ -1,6 +1,6 @@
 "use server";
 import { z } from "zod";
-import { updateFormSchema } from "../createWorkout/schema";
+import { updateFormSchema } from "@/actions/createWorkout/schema";
 import { getCurrentUserOrGuestID } from "@/app/api/helpers";
 import Workout from "@/model/workout";
 import { connectToDatabase } from "@/lib/db";
@@ -27,7 +27,7 @@ const updateWorkout = async (
       },
       { $set: { exercises: values.exercises } }
     );
-    console.log(res)
+    console.log(res);
     await connectToDatabase();
 
     return { message: "Workout updated successfully!" };

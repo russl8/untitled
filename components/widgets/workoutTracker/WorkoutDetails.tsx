@@ -11,7 +11,7 @@ import toast from "react-hot-toast";
 import { z } from "zod";
 import { getmmdd } from "@/lib/utils";
 import { cn } from "@/lib/utils";
-import updateWorkout from "@/actions/updateWorkout";
+import updateWorkout from "@/actions/workoutManager/updateWorkout";
 const WorkoutDetails = ({ workout, fetchWorkouts }: { workout: Workout, fetchWorkouts: () => void }) => {
 
     const form = useForm<z.infer<typeof updateFormSchema>>({
@@ -52,7 +52,7 @@ const WorkoutDetails = ({ workout, fetchWorkouts }: { workout: Workout, fetchWor
                 </Button>
             </div>
             <Form {...form}>
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 enableScrollbar">
 
                     <div className="grid grid-cols-8 gap-2 max-h-[200px] overflow-auto scroll-m-1">
                         <div className="col-span-2">Exercise</div>

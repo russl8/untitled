@@ -4,12 +4,26 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { getmmdd } from "@/lib/utils";
 import WorkoutDetails from "./WorkoutDetails";
+import { deleteWorkout } from "@/actions/deleteWorkout";
+import toast from "react-hot-toast";
+import { totalmem } from "os";
 
 interface WorkoutwidgetItemProps {
     workout: Workout
     fetchWorkouts: () => void
 }
+
 const WorkoutWidgetItem = ({ workout, fetchWorkouts }: WorkoutwidgetItemProps) => {
+    const handleDeleteWorkout = (workoutId: string) => {
+        deleteWorkout(workoutId)
+            .then(_ => {
+                toast.success("Workout deleted successfully!")
+                fetchWorkouts();
+            })
+            .catch(err => {
+                toast.error(err)
+            })
+    }
     return (
         <Dialog >
 
@@ -25,7 +39,14 @@ const WorkoutWidgetItem = ({ workout, fetchWorkouts }: WorkoutwidgetItemProps) =
                             <DialogTrigger id="workoutDetailsModalTrigger" className="">
                                 <div className="h-6 flex justify-center hover:text-gray-400 cursor-pointer px-4 py-2 m-0">View details</div>
                             </DialogTrigger>
-                            <div className="h-6 flex justify-center hover:text-gray-400 cursor-pointer mb-2  px-4 py-2 m-0">Delete</div>
+                            <div
+                                className="h-6 flex justify-center hover:text-gray-400 cursor-pointer mb-2  px-4 py-2 m-0"
+                                onClick={() => {
+                                    handleDeleteWorkout(workout._id)
+                                }}
+                            >
+                                Delete
+                            </div>
                         </div>
                     </TooltipContent>
                 </Tooltip>

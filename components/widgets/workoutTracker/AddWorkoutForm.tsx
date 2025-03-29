@@ -43,7 +43,7 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
 
     return (
         <Form {...form}>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 enableScrollbar">
                 {/* Workout selector */}
                 {isNewWorkout
                     ?
