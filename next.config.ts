@@ -1,18 +1,18 @@
-import type { NextConfig } from "next";
+// import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  images: {
-    domains: ["untitled-bookmarks.s3.us-east-2.amazonaws.com"],
-  },
-};
+// module.exports = {
+ 
+// };
 
 const path = require("path");
 
 module.exports = {
+  images: {
+    domains: ['untitled-bookmarks.s3.us-east-2.amazonaws.com'],
+  },
   webpack(config: any) {
-    config.resolve.alias["@"] = path.resolve(__dirname);
+    config.resolve.alias["@"] = path.join(__dirname); 
     return config;
   },
 };
 
-export default nextConfig;
