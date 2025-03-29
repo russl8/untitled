@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Roboto } from "next/font/google";
+import { Roboto} from "next/font/google";
 import "./globals.css";
 import { ClerkProvider, SignedIn, SignedOut, SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -8,15 +8,6 @@ import { StoreProvider } from "@/store/StoreProvider";
 import { Toaster } from "react-hot-toast";
 import { currentUser } from "@clerk/nextjs/server";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Untitled",
@@ -37,15 +28,14 @@ export default async function RootLayout({
 
     <StoreProvider>
       <ClerkProvider>
-        <html className="h-full bg-notion-primary">
+        <html className="h-full bg-notion-gray">
           <body className={`${roboto.className} h-full`}>
             <SidebarProvider defaultOpen={true}>
               <AppSidebar />
               <div className="flex flex-col w-full min-h-screen">
                 {/* header  */}
-                <div className="sticky top-0 z-50 flex justify-between items-center p-2  bg-notion-primary text-black shadow-md">
+                <div className="sticky top-0 z-50 flex justify-between items-center p-2  bg-white text-black shadow-md">
                   <SidebarTrigger className="cursor-pointer p-2 rounded-md hover:opacity-70 " />
-
                   <div className="flex items-center">
                     <SignedOut>
                       <SignInButton />

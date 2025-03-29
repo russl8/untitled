@@ -18,10 +18,7 @@ import { Button } from "../ui/button"
 export function AppSidebar() {
   return (
     <Sidebar className="">
-      <SidebarContent className="bg-notion-primary">
-        {/* <SidebarGroup>
-          <SidebarGroupLabel>App</SidebarGroupLabel>
-        </SidebarGroup> */}
+      <SidebarContent className="bg-notion-primary text-sidebar-foreground/80">
 
         <SidebarGroup>
           <SidebarGroupLabel>Dashboard</SidebarGroupLabel>
