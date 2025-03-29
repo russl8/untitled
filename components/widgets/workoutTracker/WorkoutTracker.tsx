@@ -31,36 +31,58 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
     }, [])
     if (loading) return <DisplayLoading />;
     return (
-        <div className="flex flex-col items-center justify-center py-4 mt-8">
+        <div className="flex flex-col px-10 items-center h-full ">
             <div>
-                <p>You havent worked out today!</p>
+                <p>This week:</p>
+
+                <div>
+                    2 workout days
+                </div>
+
+                <div>
+                    Pull:2 Goal: 2
+                </div>
+
+                <div>
+                Push: 1 Goal: 1
+                </div>
+
+                <div>
+                Legs: 1 Goal: 1
+
+                </div>
             </div>
 
-            <Dialog >
-                <DialogTrigger id="addWorkoutModalTrigger" className="my-2">
-                    <div className="flex flex-row py-2 px-2 cursor-pointer border border-input bg-background shadow-xs hover:bg-accent rounded-md hover:text-accent-foreground">
-                        <PlusCircle className="mr-2" />
-                        <p>Add a workout</p>
-                    </div>
-                </DialogTrigger>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Add workout</DialogTitle>
-                    </DialogHeader>
-                    <AddWorkoutForm fetchWorkouts={fetchWorkouts} />
-                </DialogContent>
-            </Dialog>
 
-            <div className="flex flex-col">
-                {recentWorkouts.map(workout => {
-                    return (
-                        <WorkoutWidgetItem
-                            fetchWorkouts={fetchWorkouts}
-                            workout={workout}
-                            key={workout._id}
-                        />
-                    )
-                })}
+
+            <div className="flex flex-col items-center justify-center bg-amber-100 h-full">
+
+                <Dialog >
+                    <DialogTrigger id="addWorkoutModalTrigger" className="my-2">
+                        <div className="flex flex-row py-2 px-2 cursor-pointer border border-input bg-background shadow-xs hover:bg-accent rounded-md hover:text-accent-foreground">
+                            <PlusCircle className="mr-2" />
+                            <p>Add a workout</p>
+                        </div>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Add workout</DialogTitle>
+                        </DialogHeader>
+                        <AddWorkoutForm fetchWorkouts={fetchWorkouts} />
+                    </DialogContent>
+                </Dialog>
+
+                <div className="flex flex-col">
+                    {recentWorkouts.map(workout => {
+                        return (
+                            <WorkoutWidgetItem
+                                fetchWorkouts={fetchWorkouts}
+                                workout={workout}
+                                key={workout._id}
+                            />
+                        )
+                    })}
+                </div>
             </div>
         </div>
     );
