@@ -7,7 +7,7 @@ import WorkoutWidgetItem from "./WorkoutWidgetItem";
 import { DialogHeader } from "@/components/ui/dialog";
 import { Dialog, DialogTrigger, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import AddWorkoutForm from "./AddWorkoutForm";
-import { Workout } from "@/actions/createWorkout/schema";
+import { Workout } from "@/actions/workoutManager/createWorkout/schema";
 type WorkoutItem = {
 
 }

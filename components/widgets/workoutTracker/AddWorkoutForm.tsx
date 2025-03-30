@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { WorkoutCombobox } from "./WorkoutCombobox";
 import { useState } from "react";
-import { workoutFormSchema } from "@/actions/createWorkout/schema";
-import createWorkout from "@/actions/createWorkout";
+import { workoutFormSchema } from "@/actions/workoutManager/createWorkout/schema";
+import createWorkout from "@/actions/workoutManager/createWorkout";
 import toast from "react-hot-toast";
 
 

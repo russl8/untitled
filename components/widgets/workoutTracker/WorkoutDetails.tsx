@@ -1,7 +1,7 @@
 import {DialogTitle } from "@/components/ui/dialog";
 import { Edit, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Workout, updateFormSchema } from "@/actions/createWorkout/schema";
+import { Workout, updateFormSchema } from "@/actions/workoutManager/createWorkout/schema";
 import { Form, FormField, FormItem, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useFieldArray, useForm } from "react-hook-form";

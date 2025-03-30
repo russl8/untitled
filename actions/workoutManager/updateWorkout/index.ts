@@ -1,6 +1,6 @@
 "use server";
 import { z } from "zod";
-import { updateFormSchema } from "@/actions/createWorkout/schema";
+import { updateFormSchema } from "@/actions/workoutManager/createWorkout/schema";
 import { getCurrentUserOrGuestID } from "@/app/api/helpers";
 import Workout from "../../../model/workout";
 import { connectToDatabase } from "@/lib/db";
