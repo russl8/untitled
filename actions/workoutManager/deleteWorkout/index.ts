@@ -3,7 +3,7 @@
 import { getCurrentUserOrGuestID } from "@/app/api/helpers";
 import WorkoutTracker from "@/components/widgets/workoutTracker/WorkoutTracker";
 import { connectToDatabase } from "@/lib/db";
-import Workout from "@/model/workout";
+import Workout from "../../../model/workout";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 
 export async function deleteWorkout(workoutId: string) {
