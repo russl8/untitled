@@ -1,4 +1,6 @@
+import { ObjectId } from "mongodb";
 import mongoose from "mongoose";
+import { string } from "zod";
 
 const BookmarkSchema = new mongoose.Schema(
   {
@@ -28,7 +30,20 @@ const BookmarkSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Bookmark =
-  mongoose.models.Bookmark || mongoose.model("Bookmark", BookmarkSchema);
+const UserBookmarksSchema = new mongoose.Schema({
+  userId: {
+    type: String,
+    required: true,
+  },
+  bookmarks: {
+    type: [ObjectId],
+    ref: "Bookmark", 
+    required: true,
+  },
+});
 
-export default Bookmark;
+export const UserBookmarks =
+  mongoose.models.UserBookmarks ||
+  mongoose.model("UserBookmarks", UserBookmarksSchema);
+export const Bookmark =
+  mongoose.models.Bookmark || mongoose.model("Bookmark", BookmarkSchema);

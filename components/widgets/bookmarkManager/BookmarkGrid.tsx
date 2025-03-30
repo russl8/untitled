@@ -34,7 +34,6 @@ const BookmarkGrid = ({ displaySize, setItems, items }: BookmarkGridProps) => {
 
     const [isEditing, setIsEditing] = useState<boolean>(false);
 
-
     const sliceAmount = useMemo(() => {
         if (displaySize === "fullsize") {
             return 50
@@ -65,7 +64,7 @@ const BookmarkGrid = ({ displaySize, setItems, items }: BookmarkGridProps) => {
             });
         }
     };
-
+    console.log(items)
     return (
         <>
             <div className="flex flex-row">
@@ -74,7 +73,7 @@ const BookmarkGrid = ({ displaySize, setItems, items }: BookmarkGridProps) => {
                     id="editBookmarksButton"
                     onClick={() => setIsEditing(!isEditing)}
                     className={cn("cursor-pointer ml-1 w-6 h-6 ", { "animate-pulse": isEditing })}>
-                    <Edit  />
+                    <Edit />
                 </Button>
             </div>
             <DndContext
@@ -84,16 +83,17 @@ const BookmarkGrid = ({ displaySize, setItems, items }: BookmarkGridProps) => {
             >
                 <div className="flex flex-wrap flex-row h-full items-center justify-center w-full"
                 >
+                    {}
                     {items.length > 0 &&
                         <SortableContext
                             items={items.map(item => item._id)}
                             strategy={rectSortingStrategy}>
                             {items.slice(0, sliceAmount).map((item, index) => (
                                 <SortableItem
+                                    key={item._id}
                                     bookmarkLink={item.bookmarkLink}
                                     imageSrc={item.bookmarkImage}
                                     bookmarkName={item.bookmarkName}
-                                    key={item._id}
                                     id={item._id}
                                     value={item._id}
                                     isEditing={isEditing} />

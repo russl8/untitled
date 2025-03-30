@@ -5,7 +5,7 @@ import Image from "next/image";
 import { redirect } from "next/dist/server/api-utils";
 import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
-import { deleteBookmark } from "@/actions/dashboard/bookmarkActions";
+import { deleteBookmark } from "@/actions/bookmarkManager/deleteBookmark";
 import toast from "react-hot-toast";
 import { FetchBookmarksContext } from "./BookmarkManager";
 interface BookmarkItemProps {
@@ -38,13 +38,12 @@ const BookmarkItem = ({ id, isEditing, imageSrc, bookmarkName, bookmarkLink }: B
   const handleDeleteBookmark = async () => {
     setIsDeleting(true)
     const response = await deleteBookmark(id);
-    if (response.success) {
+    if (response.status === "success") {
       toast.success('Bookmark deleted');
-      fetchBookmarks();
-
     } else {
-      toast.error("Error with deleting bookmark: " + response?.error)
+      toast.error("Error with deleting bookmark: " + response?.message)
     }
+    fetchBookmarks();
     setIsDeleting(false)
   }
 

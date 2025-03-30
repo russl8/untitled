@@ -1,5 +1,5 @@
 "use client"
-import { createBookmark, uploadBookmarkToMongoDB, uploadImageToS3 } from "@/actions/dashboard/bookmarkActions";
+import { createBookmark, uploadBookmarkToMongoDB, uploadImageToS3 } from "@/actions/bookmarkManager/createBookmark"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import {
@@ -70,13 +70,13 @@ const BookmarkForm = ({ }: BookmarkFormProps) => {
         formData.append("bookmarkLink", values.bookmarkLink)
         // TODO: loading state
         const response = await createBookmark(formData);
-        if (response.success) {
+        if (response.status === "success") {
             toast.success('Boomark uploaded');
             form.reset()
             fetchBookmarks()
-            
+
         } else {
-            toast.error("Error with adding bookmark: " + response.error)
+            toast.error("Error with adding bookmark: " + response.message)
         }
         setIsSubmitting(false)
     }

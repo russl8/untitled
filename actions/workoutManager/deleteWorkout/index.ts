@@ -17,8 +17,6 @@ export async function deleteWorkout(workoutId: string) {
 
     const res = await Workout.findByIdAndDelete(workoutId);
 
-    console.log(res);
-
     return { message: "Workout deleted successfully" };
   } catch (e) {
     throw new Error("Internal server error: " + e);

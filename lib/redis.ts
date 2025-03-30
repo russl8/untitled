@@ -7,16 +7,23 @@ const getRedisUrl = () => {
 
   throw new Error("REDIS_URL not found");
 };
-
-export const getListFromRedis = async (redisKey: string) => {
-  const cachedBookmarks = await redis.lrange(redisKey, 0, -1); // Fetch all items from list
+/**
+ * Given a redis key, return the corresponding list
+ */
+export const getListFromRedis = async (redisKey: string): Promise<any[]> => {
+  const cachedBookmarks = await redis.lrange(redisKey, 0, -1);
   const res = cachedBookmarks.map((b) => JSON.parse(b));
   return res;
 };
 
-// sets the redis value to be a list.
-export const setRedisValueToList = async (redisKey: string, list: Array<any>) => {
-  await redis.rpush(redisKey, ...list.map((e) => JSON.stringify(e)));
+/**
+ * Given a redis key and array, set the redis value to be the array.
+ */
+export const addArrayToRedisKey = async (
+  redisKey: string,
+  array: Array<any>
+): Promise<void> => {
+  await redis.rpush(redisKey, ...array.map((e) => JSON.stringify(e)));
 };
 export const redis = new Redis(getRedisUrl());
 export const getRedisBookmarkKey = (userId: string) =>

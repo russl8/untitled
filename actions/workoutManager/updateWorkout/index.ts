@@ -27,7 +27,6 @@ const updateWorkout = async (
       },
       { $set: { exercises: values.exercises } }
     );
-    console.log(res);
     await connectToDatabase();
 
     return { message: "Workout updated successfully!" };
