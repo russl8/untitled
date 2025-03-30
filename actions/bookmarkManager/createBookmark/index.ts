@@ -30,7 +30,6 @@ export async function createBookmark(
       return {
         status: "error",
         message: error,
-        code: 400,
       };
     }
 
@@ -44,7 +43,6 @@ export async function createBookmark(
       return {
         status: "error",
         message: error,
-        code: 500,
       };
     }
 
@@ -55,7 +53,6 @@ export async function createBookmark(
       return {
         status: "error",
         message: error,
-        code: 500,
       };
     } else {
       return {
@@ -69,7 +66,6 @@ export async function createBookmark(
     return {
       status: "error",
       message: "Unexpected server error: " + e.message,
-      code: 500,
     };
   }
 }
@@ -132,11 +128,11 @@ export async function uploadBookmarkToMongoDB(
     const publicImageUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${s3FileKey}`;
     await connectToDatabase();
 
-    const newBookmark:ResponseBookmarkData = {
+    const newBookmark: ResponseBookmarkData = {
       userId: userId,
-      bookmarkName: formData.get("bookmarkName") as string|| "",
+      bookmarkName: (formData.get("bookmarkName") as string) || "",
       bookmarkImage: publicImageUrl,
-      bookmarkLink: formData.get("bookmarkLink") as string || "",
+      bookmarkLink: (formData.get("bookmarkLink") as string) || "",
       s3FileKey: s3FileKey,
     };
 
@@ -169,7 +165,7 @@ export async function uploadBookmarkToMongoDB(
     // cache the new bookmark in redis
     const redisKey = getRedisBookmarkKey(userId);
     const cachedBookmarks = await getListFromRedis(userId);
-    const stringifiedBookmark = JSON.stringify(newBookmark);
+    const stringifiedBookmark = JSON.stringify(bookmark);
 
     if (cachedBookmarks) {
       await redis.rpush(redisKey, stringifiedBookmark);
@@ -183,7 +179,6 @@ export async function uploadBookmarkToMongoDB(
     return {
       status: "error",
       message: "Error with uploading to DB: " + e,
-      code: 500,
     };
   }
 }

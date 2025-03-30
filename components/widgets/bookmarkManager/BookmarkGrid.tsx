@@ -34,7 +34,6 @@ const BookmarkGrid = ({ displaySize, setItems, items }: BookmarkGridProps) => {
 
     const [isEditing, setIsEditing] = useState<boolean>(false);
 
-
     const sliceAmount = useMemo(() => {
         if (displaySize === "fullsize") {
             return 50
@@ -65,7 +64,7 @@ const BookmarkGrid = ({ displaySize, setItems, items }: BookmarkGridProps) => {
             });
         }
     };
-
+    console.log(items)
     return (
         <>
             <div className="flex flex-row">
@@ -84,6 +83,7 @@ const BookmarkGrid = ({ displaySize, setItems, items }: BookmarkGridProps) => {
             >
                 <div className="flex flex-wrap flex-row h-full items-center justify-center w-full"
                 >
+                    {}
                     {items.length > 0 &&
                         <SortableContext
                             items={items.map(item => item._id)}

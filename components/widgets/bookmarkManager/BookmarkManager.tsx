@@ -23,7 +23,7 @@ const BookmarkManager = ({ displaySize }: { displaySize: displaySize }) => {
             .then(res => res.json())
             .then(json => {
                 console.log(json)
-                setItems(json.bookmarks || [])
+                setItems(json.data || [])
             })
             .catch(err => console.error(err))
             .finally(() => setLoading(false));

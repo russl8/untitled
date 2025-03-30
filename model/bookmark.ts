@@ -35,9 +35,10 @@ const UserBookmarksSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  bookmarks:{
-    type:  [ObjectId],
-    required:true
+  bookmarks: {
+    type: [ObjectId],
+    ref: "Bookmark", 
+    required: true,
   },
 });
 
@@ -46,4 +47,3 @@ export const UserBookmarks =
   mongoose.model("UserBookmarks", UserBookmarksSchema);
 export const Bookmark =
   mongoose.models.Bookmark || mongoose.model("Bookmark", BookmarkSchema);
-
