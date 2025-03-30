@@ -38,10 +38,10 @@ const BookmarkItem = ({ id, isEditing, imageSrc, bookmarkName, bookmarkLink }: B
   const handleDeleteBookmark = async () => {
     setIsDeleting(true)
     const response = await deleteBookmark(id);
-    if (!response.error) {
+    if (response.status === "success") {
       toast.success('Bookmark deleted');
     } else {
-      toast.error("Error with deleting bookmark: " + response.error)
+      toast.error("Error with deleting bookmark: " + response?.message)
     }
     fetchBookmarks();
     setIsDeleting(false)

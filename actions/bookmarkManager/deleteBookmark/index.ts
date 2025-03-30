@@ -2,16 +2,22 @@
 
 import { DeleteObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getCurrentUserOrGuestID } from "@/app/api/helpers";
-import {Bookmark} from "@/model/bookmark";
+import { Bookmark, UserBookmarks } from "@/model/bookmark";
 import { getRedisBookmarkKey, redis } from "@/lib/redis";
 import { connectToDatabase } from "@/lib/db";
+import { ErrorResponse, SuccessResponse } from "@/lib/types";
 
-export async function deleteBookmark(bookmarkId: string) {
+export async function deleteBookmark(
+  bookmarkId: string
+): Promise<SuccessResponse<null> | ErrorResponse> {
   try {
     await connectToDatabase();
     const bookmark: Bookmark | null = await Bookmark.findById(bookmarkId);
     if (!bookmark) {
-      return { error: "Deleting bookmark but does not exist: " + bookmarkId };
+      return {
+        status: "error",
+        message: "Deleting bookmark but does not exist: " + bookmarkId,
+      };
     }
     const s3FileKey = bookmark?.s3FileKey || "";
 
@@ -29,6 +35,13 @@ export async function deleteBookmark(bookmarkId: string) {
     const deleteBookmarkFromMongoDBResponse = await Bookmark.findByIdAndDelete(
       bookmarkId
     );
+
+    await UserBookmarks.updateMany(
+      { bookmarks: bookmarkId },
+      { $pull: { bookmarks: bookmarkId } }
+    );
+
+    
     //Delete bookmark from cache if cache exists
     const userId = await getCurrentUserOrGuestID();
     const redisKey = getRedisBookmarkKey(userId);
@@ -43,13 +56,21 @@ export async function deleteBookmark(bookmarkId: string) {
       if (bookmarkToRemove) {
         const removedCount = await redis.lrem(redisKey, 0, bookmarkToRemove);
       } else {
-        throw new Error("Bookmark not found in cache");
+        return {
+          status: "error",
+          message: "Bookmark not found in cache",
+        };
       }
     }
     return {
+      status: "success",
       message: "Item deleted from s3, mongodb, cache",
+      data: null,
     };
   } catch (e) {
-    throw new Error("Item could not be deleted, " + e);
+    return {
+      status: "error",
+      message: "Bookmark not found in cache",
+    };
   }
 }
