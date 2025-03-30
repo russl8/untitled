@@ -2,7 +2,7 @@
 import { z } from "zod";
 import { updateFormSchema } from "@/actions/workoutManager/createWorkout/schema";
 import { getCurrentUserOrGuestID } from "@/app/api/helpers";
-import Workout from "../../../model/workout";
+import Workout from "@/model/workout";
 import { connectToDatabase } from "@/lib/db";
 import WorkoutTracker from "@/components/widgets/workoutTracker/WorkoutTracker";
 const updateWorkout = async (

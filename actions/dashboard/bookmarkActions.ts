@@ -4,7 +4,7 @@ import { DeleteObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
 import { nanoid } from "nanoid";
 import { getCurrentUserOrGuestID } from "@/app/api/helpers";
-import Bookmark from "../../model/bookmark";
+import Bookmark from "@/model/bookmark";
 import { getListFromRedis, getRedisBookmarkKey, redis } from "@/lib/redis";
 import { connectToDatabase } from "@/lib/db";
 

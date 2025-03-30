@@ -2,7 +2,7 @@
 import { z } from "zod";
 import { workoutFormSchema } from "./schema";
 import { getCurrentUserOrGuestID } from "@/app/api/helpers";
-import Workout from "../../../model/workout";
+import Workout from "@/model/workout";
 import { connectToDatabase } from "@/lib/db";
 
 async function createWorkout(values: z.infer<typeof workoutFormSchema>) {
