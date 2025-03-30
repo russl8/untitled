@@ -74,7 +74,7 @@ const BookmarkGrid = ({ displaySize, setItems, items }: BookmarkGridProps) => {
                     id="editBookmarksButton"
                     onClick={() => setIsEditing(!isEditing)}
                     className={cn("cursor-pointer ml-1 w-6 h-6 ", { "animate-pulse": isEditing })}>
-                    <Edit  />
+                    <Edit />
                 </Button>
             </div>
             <DndContext
@@ -90,10 +90,10 @@ const BookmarkGrid = ({ displaySize, setItems, items }: BookmarkGridProps) => {
                             strategy={rectSortingStrategy}>
                             {items.slice(0, sliceAmount).map((item, index) => (
                                 <SortableItem
+                                    key={item._id}
                                     bookmarkLink={item.bookmarkLink}
                                     imageSrc={item.bookmarkImage}
                                     bookmarkName={item.bookmarkName}
-                                    key={item._id}
                                     id={item._id}
                                     value={item._id}
                                     isEditing={isEditing} />

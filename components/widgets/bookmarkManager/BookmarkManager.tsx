@@ -22,6 +22,7 @@ const BookmarkManager = ({ displaySize }: { displaySize: displaySize }) => {
         fetch("/api/bookmarkManager")
             .then(res => res.json())
             .then(json => {
+                console.log(json)
                 setItems(json.bookmarks || [])
             })
             .catch(err => console.error(err))

@@ -2,7 +2,7 @@
 
 import { DeleteObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getCurrentUserOrGuestID } from "@/app/api/helpers";
-import Bookmark from "@/model/bookmark";
+import {Bookmark} from "@/model/bookmark";
 import { getRedisBookmarkKey, redis } from "@/lib/redis";
 import { connectToDatabase } from "@/lib/db";
 
@@ -25,32 +25,31 @@ export async function deleteBookmark(bookmarkId: string) {
     });
 
     // delete bookmark from s3 and mongodb
-    await client.send(deleteObjectCommand);
-    await Bookmark.findByIdAndDelete(bookmarkId);
-
+    const deleteObjectFromS3Response = await client.send(deleteObjectCommand);
+    const deleteBookmarkFromMongoDBResponse = await Bookmark.findByIdAndDelete(
+      bookmarkId
+    );
     //Delete bookmark from cache if cache exists
     const userId = await getCurrentUserOrGuestID();
     const redisKey = getRedisBookmarkKey(userId);
-    const cachedBookmarks = await redis.lrange(redisKey, 0, -1);
+    const cachedBookmarks = await redis.lrange(redisKey, 0, -1); // Get length of current bookmarks in cache.
+
+    // Look for bookmark in cache and if found, delete it.
     if (cachedBookmarks.length > 0) {
       const bookmarkToRemove = cachedBookmarks.find((b) => {
         const parsedBookmark = JSON.parse(b);
         return parsedBookmark._id === bookmarkId;
       });
-
       if (bookmarkToRemove) {
         const removedCount = await redis.lrem(redisKey, 0, bookmarkToRemove);
       } else {
-        console.log("Bookmark not found in cache");
+        throw new Error("Bookmark not found in cache");
       }
     }
     return {
-      success: true,
       message: "Item deleted from s3, mongodb, cache",
     };
   } catch (e) {
-    return {
-      error: "An exception occured with deleting bookmark: " + e,
-    };
+    throw new Error("Item could not be deleted, " + e);
   }
 }

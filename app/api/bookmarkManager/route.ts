@@ -3,11 +3,11 @@ import { NextResponse } from "next/server";
 import {
   getListFromRedis,
   getRedisBookmarkKey,
-  setRedisValueToList,
+  addArrayToRedisKey,
   redis,
 } from "@/lib/redis";
 import { connectToDatabase } from "@/lib/db";
-import Bookmark from "@/model/bookmark";
+import {Bookmark} from "@/model/bookmark";
 
 export async function GET(request: Request) {
   try {
@@ -30,8 +30,7 @@ export async function GET(request: Request) {
     await connectToDatabase();
     const userBookmarks = await Bookmark.find({ userId: id }).exec();
     if (userBookmarks.length > 0) {
-      // add queried bookmarks to cache
-      await setRedisValueToList(redisKey, userBookmarks);
+      await addArrayToRedisKey(redisKey, userBookmarks);
     }
 
     return NextResponse.json(
