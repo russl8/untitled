@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { getmmdd } from "@/lib/utils";
 import WorkoutDetails from "./WorkoutDetails";
-import { deleteWorkout } from "@/actions/workoutManager/updateWorkout/deleteWorkout";
+import { deleteWorkout } from "@/actions/workoutManager/deleteWorkout";
 import toast from "react-hot-toast";
 import { totalmem } from "os";
 
