@@ -5,7 +5,7 @@ import Image from "next/image";
 import { redirect } from "next/dist/server/api-utils";
 import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
-import { deleteBookmark } from "@/actions/dashboard/bookmarkActions";
+import { deleteBookmark } from "@/actions/bookmarkManager/deleteBookmark";
 import toast from "react-hot-toast";
 import { FetchBookmarksContext } from "./BookmarkManager";
 interface BookmarkItemProps {

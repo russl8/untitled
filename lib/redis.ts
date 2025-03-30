@@ -7,15 +7,20 @@ const getRedisUrl = () => {
 
   throw new Error("REDIS_URL not found");
 };
-
+/**
+ * Given a redis key, give
+ */
 export const getListFromRedis = async (redisKey: string) => {
-  const cachedBookmarks = await redis.lrange(redisKey, 0, -1); // Fetch all items from list
+  const cachedBookmarks = await redis.lrange(redisKey, 0, -1);
   const res = cachedBookmarks.map((b) => JSON.parse(b));
   return res;
 };
 
 // sets the redis value to be a list.
-export const setRedisValueToList = async (redisKey: string, list: Array<any>) => {
+export const setRedisValueToList = async (
+  redisKey: string,
+  list: Array<any>
+) => {
   await redis.rpush(redisKey, ...list.map((e) => JSON.stringify(e)));
 };
 export const redis = new Redis(getRedisUrl());

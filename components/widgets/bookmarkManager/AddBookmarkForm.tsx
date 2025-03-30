@@ -1,5 +1,5 @@
 "use client"
-import { createBookmark, uploadBookmarkToMongoDB, uploadImageToS3 } from "@/actions/dashboard/bookmarkActions";
+import { createBookmark, uploadBookmarkToMongoDB, uploadImageToS3 } from "@/actions/bookmarkManager/createBookmark"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import {
