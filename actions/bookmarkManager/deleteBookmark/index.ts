@@ -41,7 +41,6 @@ export async function deleteBookmark(
       { $pull: { bookmarks: bookmarkId } }
     );
 
-    
     //Delete bookmark from cache if cache exists
     const userId = await getCurrentUserOrGuestID();
     const redisKey = getRedisBookmarkKey(userId);
