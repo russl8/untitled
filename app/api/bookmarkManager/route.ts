@@ -34,8 +34,8 @@ export async function GET(
     // const userBookmarks = await Bookmark.find({ userId: userId }).exec();
     await connectToDatabase();
     const orderedBookmarks = await UserBookmarks.findOne({ userId: userId })
-      .populate("bookmarks") // This replaces the ObjectIds with the corresponding Bookmark documents
-      .select("bookmarks -_id") // Only select the bookmarks field, excluding _id
+      .populate("bookmarks") 
+      .select("bookmarks -_id") 
       .exec();
 
     const orderedBookmarksArray = orderedBookmarks?.bookmarks || [];
