@@ -1,10 +1,10 @@
 export interface SuccessResponse<T> {
   status: "success";
-  message?: string | "";
+  message?: string ;
   data: T;
 }
 
 export interface ErrorResponse {
   status: "error";
-  message?: string |"";
+  message: string | undefined;
 }

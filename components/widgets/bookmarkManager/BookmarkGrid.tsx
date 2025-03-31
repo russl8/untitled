@@ -22,6 +22,9 @@ import { displaySize } from "../../widgetDisplay/types";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import AddBookmarkModal from "./AddBookmarkForm";
+import toast from "react-hot-toast";
+import { error } from "console";
+import { changeBookmarkOrder } from "@/actions/bookmarkManager/changeBookmarkOrder";
 
 interface BookmarkGridProps {
     displaySize: displaySize;
@@ -64,14 +67,37 @@ const BookmarkGrid = ({ displaySize, setItems, items }: BookmarkGridProps) => {
             });
         }
     };
-    console.log(items)
+
+    /**
+     * When user toggles isEditing from ON->OFF.
+     * 
+     * This should save the order of the user's bookmarks in the server.
+     */
+    const handleEditingEnd = async () => {
+        setIsEditing(false);
+
+        const res = await changeBookmarkOrder(items)
+        if (res.status === "success") {
+            toast.success("Edits saved successfully!");
+
+        } else {
+            toast.error(res.message || "Error with updating items")
+        }
+
+    }
     return (
         <>
             <div className="flex flex-row">
                 <AddBookmarkModal />
                 <Button
                     id="editBookmarksButton"
-                    onClick={() => setIsEditing(!isEditing)}
+                    onClick={() => {
+                        if (!isEditing) {
+                            setIsEditing(true)
+                        } else {
+                            handleEditingEnd()
+                        }
+                    }}
                     className={cn("cursor-pointer ml-1 w-6 h-6 ", { "animate-pulse": isEditing })}>
                     <Edit />
                 </Button>
@@ -83,7 +109,7 @@ const BookmarkGrid = ({ displaySize, setItems, items }: BookmarkGridProps) => {
             >
                 <div className="flex flex-wrap flex-row h-full items-center justify-center w-full"
                 >
-                    {}
+                    { }
                     {items.length > 0 &&
                         <SortableContext
                             items={items.map(item => item._id)}
