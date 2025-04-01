@@ -8,6 +8,8 @@ import { DialogHeader } from "@/components/ui/dialog";
 import { Dialog, DialogTrigger, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import AddWorkoutForm from "./AddWorkoutForm";
 import { Workout } from "@/actions/workoutManager/createWorkout/schema";
+import { ScrollArea, ScrollBar } from "@/components/ui/scrollarea"
+
 type WorkoutItem = {
 
 }
@@ -31,31 +33,43 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
     }, [])
     if (loading) return <DisplayLoading />;
     return (
-        <div className="flex flex-col px-10 items-center h-full ">
-            <div>
-                <p>This week:</p>
-
-                <div>
-                    2 workout days
+        <div className="flex flex-col justify-around px-5 items-center h-full">
+            <ScrollArea className="w-full h-20 whitespace-nowrap rounded-md border-none text-white">
+                <div className="w-full flex flex-row justify-center items-center">
+                    <div className="w-[50px] h-[50px] bg-red-200 mx-1">
+                        <p>Mon</p>
+                        <div>Push</div>
+                    </div>
+                    <div className="w-[50px] h-[50px] bg-red-200 mx-1">
+                        <p>Mon</p>
+                        <div>Push</div>
+                    </div>
+                    <div className="w-[50px] h-[50px] bg-red-200 mx-1">
+                        <p>Mon</p>
+                        <div>Push</div>
+                    </div>
+                    <div className="w-[50px] h-[50px] bg-red-200 mx-1">
+                        <p>Mon</p>
+                        <div>Push</div>
+                    </div>
+                    <div className="w-[50px] h-[50px] bg-red-200 mx-1">
+                        <p>Mon</p>
+                        <div>Push</div>
+                    </div>
+                    <div className="w-[50px] h-[50px] bg-red-200 mx-1">
+                        <p>Mon</p>
+                        <div>Push</div>
+                    </div>
+                    <div className="w-[50px] h-[50px] bg-red-200 mx-1">
+                        <p>Mon</p>
+                        <div>Push</div>
+                    </div>
                 </div>
-
-                <div>
-                    Pull:2 Goal: 2
-                </div>
-
-                <div>
-                Push: 1 Goal: 1
-                </div>
-
-                <div>
-                Legs: 1 Goal: 1
-
-                </div>
-            </div>
+                <ScrollBar orientation="horizontal" />
+            </ScrollArea>
 
 
-
-            <div className="flex flex-col items-center justify-center bg-amber-100 h-full">
+            <div className="flex flex-col items-center justify-center h-full">
 
                 <Dialog >
                     <DialogTrigger id="addWorkoutModalTrigger" className="my-2">
@@ -84,7 +98,7 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
                     })}
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
 

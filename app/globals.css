@@ -9,8 +9,12 @@
 }
 
 @theme {
-  --color-notion-foreground:#EDF3EC;
-  --color-notion-gray:#F1F1EF;
+  --color-lusion-background: #f1f1fc;
+  --color-lusion-lightgray: #b3b4bd;
+  --color-lusion-gray: #2c2e3a;
+  --color-lusion-black: #151619;
+  --color-lusion-darkblue: #050a44;
+  --color-lusion-blue: #0a21c0;
 }
 
 @theme inline {
@@ -134,19 +138,23 @@
   }
 }
 
-
-
 ::-webkit-scrollbar {
   @apply w-2.5 h-2.5;
- 
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-transparent
+  @apply bg-transparent;
 }
 
 ::-webkit-scrollbar-thumb {
   @apply rounded-full bg-border border-[1px] border-transparent border-solid bg-clip-padding;
 }
 
-.enableScrollbar { scrollbar-width: thin; scrollbar-color: rgb(20 21 27) transparent; scrollbar-gutter: stable; scroll-behavior: smooth; scroll-margin: 0; scroll-padding: 0; }
+.enableScrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(20 21 27) transparent;
+  scrollbar-gutter: stable;
+  scroll-behavior: smooth;
+  scroll-margin: 0;
+  scroll-padding: 0;
+}

@@ -8,6 +8,9 @@ import { Display } from "../widgetDisplay/types";
 import { usePathname } from "next/navigation";
 import { Eye, EyeClosed } from "lucide-react";
 import { EyeCheckbox } from "../ui/eyeCheckbox";
+import { Button } from "../ui/button";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 
 const SidebarCheckbox = ({ display }: { display: Display }) => {
@@ -17,29 +20,30 @@ const SidebarCheckbox = ({ display }: { display: Display }) => {
 
     const displayId = display.displayId
     const pathnameIsDashboard = pathname === "/"
-    const handleCheckedChange = (checked: boolean) => {
+    const handleCheckedChange = () => {
         dispatch(toggleDisplay(displayId))
     };
     return (
         <div
-            className="flex items-center my-0.5 px-2 ">
-            <EyeCheckbox
-                disabled={!pathnameIsDashboard}
-                id={"" + displayId}
-                checked={displayState.includes(displayId)}
-                onCheckedChange={handleCheckedChange}
-                className="cursor-pointer"
-            />
+            className="flex items-center my-0.5">
 
-            <label
-                htmlFor={"" + displayId}
-                className=" 
-                    ml-2 text-xs leading-none cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-70
-                    
-                "
+            <Button
+                variant="ghost"
+                disabled={!pathnameIsDashboard}
+                onClick={handleCheckedChange}
+                id={"" + displayId}
+                className={
+                    cn(
+                        `ml-2 text-xs leading-none cursor-pointer 
+                        peer-disabled:cursor-not-allowed peer-disabled:opacity-70
+                        hover:bg-lusion-lightgray hover:opacity-50`,
+                        {
+                            "bg-lusion-lightgray": displayState.includes(displayId)
+                        }
+                    )}
             >
                 {display.displayAlias}
-            </label>
+            </Button>
 
 
         </div>

@@ -28,13 +28,13 @@ export default async function RootLayout({
 
     <StoreProvider>
       <ClerkProvider>
-        <html className="h-full bg-notion-gray">
+        <html className="h-full !bg-lusion-background !text-lusion-black">
           <body className={`${roboto.className} h-full`}>
             <SidebarProvider defaultOpen={true}>
               <AppSidebar />
               <div className="flex flex-col w-full min-h-screen">
                 {/* header  */}
-                <div className="sticky top-0 z-50 flex justify-between items-center p-2  bg-white text-black shadow-md">
+                <div className="sticky top-0 z-50 flex justify-between items-center p-2  bg-lusion-background text-lusion-black shadow-md">
                   <SidebarTrigger className="cursor-pointer p-2 rounded-md hover:opacity-70 " />
                   <div className="flex items-center">
                     <SignedOut>

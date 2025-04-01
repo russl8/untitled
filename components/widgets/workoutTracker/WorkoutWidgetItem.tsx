@@ -2,7 +2,7 @@ import { Workout } from "@/actions/workoutManager/createWorkout/schema";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { getmmdd } from "@/lib/utils";
+import { getDayOfWeek, getmmdd } from "@/lib/utils";
 import WorkoutDetails from "./WorkoutDetails";
 import { deleteWorkout } from "@/actions/workoutManager/deleteWorkout";
 import toast from "react-hot-toast";
