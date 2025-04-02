@@ -3,12 +3,13 @@ import DisplayLoading from "@/components/widgetDisplay/DisplayLoading";
 import { displaySize } from "@/components/widgetDisplay/types";
 import { Plus, PlusCircle, ReceiptText } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import WorkoutWidgetItem from "./WorkoutWidgetItem";
 import { DialogHeader } from "@/components/ui/dialog";
 import { Dialog, DialogTrigger, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import AddWorkoutForm from "./AddWorkoutForm";
 import { Workout } from "@/actions/workoutManager/createWorkout/schema";
 import { ScrollArea, ScrollBar } from "@/components/ui/scrollarea"
+import WorkoutCard from "./WorkoutCard";
+import { cn } from "@/lib/utils";
 
 type WorkoutItem = {
 
@@ -33,71 +34,57 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
     }, [])
     if (loading) return <DisplayLoading />;
     return (
-        <div className="flex flex-col justify-around px-5 items-center h-full">
-            <ScrollArea className="w-full h-20 whitespace-nowrap rounded-md border-none text-white">
-                <div className="w-full flex flex-row justify-center items-center">
-                    <div className="w-[50px] h-[50px] bg-red-200 mx-1">
-                        <p>Mon</p>
-                        <div>Push</div>
+        <div className="flex flex-col justify-around items-center h-full">
+            <div className="h-full w-full flex flex-col align-top">
+                <div className="flex">
+                    <Dialog >
+                        <DialogTrigger id="addWorkoutModalTrigger" className="mb-2">
+                            <div className="flex flex-row w-40 text-center h-10 py-2 px-2 cursor-pointer border border-input bg-background shadow-xs hover:bg-accent rounded-md hover:text-accent-foreground">
+                                <PlusCircle className="mr-2" />
+                                <p>Add a workout</p>
+                            </div>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Add workout</DialogTitle>
+                            </DialogHeader>
+                            <AddWorkoutForm fetchWorkouts={fetchWorkouts} />
+                        </DialogContent>
+                    </Dialog>
+
+                    <div className="w-full ml-4 h-14 text-sm bg-red-600 overflow-hidden">
+                        Put some text here
                     </div>
-                    <div className="w-[50px] h-[50px] bg-red-200 mx-1">
-                        <p>Mon</p>
-                        <div>Push</div>
-                    </div>
-                    <div className="w-[50px] h-[50px] bg-red-200 mx-1">
-                        <p>Mon</p>
-                        <div>Push</div>
-                    </div>
-                    <div className="w-[50px] h-[50px] bg-red-200 mx-1">
-                        <p>Mon</p>
-                        <div>Push</div>
-                    </div>
-                    <div className="w-[50px] h-[50px] bg-red-200 mx-1">
-                        <p>Mon</p>
-                        <div>Push</div>
-                    </div>
-                    <div className="w-[50px] h-[50px] bg-red-200 mx-1">
-                        <p>Mon</p>
-                        <div>Push</div>
-                    </div>
-                    <div className="w-[50px] h-[50px] bg-red-200 mx-1">
-                        <p>Mon</p>
-                        <div>Push</div>
-                    </div>
+
                 </div>
-                <ScrollBar orientation="horizontal" />
-            </ScrollArea>
 
+                <ScrollArea className="flexwhitespace-nowrap rounded-md border-none text-white">
+                    <div className={cn("", {
+                        "w-full flex flex-row justify-center items-center": displaySize === "quartersize",
+                        "grid grid-cols-3": displaySize === "halfsize",
+                        "grid grid-cols-5 gap-4": displaySize === "fullsize"
 
-            <div className="flex flex-col items-center justify-center h-full">
+                    })}>
+                        {recentWorkouts.map(workout => {
+                            return (
+                                <div key={workout._id} className="flex justify-center items-center">
+                                    <WorkoutCard
+                                        fetchWorkouts={fetchWorkouts}
+                                        workout={workout}
+                                        displaySize={displaySize}
+                                    />
+                                </div>
 
-                <Dialog >
-                    <DialogTrigger id="addWorkoutModalTrigger" className="my-2">
-                        <div className="flex flex-row py-2 px-2 cursor-pointer border border-input bg-background shadow-xs hover:bg-accent rounded-md hover:text-accent-foreground">
-                            <PlusCircle className="mr-2" />
-                            <p>Add a workout</p>
-                        </div>
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Add workout</DialogTitle>
-                        </DialogHeader>
-                        <AddWorkoutForm fetchWorkouts={fetchWorkouts} />
-                    </DialogContent>
-                </Dialog>
+                            )
+                        })}
 
-                <div className="flex flex-col">
-                    {recentWorkouts.map(workout => {
-                        return (
-                            <WorkoutWidgetItem
-                                fetchWorkouts={fetchWorkouts}
-                                workout={workout}
-                                key={workout._id}
-                            />
-                        )
-                    })}
-                </div>
+                    </div>
+                    <ScrollBar orientation={displaySize === "quartersize" ? "horizontal" : "vertical"} />
+                </ScrollArea>
+
             </div>
+
+
         </div >
     );
 }

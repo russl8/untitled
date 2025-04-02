@@ -26,9 +26,9 @@ export function AppSidebar() {
       <SidebarHeader className="bg-lusion-background text-lusion-black">
         <Link
           href="/"
-          className={cn("ml-2 mt-2 text-3xl font-thin",
+          className={cn("ml-2 mt-2 text-3xl font-semibold text-lusion-darkblue",
             {
-              "hover:opacity-70 transition-opacity duration-300":true
+              "hover:text-lusion-blue transition-colors duration-500":true
             })}>
           Untitled.
         </Link>
@@ -37,7 +37,7 @@ export function AppSidebar() {
 
         <SidebarGroup>
           <SidebarGroupLabel>Dashboard</SidebarGroupLabel>
-          <SidebarMenuSub>
+          <SidebarMenuSub  className="border-l-1 border-lusion-lightgray">
 
             {Object.values(displays).map(d => (
               <SidebarCheckbox

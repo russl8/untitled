@@ -5,12 +5,12 @@ export const displays:Record<DisplayId, Display> = {
   1: {
     displayId: 1,
     displayName: "bookmarkManager",
-    displayAlias: "Bookmark Manager",
+    displayAlias: "Bookmarks",
   },
   2: {
     displayId: 2,
     displayName: "workoutTracker",
-    displayAlias: "Workout Tracker",
+    displayAlias: "Workouts",
   },
   3: {
     displayId: 3,
