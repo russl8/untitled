@@ -49,7 +49,7 @@ function Button({
   return (
     <Comp
       data-slot="button"
-      className={cn("cursor-pointer", buttonVariants({ variant, size, className }))}
+      className={cn("cursor-pointer !transition-opacity !delay-75", buttonVariants({ variant, size, className }))}
       {...props}
     />
   )

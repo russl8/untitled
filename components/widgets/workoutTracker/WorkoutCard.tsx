@@ -35,7 +35,7 @@ const WorkoutCard = ({ workout, fetchWorkouts, displaySize }: WorkoutCardProps) 
         }
     }, [displaySize])
     return (
-
+        //TODO: make more responsive, bookmark use shopify-draggable and hover animations
 
         <Dialog >
             <TooltipProvider    >

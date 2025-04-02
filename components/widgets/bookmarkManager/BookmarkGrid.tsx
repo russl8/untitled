@@ -107,7 +107,7 @@ const BookmarkGrid = ({ displaySize, setItems, items }: BookmarkGridProps) => {
                 collisionDetection={closestCenter}
                 onDragEnd={handleDragEnd}
             >
-                <div className="flex flex-wrap flex-row h-full items-center justify-center w-full"
+                <div className="flex flex-wrap flex-row h-full items-start w-full p-4"
                 >
                     { }
                     {items.length > 0 &&

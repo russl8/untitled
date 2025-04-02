@@ -57,7 +57,7 @@ const BookmarkItem = ({ id, isEditing, imageSrc, bookmarkName, bookmarkLink }: B
           window.open(bookmarkLink, "_blank", "noopener,noreferrer");
         }
       }}
-      className={cn("bookmarkItem flex flex-col justify-center overflow-ellipsis h-20 w-14 mx-2  cursor-pointer", {
+      className={cn(`bookmarkItem flex flex-col justify-center overflow-ellipsis h-20 w-14 mx-2  cursor-pointer `, {
         "cursor-grab active:cursor-grabbing ": isEditing
       })}
 
@@ -66,7 +66,7 @@ const BookmarkItem = ({ id, isEditing, imageSrc, bookmarkName, bookmarkLink }: B
       {...a}
       {...l}
     >
-      <div className={cn("overflow-ellipsis", { "animate-pulse": isEditing })}>
+      <div className={cn("overflow-ellipsis hover:opacity-70 transition-all hover:scale-105 delay-150 ", { "animate-pulse": isEditing })}>
         {/* Delete button */}
         {isEditing &&
           <div className="w-full relative">

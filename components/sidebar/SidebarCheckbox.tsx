@@ -35,10 +35,10 @@ const SidebarCheckbox = ({ display }: { display: Display }) => {
                 className={
                     cn(
                         `ml-2 text-xs leading-none cursor-pointer 
-                        peer-disabled:cursor-not-allowed peer-disabled:opacity-70
-                        hover:bg-lusion-lightgray hover:opacity-50`,
+                        peer-disabled:cursor-not-allowed peer-disabled:opacity-50
+                        bg-transparent hover:bg-transparent opacity-60 hover:opacity-80`,
                         {
-                            "bg-lusion-lightgray": displayState.includes(displayId)
+                            "opacity-100": displayState.includes(displayId)
                         }
                     )}
             >
