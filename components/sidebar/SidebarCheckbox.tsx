@@ -1,15 +1,10 @@
 'use client'
-import { Checkbox } from "../ui/checkbox";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { DisplayId } from "@/store/features/dashboard/displaySlice";
 import { toggleDisplay } from "@/store/features/dashboard/displaySlice";
 import { Display } from "../widgetDisplay/types";
 import { usePathname } from "next/navigation";
-import { Eye, EyeClosed } from "lucide-react";
-import { EyeCheckbox } from "../ui/eyeCheckbox";
 import { Button } from "../ui/button";
-import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 
@@ -36,9 +31,9 @@ const SidebarCheckbox = ({ display }: { display: Display }) => {
                     cn(
                         `ml-2 text-xs leading-none cursor-pointer 
                         peer-disabled:cursor-not-allowed peer-disabled:opacity-50
-                        bg-transparent hover:bg-transparent opacity-60 hover:opacity-80`,
+                        bg-transparent hover:bg-transparent opacity-60 hover:opacity-100`,
                         {
-                            "opacity-100": displayState.includes(displayId)
+                            "opacity-100 font-semibold": displayState.includes(displayId)
                         }
                     )}
             >

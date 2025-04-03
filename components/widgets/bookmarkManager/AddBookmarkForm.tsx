@@ -63,22 +63,26 @@ const BookmarkForm = ({ }: BookmarkFormProps) => {
          * The server action uses the form data to add the image to s3, then 
          * uploads the rest of the bookmark along with the link to mongodb.
          */
-        setIsSubmitting(true)
-        const formData = new FormData()
-        formData.append("bookmarkImage", values.bookmarkImage)
-        formData.append("bookmarkName", values.bookmarkName)
-        formData.append("bookmarkLink", values.bookmarkLink)
-        // TODO: loading state
-        const response = await createBookmark(formData);
-        if (response.status === "success") {
-            toast.success('Boomark uploaded');
-            form.reset()
-            fetchBookmarks()
+        try {
+            setIsSubmitting(true)
+            const formData = new FormData()
+            formData.append("bookmarkImage", values.bookmarkImage)
+            formData.append("bookmarkName", values.bookmarkName)
+            formData.append("bookmarkLink", values.bookmarkLink)
+            // TODO: loading state
+            const response = await createBookmark(formData);
+            if (response.status === "success") {
+                toast.success('Boomark uploaded');
+                form.reset()
+            } else {
+                toast.error("Error with adding bookmark: " + response.message)
+            }
+        } catch (e) {
+            toast.error("Error with adding bookmark: " + e)
 
-        } else {
-            toast.error("Error with adding bookmark: " + response.message)
         }
-        setIsSubmitting(false)
+        fetchBookmarks();
+        setIsSubmitting(false);
     }
     return (
         <div>

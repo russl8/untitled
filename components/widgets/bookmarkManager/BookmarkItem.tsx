@@ -83,7 +83,7 @@ const BookmarkItem = ({ id, isEditing, imageSrc, bookmarkName, bookmarkLink }: B
               }}
             />
           </div>}
-        <div className="object-cover overflow-hidden h-14 w-14 rounded-sm   ">
+        <div className="object-fill overflow-hidden h-14 w-14 rounded-sm">
           <Image
             draggable={false}
             alt="image"

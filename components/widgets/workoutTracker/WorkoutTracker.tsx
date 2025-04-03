@@ -58,11 +58,11 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
 
                 </div>
 
-                <ScrollArea className="flexwhitespace-nowrap rounded-md border-none text-white">
+                <ScrollArea className="flex whitespace-nowrap rounded-md border-none text-white">
                     <div className={cn("", {
                         "w-full flex flex-row justify-center items-center": displaySize === "quartersize",
                         "grid grid-cols-3": displaySize === "halfsize",
-                        "grid grid-cols-5 gap-4": displaySize === "fullsize"
+                        "grid grid-cols-1  md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4": displaySize === "fullsize"
 
                     })}>
                         {recentWorkouts.map(workout => {
@@ -77,7 +77,18 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
 
                             )
                         })}
+                        {recentWorkouts.map(workout => {
+                            return (
+                                <div key={workout._id} className="flex justify-center items-center">
+                                    <WorkoutCard
+                                        fetchWorkouts={fetchWorkouts}
+                                        workout={workout}
+                                        displaySize={displaySize}
+                                    />
+                                </div>
 
+                            )
+                        })}
                     </div>
                     <ScrollBar orientation={displaySize === "quartersize" ? "horizontal" : "vertical"} />
                 </ScrollArea>

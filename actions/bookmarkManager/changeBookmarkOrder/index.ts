@@ -17,11 +17,17 @@ export const changeBookmarkOrder = async (
       .select("bookmarks -_id")
       .exec();
     currentBookmarks = currentBookmarks.bookmarks;
+
     if (clientItems.length !== currentBookmarks.length) {
+      //length of items in item and client not the same.
+      //in that case, clear cache and make user try again
+      const redisKey = getRedisBookmarkKey(userId);
+      redis.del(redisKey);
+      console.error("Cache and client item mismatch. clearing cache and making user try again.")
       return {
-        status:"error",
-        message:"Length of items in item and client not the same."
-      }
+        status: "error",
+        message:"Internal server error. Please try again!"
+      };
     }
 
     //get bookmark ids from client

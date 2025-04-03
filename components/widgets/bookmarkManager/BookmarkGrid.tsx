@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, Suspense, SetStateAction } from "react";
+import { useState, useEffect, useMemo, Suspense, SetStateAction, useContext } from "react";
 import {
     DndContext,
     closestCenter,
@@ -25,6 +25,7 @@ import AddBookmarkModal from "./AddBookmarkForm";
 import toast from "react-hot-toast";
 import { error } from "console";
 import { changeBookmarkOrder } from "@/actions/bookmarkManager/changeBookmarkOrder";
+import { FetchBookmarksContext } from "./BookmarkManager";
 
 interface BookmarkGridProps {
     displaySize: displaySize;
@@ -36,6 +37,7 @@ interface BookmarkGridProps {
 const BookmarkGrid = ({ displaySize, setItems, items }: BookmarkGridProps) => {
 
     const [isEditing, setIsEditing] = useState<boolean>(false);
+    const fetchBookmarks: () => void = useContext(FetchBookmarksContext)
 
     const sliceAmount = useMemo(() => {
         if (displaySize === "fullsize") {
@@ -81,8 +83,9 @@ const BookmarkGrid = ({ displaySize, setItems, items }: BookmarkGridProps) => {
             toast.success("Edits saved successfully!");
 
         } else {
-            toast.error(res.message || "Error with updating items")
+            toast.error(res.message || "Error with updating items") 
         }
+        fetchBookmarks();
 
     }
     return (
