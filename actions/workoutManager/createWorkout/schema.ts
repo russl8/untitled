@@ -11,7 +11,7 @@ export type Workout = {
   _id: string;
   workoutName: string;
   exercises: Array<Exercise>;
-  lastUpdated:Date
+  lastUpdated: Date;
 };
 
 export const exerciseSchema = z.object({
@@ -32,4 +32,5 @@ export const workoutFormSchema = z.object({
   exercises: z
     .array(exerciseSchema)
     .min(1, "At least one exercise is required"),
+  lastUpdated: z.date({ required_error: "Please pick a date!" }),
 });
