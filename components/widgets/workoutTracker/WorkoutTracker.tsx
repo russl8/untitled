@@ -52,8 +52,8 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
                         </DialogContent>
                     </Dialog>
 
-                    <div className="w-full ml-4 h-14 text-sm bg-red-600 overflow-hidden">
-                        Put some text here
+                    <div className="w-full ml-4 h-14 text-sm  overflow-hidden">
+                        <h2 className="font-bold  text-md">This week: </h2>
                     </div>
 
                 </div>

@@ -16,7 +16,6 @@ async function createWorkout(values: z.infer<typeof workoutFormSchema>) {
     await connectToDatabase();
     const res = await Workout.create({
       ...validatedFields.data,
-      lastUpdated: new Date(),
       userId: user,
     });
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { z } from "zod";
-import { Plus, Trash2 } from "lucide-react";
+import { CalendarIcon, Plus, Trash2 } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useFieldArray } from "react-hook-form";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage, Form, FormDescription } from "@/components/ui/form";
@@ -12,7 +12,10 @@ import { useState } from "react";
 import { workoutFormSchema } from "@/actions/workoutManager/createWorkout/schema";
 import createWorkout from "@/actions/workoutManager/createWorkout";
 import toast from "react-hot-toast";
-
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns"
+import { Calendar } from "@/components/ui/calendar";
 
 
 const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
@@ -20,12 +23,13 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
         resolver: zodResolver(workoutFormSchema),
         defaultValues: {
             workoutName: "",
-            exercises: [{ exerciseName: "", sets: 1, reps: 1, extraInfo: "" }]
+            exercises: [{ exerciseName: "", sets: 1, reps: 1, extraInfo: "" }],
+            lastUpdated: new Date()
         }
     });
     const [isNewWorkout, setIsNewWorkout] = useState<boolean>(false)
     const { control, handleSubmit } = form;
-    const { fields, append, remove } = useFieldArray({  
+    const { fields, append, remove } = useFieldArray({
         control,
         name: "exercises"
     });
@@ -87,7 +91,49 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
                             </FormItem>
                         )}
                     />}
+                {/* Date picker */}
+                <FormField
+                    control={form.control}
+                    name="lastUpdated"
+                    render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                            <FormLabel>Workout date</FormLabel>
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                    <FormControl>
+                                        <Button
+                                            variant={"outline"}
+                                            className={cn(
+                                                "w-[240px] pl-3 text-left font-normal",
+                                                !field.value && "text-muted-foreground"
+                                            )}
+                                        >
+                                            {field.value ? (
+                                                format(field.value, "PPP")
+                                            ) : (
+                                                <span>Pick a date</span>
+                                            )}
+                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                        </Button>
+                                    </FormControl>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto p-0" align="start">
+                                    <Calendar
+                                        mode="single"
+                                        selected={field.value}
+                                        onSelect={field.onChange}
+                                        disabled={(date) =>
+                                            date > new Date() || date < new Date("1900-01-01")
+                                        }
+                                        initialFocus
+                                    />
+                                </PopoverContent>
+                            </Popover>
+                        </FormItem>
+                    )}
+                />
 
+                {/* Exercise list */}
                 <div className="grid grid-cols-8 gap-2 max-h-[200px] overflow-auto scroll-m-1">
                     <div className="col-span-2">Exercise</div>
                     <div className="col-span-1">Sets</div>
