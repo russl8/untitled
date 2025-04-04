@@ -20,6 +20,7 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart"
+import { useIsMobile } from "@/hooks/use-mobile";
 type WorkoutItem = {
 
 }
@@ -42,6 +43,7 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
         fetchWorkouts()
     }, [])
 
+    const isMobile = useIsMobile()
     const chartData = [
         { month: "January", desktop: 186, mobile: 80 },
         { month: "February", desktop: 305, mobile: 200 },
@@ -64,10 +66,11 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
     } satisfies ChartConfig
 
     if (loading) return <DisplayLoading />;
+    
     return (
         <div className="flex flex-col justify-around items-center h-full">
             <div className="h-full w-full flex flex-col align-top">
-                <div className="flex justify-between">
+                <div className="flex justify-between border-b-1 border-lusion-lightgray">
                     <Dialog >
                         <DialogTrigger id="addWorkoutModalTrigger" className="mb-2">
                             <div className="flex flex-row items-center h-10 py-2 px-4 cursor-pointer border border-input bg-background shadow-xs hover:bg-accent rounded-md hover:text-accent-foreground">
@@ -90,7 +93,7 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
                             <ChartContainer config={chartConfig} className={cn("flex-1 w-auto", {
                                 "max-h-20 ": displaySize === "quartersize",
                                 "max-h-24":displaySize === "halfsize",
-                                "max-h-36":displaySize === "fullsize"
+                                "max-h-24 xl:max-h-36 ":displaySize === "fullsize",
                                 })}>
                                 <BarChart accessibilityLayer data={chartData}>
                                     <CartesianGrid vertical={false} />
