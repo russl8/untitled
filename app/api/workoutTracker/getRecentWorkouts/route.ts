@@ -12,7 +12,7 @@ export async function GET(request: Request) {
       .sort({ lastUpdated: -1 })
       .exec();
 
-    return NextResponse.json({  mostRecentWorkouts }, { status: 200 });
+    return NextResponse.json({ mostRecentWorkouts }, { status: 200 });
   } catch (e) {
     return NextResponse.json(
       { error: "Internal server error, please try again" },

@@ -28,7 +28,9 @@ type WorkoutItem = {
 const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
 
     const [recentWorkouts, setRecentWorkouts] = useState<Array<Workout>>([])
+    const [chartData, setChartData] = useState<Array<{ day: string, workouts: number }>>([])
     const [loading, setLoading] = useState(true);
+
     const fetchWorkouts = useCallback(() => {
         fetch("api/workoutTracker/getRecentWorkouts")
             .then(res => res.json())
@@ -44,35 +46,36 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
         fetchWorkouts()
     }, [])
 
-    const chartData = useMemo(() => {
-
+    // repopulate chart data only when the most recent workouts change.
+    const updateChartData = useEffect(() => {
         fetch("api/workoutTracker/getThisWeeksWorkouts")
-            .then(res=>res.json())
-            .then(data=>console.log(data))
-        return [
-            { month: "Pull", desktop: 1 },
-            { month: "Pull", desktop: 1 },
-            { month: "Pull", desktop: 1 },
-            { month: "Pull", desktop: 1 },
-            { month: "Pull", desktop: 1 },
-            { month: "Pull", desktop: 1 },
-            { month: "Pull", desktop: 1 },
-            { month: "Pull", desktop: 1 },
-        ]
+            .then(res => res.json())
+            .then(data => {
+                // init chartData as a map with mm/dd: numberOfWorkoutsThatDay
+                const workoutsForEachDay: { [key: string]: number } = {}
+                for (let i = 6; i >= 0; i--) {
+                    workoutsForEachDay[`${getmmdd(new Date(new Date().getTime() - i * 24 * 60 * 60 * 1000))}`] = 0
+                }
+
+                for (const workout of data.mostRecentWorkouts) {
+                    const workoutDate: Date = new Date(workout.lastUpdated)
+                    workoutsForEachDay[getmmdd(workoutDate)] += 1
+                }
+
+                const res: Array<{ day: string, workouts: number }> = []
+                for (const [key, value] of Object.entries(workoutsForEachDay)) {
+                    console.log(key, value)
+                    res.push({ day: key, workouts: value })
+                }
+                setChartData(res)
+            })
+            .catch(error => console.error(error))
     }, [recentWorkouts])
 
-    const isMobile = useIsMobile()
-
-
-
     const chartConfig = {
-        desktop: {
-            label: "Desktop",
+        workouts: {
+            label: "Workouts",
             color: "#2563eb",
-        },
-        mobile: {
-            label: "Mobile",
-            color: "#60a5fa",
         },
     } satisfies ChartConfig
 
@@ -101,23 +104,22 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
                     <Dialog >
                         <DialogTrigger id="addWorkoutModalTrigger" className="mb-2">
                             <ChartContainer config={chartConfig}
-                                className={cn("flex-1 w-auto ", {
+                                className={cn("flex-1 w-auto cursor-crosshair ", {
                                     "max-h-20 w-60": displaySize === "quartersize",
                                     "max-h-24 w-60": displaySize === "halfsize",
                                     "max-h-24 xl:max-h-36 w-96 ": displaySize === "fullsize",
                                 })}>
-                                <BarChart accessibilityLayer data={chartData}>
+                                <BarChart accessibilityLayer data={chartData} className="hover:opacity-80 transition-opacity delay-75 hover:!cursor-pointer">
                                     <CartesianGrid vertical={false} />
                                     <XAxis
-                                        dataKey="month"
+                                        dataKey="day"
                                         tickLine={false}
                                         tickMargin={10}
                                         axisLine={false}
-                                        tickFormatter={(value) => value.slice(0, 3)}
+                                        tickFormatter={(value) => value.slice(0, 5)}
                                     />
                                     <ChartTooltip content={<ChartTooltipContent />} />
-                                    <Bar dataKey="desktop" fill="var(--color-desktop)" radius={2} />
-                                    {/* <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} /> */}
+                                    <Bar color="red" dataKey="workouts" fill="var(--color-lusion-blue)" radius={2} />
                                 </BarChart>
                             </ChartContainer>
                         </DialogTrigger>

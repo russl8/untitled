@@ -14,14 +14,11 @@ export async function GET(request: Request) {
         $match: {
           userId: userId,
           lastUpdated: {
-            $gte: new Date(
-              new Date().getTime() - 7 * 24 * 60 * 60 * 1000
-            ),
+            $gte: new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000),
           },
         },
       },
-    ]);
-    console.log(mostRecentWorkouts)
+    ]).project({ lastUpdated: 1 });
 
     return NextResponse.json({ mostRecentWorkouts }, { status: 200 });
   } catch (e) {
