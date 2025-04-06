@@ -23,7 +23,7 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
         resolver: zodResolver(workoutFormSchema),
         defaultValues: {
             workoutName: "",
-            exercises: [{ exerciseName: "", sets: 1, reps: 1, extraInfo: "" }],
+            exercises: [{ exerciseName: "", sets: 1, reps: 1, weight: 0, extraInfo: "" }],
             lastUpdated: new Date()
         }
     });
@@ -134,11 +134,12 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
                 />
 
                 {/* Exercise list */}
-                <div className="grid grid-cols-8 gap-2 max-h-[200px] overflow-auto scroll-m-1">
+                <div className="grid grid-cols-8 gap-1 max-h-[200px] overflow-auto scroll-m-1">
                     <div className="col-span-2">Exercise</div>
                     <div className="col-span-1">Sets</div>
                     <div className="col-span-1">Reps</div>
-                    <div className="col-span-4">Notes</div>
+                    <div className="col-span-1">Weight</div>
+                    <div className="col-span-3">Notes</div>
 
                     {fields.map((field, index) => (
                         <div key={field.id} className="contents">
@@ -180,9 +181,21 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
                             />
                             <FormField
                                 control={control}
+                                name={`exercises.${index}.weight`}
+                                render={({ field }) => (
+                                    <FormItem className="col-span-1">
+                                        <FormControl>
+                                            <Input type="number" {...field} onChange={(e) => field.onChange(Number(e.target.value))} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={control}
                                 name={`exercises.${index}.extraInfo`}
                                 render={({ field }) => (
-                                    <FormItem className="col-span-3">
+                                    <FormItem className="col-span-2">
                                         <FormControl>
                                             <Input {...field} placeholder="Extra Info" />
                                         </FormControl>
@@ -196,7 +209,7 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
                         </div>
                     ))}
 
-                    <Button type="button" onClick={() => append({ exerciseName: "", sets: 1, reps: 1, extraInfo: "" })} variant="outline">
+                    <Button type="button" onClick={() => append({ exerciseName: "", sets: 1, reps: 1, weight: 0, extraInfo: "" })} variant="outline">
                         <Plus />
                     </Button>
                 </div>

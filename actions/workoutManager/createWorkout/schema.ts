@@ -4,6 +4,7 @@ export type Exercise = {
   exerciseName: string;
   sets: number;
   reps: number;
+  weight: number;
   extraInfo: string | "";
 };
 
@@ -18,6 +19,7 @@ export const exerciseSchema = z.object({
   exerciseName: z.string().min(1, "Required"),
   sets: z.number().min(1, "Must be at least 1"),
   reps: z.number().min(1, "Must be at least 1"),
+  weight:z.number().min(0, "Must be a positive number!"),
   extraInfo: z.string().optional().default(""),
 });
 

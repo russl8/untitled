@@ -1,4 +1,4 @@
-import {DialogTitle } from "@/components/ui/dialog";
+import { DialogTitle } from "@/components/ui/dialog";
 import { Edit, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Workout, updateFormSchema } from "@/actions/workoutManager/createWorkout/schema";
@@ -28,7 +28,7 @@ const WorkoutDetails = ({ workout, fetchWorkouts }: { workout: Workout, fetchWor
     });
 
     function onSubmit(values: z.infer<typeof updateFormSchema>) {
-        updateWorkout(values,workout._id)
+        updateWorkout(values, workout._id)
             .then(_ => {
                 toast.success("Workout updated!")
                 fetchWorkouts();
@@ -58,7 +58,8 @@ const WorkoutDetails = ({ workout, fetchWorkouts }: { workout: Workout, fetchWor
                         <div className="col-span-2">Exercise</div>
                         <div className="col-span-1">Sets</div>
                         <div className="col-span-1">Reps</div>
-                        <div className="col-span-4">Notes</div>
+                        <div className="col-span-1">Weight</div>
+                        <div className="col-span-3">Notes</div>
 
                         {fields.map((field, index) => (
                             <div key={field.id} className="contents">
@@ -100,11 +101,21 @@ const WorkoutDetails = ({ workout, fetchWorkouts }: { workout: Workout, fetchWor
                                 />
                                 <FormField
                                     control={control}
+                                    name={`exercises.${index}.weight`}
+                                    render={({ field }) => (
+                                        <FormItem className="col-span-1">
+                                            <FormControl>
+                                                <Input disabled={!isEditing} type="number" {...field} onChange={(e) => field.onChange(Number(e.target.value))} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={control}
                                     name={`exercises.${index}.extraInfo`}
                                     render={({ field }) => (
-                                        <FormItem className={cn("col-span-4", {
-                                            "col-span-3": isEditing
-                                        })}>
+                                        <FormItem className={cn("col-span-3")}>
                                             <FormControl>
                                                 <Input disabled={!isEditing} {...field} placeholder="Extra Info" />
                                             </FormControl>
@@ -121,7 +132,7 @@ const WorkoutDetails = ({ workout, fetchWorkouts }: { workout: Workout, fetchWor
                         ))}
 
                         {isEditing &&
-                            <Button type="button" onClick={() => append({ exerciseName: "", sets: 1, reps: 1, extraInfo: "" })} variant="outline">
+                            <Button type="button" onClick={() => append({ exerciseName: "", sets: 1, reps: 1, weight: 0, extraInfo: "" })} variant="outline">
                                 <Plus />
                             </Button>
                         }
