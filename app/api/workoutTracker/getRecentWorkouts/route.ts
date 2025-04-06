@@ -1,5 +1,5 @@
 import { connectToDatabase } from "@/lib/db";
-import { getCurrentUserOrGuestID } from "../helpers";
+import { getCurrentUserOrGuestID } from "../../helpers";
 import Workout from "@/model/workout";
 import { NextResponse } from "next/server";
 
@@ -10,7 +10,6 @@ export async function GET(request: Request) {
 
     const mostRecentWorkouts = await Workout.find({ userId })
       .sort({ lastUpdated: -1 })
-      .limit(5)
       .exec();
 
     return NextResponse.json({  mostRecentWorkouts }, { status: 200 });
