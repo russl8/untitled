@@ -11,24 +11,15 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scrollarea"
 import WorkoutCard from "./WorkoutCard";
 import { cn, getmmdd } from "@/lib/utils";
 import WorkoutReport from "./WorkoutReport";
-import { ChartContainer, type ChartConfig } from "@/components/ui/chart"
-import { Bar, BarChart } from "recharts";
-import { CartesianGrid, XAxis } from "recharts"
+import FrequencyChart, { FrequencyChartData } from "./FrequencyChart";
 
-import {
-
-    ChartTooltip,
-    ChartTooltipContent,
-} from "@/components/ui/chart"
-import { useIsMobile } from "@/hooks/use-mobile";
-import { getDay } from "date-fns";
 type WorkoutItem = {
 
 }
 const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
 
     const [recentWorkouts, setRecentWorkouts] = useState<Array<Workout>>([])
-    const [chartData, setChartData] = useState<Array<{ day: string, workouts: number }>>([])
+    const [chartData, setChartData] = useState<FrequencyChartData>([])
     const [loading, setLoading] = useState(true);
 
     const fetchWorkouts = useCallback(() => {
@@ -47,7 +38,7 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
     }, [])
 
     // repopulate chart data only when the most recent workouts change.
-    const updateChartData = useEffect(() => {
+    useEffect(() => {
         fetch("api/workoutTracker/getThisWeeksWorkouts")
             .then(res => res.json())
             .then(data => {
@@ -64,7 +55,6 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
 
                 const res: Array<{ day: string, workouts: number }> = []
                 for (const [key, value] of Object.entries(workoutsForEachDay)) {
-                    console.log(key, value)
                     res.push({ day: key, workouts: value })
                 }
                 setChartData(res)
@@ -72,12 +62,6 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
             .catch(error => console.error(error))
     }, [recentWorkouts])
 
-    const chartConfig = {
-        workouts: {
-            label: "Workouts",
-            color: "#2563eb",
-        },
-    } satisfies ChartConfig
 
     if (loading) return <DisplayLoading />;
 
@@ -103,32 +87,12 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
 
                     <Dialog >
                         <DialogTrigger id="addWorkoutModalTrigger" className="mb-2">
-                            <ChartContainer config={chartConfig}
-                                className={cn("flex-1 w-auto cursor-crosshair ", {
-                                    "max-h-20 w-60": displaySize === "quartersize",
-                                    "max-h-24 w-60": displaySize === "halfsize",
-                                    "max-h-24 xl:max-h-36 w-96 ": displaySize === "fullsize",
-                                })}>
-                                <BarChart accessibilityLayer data={chartData} className="hover:opacity-80 transition-opacity delay-75 hover:!cursor-pointer">
-                                    <CartesianGrid vertical={false} />
-                                    <XAxis
-                                        dataKey="day"
-                                        tickLine={false}
-                                        tickMargin={10}
-                                        axisLine={false}
-                                        tickFormatter={(value) => value.slice(0, 5)}
-                                    />
-                                    <ChartTooltip content={<ChartTooltipContent />} />
-                                    <Bar color="red" dataKey="workouts" fill="var(--color-lusion-blue)" radius={2} />
-                                </BarChart>
-                            </ChartContainer>
+                            <FrequencyChart
+                                frequencyChartData={chartData}
+                                displaySize={displaySize}
+                            />
                         </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Report</DialogTitle>
-                            </DialogHeader>
-                            <WorkoutReport />
-                        </DialogContent>
+                        <WorkoutReport />
                     </Dialog>
                 </div>
 
