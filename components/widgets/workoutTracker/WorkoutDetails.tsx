@@ -118,7 +118,7 @@ const WorkoutDetails = ({ workout, fetchWorkouts }: { workout: Workout, fetchWor
                                         <FormItem className={cn("col-span-3")}>
                                             <FormControl>
                                                 <Input disabled={!isEditing} {...field} placeholder="Extra Info" />
-                                            </FormControl>
+                                            </FormControl>``
                                             <FormMessage />
                                         </FormItem>
                                     )}

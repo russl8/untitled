@@ -10,7 +10,7 @@ import { Workout } from "@/actions/workoutManager/createWorkout/schema";
 import { ScrollArea, ScrollBar } from "@/components/ui/scrollarea"
 import WorkoutCard from "./WorkoutCard";
 import { cn, getmmdd } from "@/lib/utils";
-import WorkoutReport from "./WorkoutReport";
+import WeeklyReport from "./WeeklyReport";
 import FrequencyChart, { FrequencyChartData } from "./FrequencyChart";
 
 type WorkoutItem = {
@@ -92,7 +92,12 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
                                 displaySize={displaySize}
                             />
                         </DialogTrigger>
-                        <WorkoutReport />
+                        <DialogContent className="max-h-[80%] overflow-auto">
+                            <DialogHeader>
+                                <DialogTitle>Weekly Report</DialogTitle>
+                            </DialogHeader>
+                            <WeeklyReport />
+                        </DialogContent>
                     </Dialog>
                 </div>
 

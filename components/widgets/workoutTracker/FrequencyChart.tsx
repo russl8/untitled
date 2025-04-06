@@ -33,7 +33,7 @@ const FrequencyChart = ({ displaySize, frequencyChartData }: FrequencyChartProps
                             "max-h-24 w-60": displaySize === "halfsize",
                             "max-h-24 xl:max-h-36 w-96 ": displaySize === "fullsize",
                         })}>
-                        <BarChart accessibilityLayer data={frequencyChartData} className="hover:opacity-50 transition-opacity delay-75 hover:!cursor-pointer">
+                        <BarChart accessibilityLayer data={frequencyChartData} className="hover:bg-lusion-lightgray/10 transition-colors delay-150 hover:!cursor-pointer">
                             <CartesianGrid vertical={false} />
                             <XAxis
                                 dataKey="day"
