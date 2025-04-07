@@ -115,10 +115,12 @@ const WorkoutDetails = ({ workout, fetchWorkouts }: { workout: Workout, fetchWor
                                     control={control}
                                     name={`exercises.${index}.extraInfo`}
                                     render={({ field }) => (
-                                        <FormItem className={cn("col-span-3")}>
+                                        <FormItem className={cn("col-span-3", {
+                                            "col-span-2":isEditing
+                                        })}>
                                             <FormControl>
                                                 <Input disabled={!isEditing} {...field} placeholder="Extra Info" />
-                                            </FormControl>``
+                                            </FormControl>
                                             <FormMessage />
                                         </FormItem>
                                     )}

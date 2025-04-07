@@ -120,18 +120,6 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
 
                             )
                         })}
-                        {recentWorkouts.map(workout => {
-                            return (
-                                <div key={workout._id} className="flex justify-center items-center">
-                                    <WorkoutCard
-                                        fetchWorkouts={fetchWorkouts}
-                                        workout={workout}
-                                        displaySize={displaySize}
-                                    />
-                                </div>
-
-                            )
-                        })}
                     </div>
                     <ScrollBar orientation={displaySize === "quartersize" ? "horizontal" : "vertical"} />
                 </ScrollArea>

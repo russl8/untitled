@@ -4,7 +4,6 @@ import { cn } from "@/lib/utils";
 
 
 type WorkoutStats = {
-
     weeklyRepAverage: number;
     monthlyRepAverage: number;
     weeklyWeightAverage: number;
@@ -14,12 +13,8 @@ type WorkoutStats = {
     aiGeneratedTip: string;
 };
 
-
 type WeeklyReport = {
-    userSummary: {
-        profile: string;
-        overallSummary: string;
-    };
+    overallSummary: string;
     workouts: {
         [workoutName: string]: {
             [exerciseName: string]: WorkoutStats
@@ -29,11 +24,9 @@ type WeeklyReport = {
 
 
 const sampleWeeklyReport: WeeklyReport = {
-    userSummary: {
-        profile: "Enjoys calisthenics as opposed to traditional weight-lifting at the gym. Works out 5 times a week.",
-        overallSummary:
-            "This is a well-structured calisthenics routine that covers all major muscle groups with progressive overload in key exercises like pullups, dips, and pistol squats. You're seeing consistent strength improvements across upper and lower body movements. However, try mixing in some cardio 1–2 times a week—such as jump rope, light jogging, or HIIT—to improve your cardiovascular endurance!"
-    },
+    overallSummary:
+        "This is a well-structured calisthenics routine that covers all major muscle groups with progressive overload in key exercises like pullups, dips, and pistol squats. You're seeing consistent strength improvements across upper and lower body movements. However, try mixing in some cardio 1–2 times a week—such as jump rope, light jogging, or HIIT—to improve your cardiovascular endurance!"
+    ,
     workouts: {
         pull: {
             pullups: {
@@ -139,61 +132,70 @@ const sampleWeeklyReport: WeeklyReport = {
 
 
 const WeeklyReport = () => {
-    const [weeklyReportData, setWeeklyReportData] = useState()
-    // useEffect(() => {
-    //     fetch("api/workoutTracker/getWeeklyReport")
-    //         .then(res => res.json())
-    //         .then(data => setWeeklyReportData(data.weeklyReport))
-    //         .catch(error => console.error(error))
-    // }, [])
+    const [weeklyReportData, setWeeklyReportData] = useState<WeeklyReport | null>(null)
+    useEffect(() => {
+        fetch("api/workoutTracker/getWeeklyReport")
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+                setWeeklyReportData(data)
+            })
+            .catch(error => console.error(error))
+    }, [])
 
-    return (
-        <div className="w-full">
-            <h2 className="font-bold underline">Summary</h2>
-            <p className="text-sm mb-4">{sampleWeeklyReport.userSummary.overallSummary}</p>
-            <h2 className="font-bold underline">Excercise Recap</h2>
-            <div className="w-full grid gap-y-2 grid-cols-7 text-sm">
-                {/* COLUMN HEADERS */}
-                <div className="col-span-2 font-semibold">
-                    Exercise
-                </div>
-                <div className="col-span-1 font-semibold">
-                    Rep avg.
-                </div>
-                <div className="col-span-1 font-semibold">
-                    Weight avg.
-                </div>
-                <div className="col-span-3 font-semibold">
-                    Tip
-                </div>
-                {Object.keys(sampleWeeklyReport.workouts).map(workout => (
-                    <div className="contents" key={workout} id={workout}>
-                        <h1 className="col-span-full border-b-1 border-lusion-gray">{workout}</h1>
-                        {Object.keys(sampleWeeklyReport.workouts[workout]).map(exerciseName => {
-                            const exercise = sampleWeeklyReport.workouts[workout][exerciseName]
-                            return (
-                                <div key={exerciseName} className="contents">
-                                    <div className="col-span-2 overflow-hidden">{exerciseName}</div>
-                                    <StatPercentage
-                                        average={exercise.weeklyRepAverage}
-                                        percentIncrease={exercise.repPercentIncrease}
-                                    />
-
-                                    <StatPercentage
-                                        average={exercise.weeklyWeightAverage}
-                                        percentIncrease={exercise.weightPercentIncrease}
-                                    />
-
-                                    <div className="col-span-3 text-xs">{exercise.aiGeneratedTip}</div>
-                                </div>
-                            )
-                        }
-                        )}
+    if (!weeklyReportData) {
+        return (
+            <>Loading...</>
+        )
+    } else {
+        return (
+            <div className="w-full">
+                <h2 className="font-bold underline">Summary</h2>
+                <p className="text-sm mb-4">{weeklyReportData.overallSummary}</p>
+                <h2 className="font-bold underline">Excercise Recap</h2>
+                <div className="w-full grid gap-y-2 grid-cols-7 text-sm">
+                    {/* COLUMN HEADERS */}
+                    <div className="col-span-2 font-semibold">
+                        Exercise
                     </div>
-                ))}
+                    <div className="col-span-1 font-semibold">
+                        Rep avg.
+                    </div>
+                    <div className="col-span-1 font-semibold">
+                        Weight avg.
+                    </div>
+                    <div className="col-span-3 font-semibold">
+                        Tip
+                    </div>
+                    {Object.keys(weeklyReportData.workouts).map(workout => (
+                        <div className="contents" key={workout} id={workout}>
+                            <h1 className="col-span-full border-b-1 border-lusion-gray">{workout}</h1>
+                            {Object.keys(weeklyReportData.workouts[workout]).map(exerciseName => {
+                                const exercise = weeklyReportData.workouts[workout][exerciseName]
+                                return (
+                                    <div key={exerciseName} className="contents">
+                                        <div className="col-span-2 overflow-hidden">{exerciseName}</div>
+                                        <StatPercentage
+                                            average={exercise.weeklyRepAverage}
+                                            percentIncrease={exercise.repPercentIncrease}
+                                        />
+
+                                        <StatPercentage
+                                            average={exercise.weeklyWeightAverage}
+                                            percentIncrease={exercise.weightPercentIncrease}
+                                        />
+
+                                        <div className="col-span-3 text-xs">{exercise.aiGeneratedTip}</div>
+                                    </div>
+                                )
+                            }
+                            )}
+                        </div>
+                    ))}
+                </div>
             </div>
-        </div>
-    );
+        );
+    }
 }
 
 
