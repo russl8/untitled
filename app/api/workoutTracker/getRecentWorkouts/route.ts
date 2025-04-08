@@ -10,7 +10,6 @@ export async function GET(request: Request) {
     const redisKey = getRedisWorkoutKey(userId);
 
     const cachedWorkouts = await getListFromRedis(redisKey);
-    console.log(cachedWorkouts);
     if (cachedWorkouts.length > 0)
       return NextResponse.json({ mostRecentWorkouts: cachedWorkouts });
 

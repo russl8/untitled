@@ -4,7 +4,7 @@ import { updateFormSchema } from "@/actions/workoutManager/createWorkout/schema"
 import { getCurrentUserOrGuestID } from "@/app/api/helpers";
 import Workout from "@/model/workout";
 import { connectToDatabase } from "@/lib/db";
-import { getRedisWorkoutKey, redis } from "@/lib/redis";
+import { getRedisWeeklyReportKey, getRedisWorkoutKey, redis } from "@/lib/redis";
 const updateWorkout = async (
   values: z.infer<typeof updateFormSchema>,
   workoutId: string
