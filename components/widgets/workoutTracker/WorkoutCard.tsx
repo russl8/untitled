@@ -49,30 +49,34 @@ const WorkoutCard = ({ workout, fetchWorkouts, displaySize }: WorkoutCardProps) 
                                 "text-xs": displaySize === "quartersize" || displaySize === "halfsize",
                             }
                         )}>
-                            <div className="flex justify-between items-cener font-bold w-full overflow-hidden">
-                                <div className={cn("", {
+                            <div className="flex justify-between items-center font-bold w-full overflow-hidden">
+                                <p className={cn("", {
                                     "text-sm": displaySize === "quartersize" || displaySize === "halfsize",
                                     "text-base": displaySize === "fullsize"
 
                                 })}>
-                                    {workout.workoutName.slice(0, titleTrimAmount) }
+                                    {workout.workoutName.slice(0, titleTrimAmount)}
                                     {workout.workoutName.length > titleTrimAmount && "..."}
-                                </div>
+                                </p>
                                 <div className="font-normal text-xs">
                                     {getmmdd(workout.lastUpdated)}
                                 </div>
                             </div>
                             <div className="overflow-auto h-[60%] my-1 pb-4">
                                 {workout.exercises.map((exercise, index) => (
-                                    <div key={index}>
-                                        {exercise.exerciseName}:{exercise.reps}x{exercise.sets}
+                                    <div key={index} className="flex justify-between">
+                                        <span>
+                                        {exercise.exerciseName.slice(0, 11)}
+                                        {exercise.exerciseName.length > 11 && "... "}
+                                        </span>
+                                        {" "}<span className="font-semibold">{exercise.reps}x{exercise.sets}</span>
                                     </div>
                                 ))}
 
                             </div>
 
                             <div className="mb-1">
-                            &lt;&lt;placeholder&gt;&gt; 
+                                {/* &lt;&lt;placeholder&gt;&gt; */}
                             </div>
                         </div>
 

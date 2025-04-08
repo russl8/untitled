@@ -4,6 +4,13 @@ import { workoutFormSchema } from "./schema";
 import { getCurrentUserOrGuestID } from "@/app/api/helpers";
 import Workout from "@/model/workout";
 import { connectToDatabase } from "@/lib/db";
+import {
+  addArrayToRedisKey,
+  getListFromRedis,
+  getRedisWeeklyReportKey,
+  getRedisWorkoutKey,
+  redis,
+} from "@/lib/redis";
 
 async function createWorkout(values: z.infer<typeof workoutFormSchema>) {
   try {
@@ -12,12 +19,21 @@ async function createWorkout(values: z.infer<typeof workoutFormSchema>) {
       throw new Error("Invalid fields: " + validatedFields.error);
     }
 
-    const user = await getCurrentUserOrGuestID();
+    const userId = await getCurrentUserOrGuestID();
     await connectToDatabase();
-    const res = await Workout.create({
+    const workout = {
       ...validatedFields.data,
-      userId: user,
-    });
+      userId: userId,
+    };
+    await Workout.create(workout);
+
+    // clear cache,
+    // since we want to replace entire list since the date can affect order of workouts
+    // and want to prevent client-side sorting for now
+    const cacheWorkoutKey = getRedisWorkoutKey(userId);
+    const cacheWeeklyreportKey = getRedisWeeklyReportKey(userId);
+    await redis.del(cacheWeeklyreportKey);
+    await redis.del(cacheWorkoutKey);
 
     return { message: "Workout created successfully!" };
   } catch (e) {

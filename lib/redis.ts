@@ -28,3 +28,7 @@ export const addArrayToRedisKey = async (
 export const redis = new Redis(getRedisUrl());
 export const getRedisBookmarkKey = (userId: string) =>
   `user:${userId}:bookmarks`;
+export const getRedisWeeklyReportKey = (userId: string) =>
+  `user:${userId}:weeklyreport`;
+export const getRedisWorkoutKey = (userId: string) =>
+  `user:${userId}:workouts`;

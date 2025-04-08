@@ -4,7 +4,7 @@ import { updateFormSchema } from "@/actions/workoutManager/createWorkout/schema"
 import { getCurrentUserOrGuestID } from "@/app/api/helpers";
 import Workout from "@/model/workout";
 import { connectToDatabase } from "@/lib/db";
-import WorkoutTracker from "@/components/widgets/workoutTracker/WorkoutTracker";
+import { getRedisWorkoutKey, redis } from "@/lib/redis";
 const updateWorkout = async (
   values: z.infer<typeof updateFormSchema>,
   workoutId: string
@@ -15,11 +15,13 @@ const updateWorkout = async (
       throw new Error("Invalid fields: " + validatedFields.error);
     }
 
-    const currentUser = await getCurrentUserOrGuestID();
+    await connectToDatabase();
+
+    const userId = await getCurrentUserOrGuestID();
 
     const workout = await Workout.findById(workoutId);
 
-    if (workout.userId !== currentUser) throw new Error("Incorrect user!");
+    if (workout.userId !== userId) throw new Error("Incorrect user!");
 
     const res = await Workout.updateOne(
       {
@@ -27,7 +29,11 @@ const updateWorkout = async (
       },
       { $set: { exercises: values.exercises } }
     );
-    await connectToDatabase();
+
+    const cacheWorkoutKey = getRedisWorkoutKey(userId);
+    const cacheWeeklyreportKey = getRedisWeeklyReportKey(userId);
+    await redis.del(cacheWeeklyreportKey);
+    await redis.del(cacheWorkoutKey);
 
     return { message: "Workout updated successfully!" };
   } catch (e) {

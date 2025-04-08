@@ -164,7 +164,7 @@ export async function uploadBookmarkToMongoDB(
 
     // cache the new bookmark in redis
     const redisKey = getRedisBookmarkKey(userId);
-    const cachedBookmarks = await getListFromRedis(userId);
+    const cachedBookmarks = await getListFromRedis(redisKey);
     const stringifiedBookmark = JSON.stringify(bookmark);
 
     if (cachedBookmarks) {

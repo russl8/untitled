@@ -5,10 +5,16 @@ import { NextResponse } from "next/server";
 import WeeklyReport from "@/components/widgets/workoutTracker/WeeklyReport";
 import openai from "@/lib/openai";
 import { getOverallSummaryPrompt, getExerciseTipPrompt } from "./prompts";
+import { getRedisWeeklyReportKey, redis } from "@/lib/redis";
 export async function GET() {
   try {
-    await connectToDatabase();
     const userId = await getCurrentUserOrGuestID();
+    const redisKey = getRedisWeeklyReportKey(userId);
+    const cachedReport = await redis.get(redisKey)
+    
+    if (cachedReport) return NextResponse.json(JSON.parse(cachedReport))
+      
+    await connectToDatabase();
 
     const now = new Date();
     const oneWeekAgo = new Date(now);
@@ -122,6 +128,8 @@ export async function GET() {
       workouts: workoutsReport,
     };
 
+    // store report in cache
+    await redis.set(redisKey,JSON.stringify(report))
     return NextResponse.json(report);
   } catch (e) {
     console.error(e);
