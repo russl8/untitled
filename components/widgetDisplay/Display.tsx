@@ -27,7 +27,7 @@ const DashboardDisplay = ({ displayId }: { displayId: DisplayId }) => {
 
     console.log("rerender")
     return (
-        <div id="dashboardDisplayTitle" className="h-full w-full border-lusion-background inset-shadow-sm p-8 rounded-xl">
+        <div id="dashboardDisplayTitle" className="h-full w-full  border-lusion-background inset-shadow-sm p-8 rounded-xl">
             <p className="text-2xl">{displays[displayId].displayAlias}</p>
             {displayId === 1 && <BookmarkManager displaySize={displaySize} />}
             {displayId === 2 && <WorkoutTracker displaySize={displaySize} />}

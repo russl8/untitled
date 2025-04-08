@@ -13,7 +13,7 @@ export default function DashboardPage() {
   }, [boxes.length])
 
   return (
-    <div className="h-full w-full bg-lusion-background p-4 overflow-visible" >
+    <div className="h-full w-full  p-4 overflow-visible" >
       {boxes.length > 0 && (
         <SplitPaneCustom orientation="vertical" initialSize={initialSizes["vertical1"]}>
           <SplitPaneCustom orientation="horizontal" initialSize={initialSizes["horizontal1"]}>

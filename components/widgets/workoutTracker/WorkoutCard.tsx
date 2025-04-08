@@ -19,78 +19,67 @@ interface WorkoutCardProps {
 const WorkoutCard = ({ workout, fetchWorkouts, displaySize }: WorkoutCardProps) => {
     const handleDeleteWorkout = (workoutId: string) => {
         deleteWorkout(workoutId)
-            .then(_ => {
-                toast.success("Workout deleted successfully!")
-                fetchWorkouts();
+            .then(() => {
+                toast.success("Workout deleted successfully!");
             })
             .catch(err => {
-                toast.error(err)
+                toast.error(err);
             })
-    }
+            .finally(() => {
+                fetchWorkouts();
+            })
+    };
+
     const titleTrimAmount = useMemo(() => {
-        if (displaySize === 'fullsize') {
-            return 8
-        } else {
-            return 5
-        }
-    }, [displaySize])
+        return displaySize === 'fullsize' ? 12 : 8;
+    }, [displaySize]);
+
     return (
-        //TODO: make more responsive, bookmark use shopify-draggable and hover animations
-
-        <Dialog >
-            <TooltipProvider    >
+        <Dialog>
+            <TooltipProvider>
                 <Tooltip>
-                    <TooltipTrigger >
-                        <div className={cn(`w-[100px] h-[130px] bg-lusion-lightgray mx-1 rounded-lg p-2 m-2
-                         shadow-md shadow-lusion-gray  select-none cursor-pointer overflow-clip
-                         text-lusion-black hover:opacity-70 hover:scale-105 transition-transform delay-75`,
-                            {
-                                "text-sm w-[150px] h-[200px]": displaySize === "fullsize",
-                                "text-xs": displaySize === "quartersize" || displaySize === "halfsize",
-                            }
-                        )}>
-                            <div className="flex justify-between items-center font-bold w-full overflow-hidden">
-                                <p className={cn("", {
-                                    "text-sm": displaySize === "quartersize" || displaySize === "halfsize",
-                                    "text-base": displaySize === "fullsize"
-
-                                })}>
+                    <TooltipTrigger>
+                        <div
+                            className={cn(
+                                `group hover:scale-105 bg-white text-black rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer 
+                                 overflow-hidden select-none px-4 py-3 m-2 flex flex-col justify-between`,
+                                {
+                                    "w-[160px] h-[220px] text-sm": displaySize === "fullsize",
+                                    "w-[140px] h-[200px] text-xs": displaySize === "halfsize",
+                                    "w-[110px] h-[120px] text-xs": displaySize === "quartersize",
+                                }
+                            )}
+                        >
+                            <div className="flex text-sm justify-between items-center font-semibold text-gray-800 mb-2">
+                                <p className="truncate w-[70%]">
                                     {workout.workoutName.slice(0, titleTrimAmount)}
                                     {workout.workoutName.length > titleTrimAmount && "..."}
                                 </p>
-                                <div className="font-normal text-xs">
-                                    {getmmdd(workout.lastUpdated)}
-                                </div>
+                                <span className="text-xs text-gray-500">{getmmdd(workout.lastUpdated)}</span>
                             </div>
-                            <div className="overflow-auto h-[60%] my-1 pb-4">
+
+                            <div className="flex-1 overflow-y-scroll">
                                 {workout.exercises.map((exercise, index) => (
-                                    <div key={index} className="flex justify-between">
-                                        <span>
-                                        {exercise.exerciseName.slice(0, 11)}
-                                        {exercise.exerciseName.length > 11 && "... "}
+                                    <div key={index} className="flex justify-between items-center text-gray-700 py-[1px]">
+                                        <span className="truncate">
+                                            {exercise.exerciseName.slice(0, displaySize === "quartersize" ? 7 : 11)}
+                                            {exercise.exerciseName.length > (displaySize === "quartersize" ? 7 : 11) && "..."}
                                         </span>
-                                        {" "}<span className="font-semibold">{exercise.reps}x{exercise.sets}</span>
+                                        <span className="font-semibold">{exercise.reps}x{exercise.sets}</span>
                                     </div>
                                 ))}
-
-                            </div>
-
-                            <div className="mb-1">
-                                {/* &lt;&lt;placeholder&gt;&gt; */}
                             </div>
                         </div>
-
                     </TooltipTrigger>
-                    <TooltipContent sideOffset={-10} className="m-0 p-0">
-                        <div className="flex flex-col p-0 m-0">
-                            <DialogTrigger id="workoutDetailsModalTrigger" className="">
-                                <div className="h-6 flex justify-center hover:text-gray-400 cursor-pointer px-4 py-2 m-0">View details</div>
+
+                    <TooltipContent sideOffset={-10} className="p-0">
+                        <div className="flex flex-col text-sm">
+                            <DialogTrigger id="workoutDetailsModalTrigger">
+                                <div className=" hover:opacity-80 cursor-pointer px-4 py-2">View details</div>
                             </DialogTrigger>
                             <div
-                                className="h-6 flex justify-center hover:text-gray-400 cursor-pointer mb-2  px-4 py-2 m-0"
-                                onClick={() => {
-                                    handleDeleteWorkout(workout._id)
-                                }}
+                                className="hover:opacity-80 cursor-pointer px-4 py-2"
+                                onClick={() => handleDeleteWorkout(workout._id)}
                             >
                                 Delete
                             </div>
@@ -106,6 +95,5 @@ const WorkoutCard = ({ workout, fetchWorkouts, displaySize }: WorkoutCardProps) 
             </DialogContent>
         </Dialog>
     );
-}
-
+};
 export default WorkoutCard;

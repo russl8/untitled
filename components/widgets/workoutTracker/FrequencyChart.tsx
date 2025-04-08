@@ -29,7 +29,7 @@ const FrequencyChart = ({ displaySize, frequencyChartData }: FrequencyChartProps
                 <TooltipTrigger asChild>
                     <ChartContainer config={chartConfig}
                         className={cn("flex-1 w-auto cursor-crosshair ", {
-                            "max-h-20 w-60": displaySize === "quartersize",
+                            "max-h-14 w-48": displaySize === "quartersize",
                             "max-h-24 w-60": displaySize === "halfsize",
                             "max-h-24 xl:max-h-36 w-96 ": displaySize === "fullsize",
                         })}>

@@ -68,7 +68,9 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
     return (
         <div className="flex flex-col justify-around items-center h-full">
             <div className="h-full w-full flex flex-col align-top">
-                <div className="flex justify-between  border-b-1 border-lusion-lightgray">
+                <div className={cn("flex flex-col justify-between  border-b-1 border-lusion-lightgray",
+                    "md:flex-row",
+                )}>
                     <Dialog >
                         <DialogTrigger id="addWorkoutModalTrigger" className="mb-2">
                             <div className="flex items-center h-10 py-2 px-4 cursor-pointer border border-input bg-background shadow-xs hover:bg-accent rounded-md hover:text-accent-foreground">
@@ -104,8 +106,8 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
                 <ScrollArea className="flex whitespace-nowrap rounded-md border-none text-white">
                     <div className={cn("", {
                         "w-full flex flex-row justify-center items-center": displaySize === "quartersize",
-                        "grid grid-cols-1 lg:grid-cols-3": displaySize === "halfsize",
-                        "grid grid-cols-1  md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4": displaySize === "fullsize"
+                        "grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3": displaySize === "halfsize",
+                        "grid grid-cols-1  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4": displaySize === "fullsize"
 
                     })}>
                         {recentWorkouts.map(workout => {
