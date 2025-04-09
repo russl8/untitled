@@ -1,5 +1,5 @@
 ## About the project
-A centralized dashboard designed to minimize app-hopping by bringing together all my daily tools in one place. Currently includes a bookmark manager, and a workout tracker (with analytics!)
+A centralized dashboard designed to bring together all my daily tools in one place. Currently includes a bookmark manager, and a workout tracker (with analytics!)
 ### Built with
 Next.js<br/>
 Typescript<br/>
