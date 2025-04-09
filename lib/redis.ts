@@ -32,3 +32,5 @@ export const getRedisWeeklyReportKey = (userId: string) =>
   `user:${userId}:weeklyreport`;
 export const getRedisWorkoutKey = (userId: string) =>
   `user:${userId}:workouts`;
+export const getWeeklyReportRateKey = (userId: string) =>
+  `user:${userId}:weeklyReportRate`

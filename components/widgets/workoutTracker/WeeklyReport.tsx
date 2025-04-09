@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { ArrowUp, ArrowDown, MinusIcon, Lightbulb } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import toast from "react-hot-toast";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 
 type WorkoutStats = {
@@ -133,27 +136,38 @@ const sampleWeeklyReport: WeeklyReport = {
 
 
 const WeeklyReport = () => {
+    //TODO: clean up code, turn into async/await,  refactor confusing tenerary operators
     const [weeklyReportData, setWeeklyReportData] = useState<WeeklyReport | null>(null)
+    const [isGenerating, setIsGenerating] = useState<boolean>(false)
     useEffect(() => {
         fetch(`api/workoutTracker/getWeeklyReport?ai=${false}`)
             .then(res => res.json())
             .then(data => {
-                console.log(data)
                 setWeeklyReportData(data)
             })
             .catch(error => console.error(error))
     }, [])
-
-
     const generateAiTips = () => {
+        if(isGenerating) return
+        setIsGenerating(true)
         fetch(`api/workoutTracker/getWeeklyReport?ai=${true}`)
-        .then(res => res.json())
-        .then(data => {
-            console.log(data)
-            setWeeklyReportData(data)
-        })
-        .catch(error => console.error(error))
+            .then(res => {
+                console.log(res)
+                if (res.ok) {
+                    return res.json().then(data => {
+                        setWeeklyReportData(data)
+                    })
+                } else if (res.status === 403) {
+                    toast.error("Too many requests. Please try again in ~5 minutes!")
+                }
+            })
+            .catch(error => {
+                console.error(error)
+            })
+            .finally(() => setIsGenerating(false))
     }
+
+
     if (!weeklyReportData) {
         return (
             <>Loading...</>
@@ -162,26 +176,45 @@ const WeeklyReport = () => {
         return (
             <div className="w-full">
                 {
-                    weeklyReportData.overallSummary
+                    (weeklyReportData.overallSummary || isGenerating)
                     &&
-                    <>
-                        <h2 className="font-bold underline">Summary</h2>
-                        <p className="text-sm mb-4">{weeklyReportData.overallSummary}</p>
-                    </>
+                    (
+                        <>
+                            <h2 className="font-bold underline">Summary</h2>
+                            {isGenerating
+                                ?
+                                <>
+                                    <Skeleton className="h-4 my-1" />
+                                    <Skeleton className="h-4 my-1" />
+                                    <Skeleton className="h-4 my-1" />
+                                </>
+
+                                :
+                                <>
+                                    <p className="text-sm mb-4">{weeklyReportData.overallSummary}</p>
+                                </>
+                            }
+
+                        </>
+                    )
                 }
 
                 <div className="flex items-center">
                     <h2 className="font-bold underline">Excercise Recap</h2>
+
+
                     <Button
                         variant={"default"}
                         size={"icon"}
                         className="text-xs ml-2"
-                        onClick={()=>generateAiTips()}
+                        onClick={() => generateAiTips()}
                     >
                         <Lightbulb />
                     </Button>
                 </div>
-                <div className="w-full grid gap-y-2 grid-cols-7 text-sm">
+                <div className={cn("w-full grid gap-y-2 grid-cols-4 text-sm", {
+                    "grid-cols-7": (weeklyReportData.overallSummary || isGenerating)
+                })}>
                     {/* COLUMN HEADERS */}
                     <div className="col-span-2 font-semibold">
                         Exercise
@@ -192,7 +225,9 @@ const WeeklyReport = () => {
                     <div className="col-span-1 font-semibold">
                         Weight avg.
                     </div>
-                    <div className="col-span-3 font-semibold">
+                    <div className={cn("hidden", {
+                        " block col-span-3 font-semibold": (weeklyReportData.overallSummary || isGenerating)
+                    })}>
                         Tip
                     </div>
                     {Object.keys(weeklyReportData.workouts).map(workout => (
@@ -213,7 +248,23 @@ const WeeklyReport = () => {
                                             percentIncrease={exercise.weightPercentIncrease}
                                         />
 
-                                        <div className="col-span-3 text-xs">{exercise.aiGeneratedTip}</div>
+                                        {
+                                            (weeklyReportData.overallSummary || isGenerating)
+                                            &&
+                                            (
+                                                isGenerating
+                                                    ?
+                                                    <div className="col-span-3 w-full">
+                                                        <Skeleton className=" h-4 my-1" />
+                                                        <Skeleton className=" h-4 my-1" />
+
+                                                    </div>
+                                                    :
+                                                    <>
+                                                        <div className="col-span-3 text-xs">{exercise.aiGeneratedTip}</div>
+                                                    </>
+                                            )
+                                        }
                                     </div>
                                 )
                             }

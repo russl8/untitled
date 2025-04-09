@@ -5,22 +5,46 @@ import { NextRequest, NextResponse } from "next/server";
 import WeeklyReport from "@/components/widgets/workoutTracker/WeeklyReport";
 import openai from "@/lib/openai";
 import { getOverallSummaryPrompt, getExerciseTipPrompt } from "./prompts";
-import { getRedisWeeklyReportKey, redis } from "@/lib/redis";
+import {
+  getRedisWeeklyReportKey,
+  redis,
+  getWeeklyReportRateKey,
+} from "@/lib/redis";
+const LIMIT = 2;
+const LIMIT_DURATION = 300;
 export async function GET(req: NextRequest) {
   try {
+    //TODO: refactor 
     const aiParam = req.nextUrl.searchParams.get("ai");
     const useAI = aiParam === "true";
 
     const userId = await getCurrentUserOrGuestID();
     const redisKey = getRedisWeeklyReportKey(userId);
+    const redisRateLimiterKey = getWeeklyReportRateKey(userId);
+    //check if user has surpassed rate
+    if (useAI) {
+      const rate = parseInt((await redis.get(redisRateLimiterKey)) || "0");
+      if (rate >= LIMIT) {
+        return NextResponse.json(
+          {
+            error:
+              "Too many requests in a short period of time. Please try again later.",
+          },
+          { status: 403 }
+        );
+      }
+      redis.set(redisRateLimiterKey, (rate + 1).toString());
+      redis.expire(redisRateLimiterKey, LIMIT_DURATION);
+    }
 
+    // return cached tips only when not using ai mode
     if (!useAI) {
       const cachedReport = await redis.get(redisKey);
       if (cachedReport) return NextResponse.json(JSON.parse(cachedReport));
     }
 
     await connectToDatabase();
-
+    // TODO: put this logic somewhere else!
     const now = new Date();
     const oneWeekAgo = new Date(now);
     oneWeekAgo.setDate(now.getDate() - 7);
