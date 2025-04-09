@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { ArrowUp, ArrowDown, MinusIcon } from "lucide-react";
+import { ArrowUp, ArrowDown, MinusIcon, Lightbulb } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 
 type WorkoutStats = {
@@ -134,7 +135,7 @@ const sampleWeeklyReport: WeeklyReport = {
 const WeeklyReport = () => {
     const [weeklyReportData, setWeeklyReportData] = useState<WeeklyReport | null>(null)
     useEffect(() => {
-        fetch("api/workoutTracker/getWeeklyReport")
+        fetch(`api/workoutTracker/getWeeklyReport?ai=${false}`)
             .then(res => res.json())
             .then(data => {
                 console.log(data)
@@ -143,6 +144,16 @@ const WeeklyReport = () => {
             .catch(error => console.error(error))
     }, [])
 
+
+    const generateAiTips = () => {
+        fetch(`api/workoutTracker/getWeeklyReport?ai=${true}`)
+        .then(res => res.json())
+        .then(data => {
+            console.log(data)
+            setWeeklyReportData(data)
+        })
+        .catch(error => console.error(error))
+    }
     if (!weeklyReportData) {
         return (
             <>Loading...</>
@@ -150,9 +161,26 @@ const WeeklyReport = () => {
     } else {
         return (
             <div className="w-full">
-                <h2 className="font-bold underline">Summary</h2>
-                <p className="text-sm mb-4">{weeklyReportData.overallSummary}</p>
-                <h2 className="font-bold underline">Excercise Recap</h2>
+                {
+                    weeklyReportData.overallSummary
+                    &&
+                    <>
+                        <h2 className="font-bold underline">Summary</h2>
+                        <p className="text-sm mb-4">{weeklyReportData.overallSummary}</p>
+                    </>
+                }
+
+                <div className="flex items-center">
+                    <h2 className="font-bold underline">Excercise Recap</h2>
+                    <Button
+                        variant={"default"}
+                        size={"icon"}
+                        className="text-xs ml-2"
+                        onClick={()=>generateAiTips()}
+                    >
+                        <Lightbulb />
+                    </Button>
+                </div>
                 <div className="w-full grid gap-y-2 grid-cols-7 text-sm">
                     {/* COLUMN HEADERS */}
                     <div className="col-span-2 font-semibold">

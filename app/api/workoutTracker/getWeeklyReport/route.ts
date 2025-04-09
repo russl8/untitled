@@ -1,19 +1,24 @@
 import { connectToDatabase } from "@/lib/db";
 import { getCurrentUserOrGuestID } from "../../helpers";
 import Workout from "@/model/workout";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import WeeklyReport from "@/components/widgets/workoutTracker/WeeklyReport";
 import openai from "@/lib/openai";
 import { getOverallSummaryPrompt, getExerciseTipPrompt } from "./prompts";
 import { getRedisWeeklyReportKey, redis } from "@/lib/redis";
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
+    const aiParam = req.nextUrl.searchParams.get("ai");
+    const useAI = aiParam === "true";
+
     const userId = await getCurrentUserOrGuestID();
     const redisKey = getRedisWeeklyReportKey(userId);
-    const cachedReport = await redis.get(redisKey)
-    
-    if (cachedReport) return NextResponse.json(JSON.parse(cachedReport))
-      
+
+    if (!useAI) {
+      const cachedReport = await redis.get(redisKey);
+      if (cachedReport) return NextResponse.json(JSON.parse(cachedReport));
+    }
+
     await connectToDatabase();
 
     const now = new Date();
@@ -94,19 +99,23 @@ export async function GET() {
 
       if (!workoutsReport[workoutName]) workoutsReport[workoutName] = {};
 
-      const aiTipResponse = await openai.responses.create({
-        model: process.env.OPENAI_MODEL as string,
-        input: getExerciseTipPrompt({
-          workoutName,
-          exerciseName,
-          weeklyRepAverage,
-          monthlyRepAverage,
-          weeklyWeightAverage,
-          monthlyWeightAverage,
-          repPercentIncrease,
-          weightPercentIncrease,
-        }),
-      });
+      let aiTip = "";
+      if (useAI) {
+        const aiTipResponse = await openai.responses.create({
+          model: process.env.OPENAI_MODEL as string,
+          input: getExerciseTipPrompt({
+            workoutName,
+            exerciseName,
+            weeklyRepAverage,
+            monthlyRepAverage,
+            weeklyWeightAverage,
+            monthlyWeightAverage,
+            repPercentIncrease,
+            weightPercentIncrease,
+          }),
+        });
+        aiTip = aiTipResponse.output_text;
+      }
       workoutsReport[workoutName][exerciseName] = {
         weeklyRepAverage,
         monthlyRepAverage,
@@ -114,22 +123,26 @@ export async function GET() {
         monthlyWeightAverage,
         repPercentIncrease,
         weightPercentIncrease,
-        aiGeneratedTip: aiTipResponse.output_text,
+        aiGeneratedTip: aiTip,
       };
     }
 
     // Overall summary
-    const overallSummaryResponse = await openai.responses.create({
-      model: process.env.OPENAI_MODEL as string,
-      input: getOverallSummaryPrompt(workoutsReport),
-    });
+    let aiSummary = "";
+    if (useAI) {
+      const overallSummaryResponse = await openai.responses.create({
+        model: process.env.OPENAI_MODEL as string,
+        input: getOverallSummaryPrompt(workoutsReport),
+      });
+      aiSummary = overallSummaryResponse.output_text;
+    }
     const report: WeeklyReport = {
-      overallSummary: overallSummaryResponse.output_text,
+      overallSummary: aiSummary,
       workouts: workoutsReport,
     };
 
     // store report in cache
-    await redis.set(redisKey,JSON.stringify(report))
+    await redis.set(redisKey, JSON.stringify(report));
     return NextResponse.json(report);
   } catch (e) {
     console.error(e);

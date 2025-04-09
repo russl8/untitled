@@ -112,7 +112,7 @@ const BookmarkGrid = ({ displaySize, setItems, items }: BookmarkGridProps) => {
             >
                 <div className="flex flex-wrap flex-row h-full items-start w-full p-4"
                 >
-                    { }
+                    
                     {items.length > 0 &&
                         <SortableContext
                             items={items.map(item => item._id)}
