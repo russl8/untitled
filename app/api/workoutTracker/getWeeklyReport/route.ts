@@ -10,163 +10,57 @@ import {
   redis,
   getWeeklyReportRateKey,
 } from "@/lib/redis";
+import { getReport } from "./getReport";
+import { RateLimitError } from "openai";
 const LIMIT = 2;
 const LIMIT_DURATION = 300;
 export async function GET(req: NextRequest) {
   try {
-    //TODO: refactor 
-    const aiParam = req.nextUrl.searchParams.get("ai");
-    const useAI = aiParam === "true";
+    const useAI = req.nextUrl.searchParams.get("ai") === "true";
 
     const userId = await getCurrentUserOrGuestID();
-    const redisKey = getRedisWeeklyReportKey(userId);
+    const redisWeeklyReportKey = getRedisWeeklyReportKey(userId);
     const redisRateLimiterKey = getWeeklyReportRateKey(userId);
-    //check if user has surpassed rate
+
+    /**
+     * If user wants to use ai,
+     *  - see if user has surpassed rate limit. if so, return.
+     *
+     * If use is not using ai (ie: just opening the weekly report)
+     *  then check cache for previously generated previous report (regardless if it was ai generated)
+     */
     if (useAI) {
-      const rate = parseInt((await redis.get(redisRateLimiterKey)) || "0");
+      const cachedRate = await redis.get(redisRateLimiterKey);
+      const rate: number = parseInt(cachedRate || "0");
+      const ttl = await redis.ttl(redisRateLimiterKey);
+
       if (rate >= LIMIT) {
         return NextResponse.json(
           {
             error:
-              "Too many requests in a short period of time. Please try again later.",
+              `Too many requests in a short period of time. Please try again in ${Math.floor(ttl/60)}min!`,
           },
           { status: 403 }
         );
       }
       redis.set(redisRateLimiterKey, (rate + 1).toString());
-      redis.expire(redisRateLimiterKey, LIMIT_DURATION);
-    }
-
-    // return cached tips only when not using ai mode
-    if (!useAI) {
-      const cachedReport = await redis.get(redisKey);
+      //set expiry of rate limiter value if it is just being initialized.
+      if (cachedRate === null) {
+        redis.expire(redisRateLimiterKey, LIMIT_DURATION);
+      } else {
+        redis.expire(redisRateLimiterKey, ttl);
+      }
+    } else {
+      const cachedReport = await redis.get(redisWeeklyReportKey);
       if (cachedReport) return NextResponse.json(JSON.parse(cachedReport));
     }
 
+    //connect to db, and generate a new report
     await connectToDatabase();
-    // TODO: put this logic somewhere else!
-    const now = new Date();
-    const oneWeekAgo = new Date(now);
-    oneWeekAgo.setDate(now.getDate() - 7);
-
-    const fiveWeeksAgo = new Date(now);
-    fiveWeeksAgo.setDate(now.getDate() - 35);
-
-    const thisWeeksWorkouts = await Workout.find({
-      userId,
-      lastUpdated: { $gte: oneWeekAgo },
-    });
-    const thisMonthsWorkouts = await Workout.find({
-      userId,
-      lastUpdated: { $gte: fiveWeeksAgo, $lte: oneWeekAgo },
-    });
-
-    const weeklyData: Record<string, any[]> = {};
-    const monthlyData: Record<string, any[]> = {};
-
-    // Processing monthly data
-    for (const workout of thisMonthsWorkouts) {
-      for (const exercise of workout.exercises) {
-        const key = `${workout.workoutName}||${exercise.exerciseName}`;
-        const entry = {
-          reps: exercise.reps,
-          weight: exercise.weight,
-        };
-        if (!monthlyData[key]) monthlyData[key] = [];
-        monthlyData[key].push(entry);
-      }
-    }
-
-    //processing weekly data
-    for (const workout of thisWeeksWorkouts) {
-      for (const exercise of workout.exercises) {
-        const key = `${workout.workoutName}||${exercise.exerciseName}`;
-        const entry = {
-          reps: exercise.reps,
-          weight: exercise.weight,
-        };
-        if (!weeklyData[key]) weeklyData[key] = [];
-        weeklyData[key].push(entry);
-      }
-    }
-
-    const workoutsReport: WeeklyReport["workouts"] = {};
-
-    for (const key of Object.keys(weeklyData)) {
-      const [workoutName, exerciseName] = key.split("||");
-
-      const monthly = monthlyData[key] || [];
-      const weekly = weeklyData[key];
-
-      const getAvg = (arr: any[], field: "reps" | "weight") =>
-        arr.reduce((sum, item) => sum + item[field], 0) / (arr.length || 1);
-
-      const weeklyRepAverage = getAvg(weekly, "reps");
-      const monthlyRepAverage = getAvg(monthly, "reps");
-
-      const weeklyWeightAverage = getAvg(weekly, "weight");
-      const monthlyWeightAverage = getAvg(monthly, "weight");
-
-      const repPercentIncrease = monthlyRepAverage
-        ? ((weeklyRepAverage - monthlyRepAverage) / monthlyRepAverage) * 100
-        : weeklyRepAverage - monthlyRepAverage > 0
-        ? 100
-        : 0;
-
-      const weightPercentIncrease = monthlyWeightAverage
-        ? ((weeklyWeightAverage - monthlyWeightAverage) /
-            monthlyWeightAverage) *
-          100
-        : weeklyWeightAverage - monthlyWeightAverage > 0
-        ? 100
-        : 0;
-
-      if (!workoutsReport[workoutName]) workoutsReport[workoutName] = {};
-
-      let aiTip = "";
-      if (useAI) {
-        const aiTipResponse = await openai.responses.create({
-          model: process.env.OPENAI_MODEL as string,
-          input: getExerciseTipPrompt({
-            workoutName,
-            exerciseName,
-            weeklyRepAverage,
-            monthlyRepAverage,
-            weeklyWeightAverage,
-            monthlyWeightAverage,
-            repPercentIncrease,
-            weightPercentIncrease,
-          }),
-        });
-        aiTip = aiTipResponse.output_text;
-      }
-      workoutsReport[workoutName][exerciseName] = {
-        weeklyRepAverage,
-        monthlyRepAverage,
-        weeklyWeightAverage,
-        monthlyWeightAverage,
-        repPercentIncrease,
-        weightPercentIncrease,
-        aiGeneratedTip: aiTip,
-      };
-    }
-
-    // Overall summary
-    let aiSummary = "";
-    if (useAI) {
-      const overallSummaryResponse = await openai.responses.create({
-        model: process.env.OPENAI_MODEL as string,
-        input: getOverallSummaryPrompt(workoutsReport),
-      });
-      aiSummary = overallSummaryResponse.output_text;
-    }
-    const report: WeeklyReport = {
-      overallSummary: aiSummary,
-      workouts: workoutsReport,
-    };
+    const report = await getReport(useAI, userId);
 
     // store report in cache
-    await redis.set(redisKey, JSON.stringify(report));
+    await redis.set(redisWeeklyReportKey, JSON.stringify(report));
     return NextResponse.json(report);
   } catch (e) {
     console.error(e);
