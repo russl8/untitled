@@ -19,34 +19,29 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { Input } from "@/components/ui/input"
-
-const frameworks = [
-    {
-        value: "next.js",
-        label: "Next.js",
-    },
-    {
-        value: "sveltekit",
-        label: "SvelteKit",
-    },
-    {
-        value: "nuxt.js",
-        label: "Nuxt.js",
-    },
-    {
-        value: "remix",
-        label: "Remix",
-    },
-    {
-        value: "astro",
-        label: "Astro",
-    },
-]
+import { Rect } from "@dnd-kit/core/dist/utilities"
+import { Workout } from "@/actions/workoutManager/createWorkout/schema"
+import toast from "react-hot-toast"
 
 export function WorkoutCombobox({ formField }: { formField: any }) {
+    //TODO: populate the formfields using the selected workouts
+    const [selectedWorkout, setSelectedWorkout] = React.useState<Workout | undefined>();
+    const [allWorkouts, setAllWorkouts] = React.useState<Array<Workout>>([])
     const [open, setOpen] = React.useState(false)
-    // const [value, setValue] = React.useState("")
-    // {...props}
+
+    console.log(allWorkouts)
+    React.useEffect(() => {
+        //get all distinct workouts form this year
+        fetch("api/workoutTracker/getWorkoutsForCombobox")
+            .then(res => {
+                if (res.ok) {
+                    return res.json()
+                        .then(data => setAllWorkouts(data))
+                } else {
+                    toast.error("An error occurred. Please try again!")
+                }
+            })
+    }, [])
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -64,7 +59,7 @@ export function WorkoutCombobox({ formField }: { formField: any }) {
                         className="disabled:opacity-100  focus:border-none border-none bg-transparent shadow-none"
                         placeholder="Select a workout"
                         value={formField.valu
-                            ? frameworks.find((framework) => framework.value === formField.value)?.label
+                            ? allWorkouts.find((workout) => workout.workoutName === formField.value)?.workoutName
                             : ""}
                         {...formField}
                     />
@@ -78,20 +73,20 @@ export function WorkoutCombobox({ formField }: { formField: any }) {
                     <CommandList>
                         <CommandEmpty>No framework found.</CommandEmpty>
                         <CommandGroup>
-                            {frameworks.map((framework) => (
+                            {allWorkouts.map((workout) => (
                                 <CommandItem
-                                    key={framework.value}
-                                    value={framework.label}
+                                    key={workout.workoutName}
+                                    value={workout.workoutName}
                                     onSelect={(currentValue) => {
-                                        formField.onChange(currentValue === formField.value ? "" : currentValue) 
+                                        formField.onChange(currentValue === formField.value ? "" : currentValue)
                                         setOpen(false)
                                     }}
                                 >
-                                    {framework.label}
+                                    {workout.workoutName}
                                     <Check
                                         className={cn(
                                             "ml-auto",
-                                            formField.value === framework.value ? "opacity-100" : "opacity-0"
+                                            formField.value === workout.workoutName ? "opacity-100" : "opacity-0"
                                         )}
                                     />
                                 </CommandItem>

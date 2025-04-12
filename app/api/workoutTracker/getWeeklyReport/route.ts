@@ -1,17 +1,12 @@
 import { connectToDatabase } from "@/lib/db";
 import { getCurrentUserOrGuestID } from "../../helpers";
-import Workout from "@/model/workout";
 import { NextRequest, NextResponse } from "next/server";
-import WeeklyReport from "@/components/widgets/workoutTracker/WeeklyReport";
-import openai from "@/lib/openai";
-import { getOverallSummaryPrompt, getExerciseTipPrompt } from "./prompts";
 import {
   getRedisWeeklyReportKey,
   redis,
   getWeeklyReportRateKey,
 } from "@/lib/redis";
 import { getReport } from "./getReport";
-import { RateLimitError } from "openai";
 const LIMIT = 2;
 const LIMIT_DURATION = 300;
 export async function GET(req: NextRequest) {
@@ -37,8 +32,9 @@ export async function GET(req: NextRequest) {
       if (rate >= LIMIT) {
         return NextResponse.json(
           {
-            error:
-              `Too many requests in a short period of time. Please try again in ${Math.floor(ttl/60)}min!`,
+            error: `Too many requests in a short period of time. Please try again in ${Math.floor(
+              ttl / 60
+            )}min!`,
           },
           { status: 403 }
         );
