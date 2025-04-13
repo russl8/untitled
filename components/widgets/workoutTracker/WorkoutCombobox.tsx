@@ -36,11 +36,11 @@ interface WorkoutComboboxProps {
         lastUpdated: Date;
     }, "workoutName">;
     appendToFormField: UseFieldArrayAppend<any>;
-    removeFormField: UseFieldArrayRemove;
-
+    resetExercises: any;
+    
 }
 
-export function WorkoutCombobox({ formField, appendToFormField, removeFormField }: WorkoutComboboxProps) {
+export function WorkoutCombobox({ formField, appendToFormField, resetExercises }: WorkoutComboboxProps) {
     //TODO: populate the formfields using the selected workouts
     const [allWorkouts, setAllWorkouts] = React.useState<Record<string, Workout>>({})
     // const [allWorkouts, setAllWorkouts] = React.useState<Array<Workout>>([])
@@ -48,13 +48,18 @@ export function WorkoutCombobox({ formField, appendToFormField, removeFormField 
     const [open, setOpen] = React.useState(false)
 
     React.useEffect(() => {
-        const selectedWorkout = formField.value
-        if (Object.keys(allWorkouts).includes(selectedWorkout)) {
-            for (const exercise of allWorkouts[selectedWorkout].exercises) {
-                appendToFormField(exercise)
-            }
+        const selectedWorkout = formField.value;
+    
+        if (!selectedWorkout || !Object.keys(allWorkouts).includes(selectedWorkout)) return;
+    
+        // clear current exercises before loading new ones
+        resetExercises(); 
+    
+        const workout = allWorkouts[selectedWorkout];
+        for (const exercise of workout.exercises) {
+            appendToFormField(exercise);
         }
-    }, [formField.value])
+    }, [formField.value, allWorkouts]);
 
     React.useEffect(() => {
         //get all distinct workouts form this year
@@ -63,7 +68,7 @@ export function WorkoutCombobox({ formField, appendToFormField, removeFormField 
                 if (res.ok) {
                     return res.json()
                         .then(data => {
-                            removeFormField()
+                            resetExercises()
                             const map: Record<any, any> = {}
                             for (const workout of data) {
                                 map[workout.workoutName] = workout

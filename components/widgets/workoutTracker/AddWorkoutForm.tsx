@@ -86,7 +86,7 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
                                     <WorkoutCombobox
                                         formField={field}
                                         appendToFormField={append}
-                                        removeFormField={remove}
+                                        resetExercises={()=>remove()}
                                     />
                                 </FormControl>
                                 <FormDescription>
