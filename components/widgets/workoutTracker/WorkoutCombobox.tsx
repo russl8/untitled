@@ -19,24 +19,57 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { Input } from "@/components/ui/input"
-import { Rect } from "@dnd-kit/core/dist/utilities"
 import { Workout } from "@/actions/workoutManager/createWorkout/schema"
 import toast from "react-hot-toast"
+import { ControllerRenderProps, UseFieldArrayAppend, UseFieldArrayRemove } from "react-hook-form"
 
-export function WorkoutCombobox({ formField }: { formField: any }) {
+interface WorkoutComboboxProps {
+    formField: ControllerRenderProps<{
+        workoutName: string;
+        exercises: {
+            exerciseName: string;
+            sets: number;
+            reps: number;
+            weight: number;
+            extraInfo: string;
+        }[];
+        lastUpdated: Date;
+    }, "workoutName">;
+    appendToFormField: UseFieldArrayAppend<any>;
+    removeFormField: UseFieldArrayRemove;
+
+}
+
+export function WorkoutCombobox({ formField, appendToFormField, removeFormField }: WorkoutComboboxProps) {
     //TODO: populate the formfields using the selected workouts
-    const [selectedWorkout, setSelectedWorkout] = React.useState<Workout | undefined>();
-    const [allWorkouts, setAllWorkouts] = React.useState<Array<Workout>>([])
+    const [allWorkouts, setAllWorkouts] = React.useState<Record<string, Workout>>({})
+    // const [allWorkouts, setAllWorkouts] = React.useState<Array<Workout>>([])
+
     const [open, setOpen] = React.useState(false)
 
-    console.log(allWorkouts)
+    React.useEffect(() => {
+        const selectedWorkout = formField.value
+        if (Object.keys(allWorkouts).includes(selectedWorkout)) {
+            for (const exercise of allWorkouts[selectedWorkout].exercises) {
+                appendToFormField(exercise)
+            }
+        }
+    }, [formField.value])
+
     React.useEffect(() => {
         //get all distinct workouts form this year
         fetch("api/workoutTracker/getWorkoutsForCombobox")
             .then(res => {
                 if (res.ok) {
                     return res.json()
-                        .then(data => setAllWorkouts(data))
+                        .then(data => {
+                            removeFormField()
+                            const map: Record<any, any> = {}
+                            for (const workout of data) {
+                                map[workout.workoutName] = workout
+                            }
+                            setAllWorkouts(map)
+                        })
                 } else {
                     toast.error("An error occurred. Please try again!")
                 }
@@ -53,14 +86,10 @@ export function WorkoutCombobox({ formField }: { formField: any }) {
                     className="justify-between"
                 >
                     <Input
-                        name={formField.name}
                         data-slot="input"
                         readOnly
                         className="disabled:opacity-100  focus:border-none border-none bg-transparent shadow-none"
                         placeholder="Select a workout"
-                        value={formField.valu
-                            ? allWorkouts.find((workout) => workout.workoutName === formField.value)?.workoutName
-                            : ""}
                         {...formField}
                     />
 
@@ -73,7 +102,7 @@ export function WorkoutCombobox({ formField }: { formField: any }) {
                     <CommandList>
                         <CommandEmpty>No framework found.</CommandEmpty>
                         <CommandGroup>
-                            {allWorkouts.map((workout) => (
+                            {Object.values(allWorkouts).map((workout) => (
                                 <CommandItem
                                     key={workout.workoutName}
                                     value={workout.workoutName}

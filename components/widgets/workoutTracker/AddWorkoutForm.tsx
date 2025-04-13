@@ -19,17 +19,17 @@ import { Calendar } from "@/components/ui/calendar";
 
 
 const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
-    const form = useForm<z.infer<typeof workoutFormSchema>>({
+    const { resetField,...form} = useForm<z.infer<typeof workoutFormSchema>>({
         resolver: zodResolver(workoutFormSchema),
         defaultValues: {
             workoutName: "",
-            exercises: [{ exerciseName: "", sets: 1, reps: 1, weight: 0, extraInfo: "" }],
+            exercises: [{ exerciseName: "", sets: 1, reps: 1, weight: 0, extraInfo: "" },],
             lastUpdated: new Date()
         }
     });
     const [isNewWorkout, setIsNewWorkout] = useState<boolean>(false)
     const { control, handleSubmit } = form;
-    const { fields, append, remove } = useFieldArray({
+    const { fields, append, remove, } = useFieldArray({
         control,
         name: "exercises"
     });
@@ -46,11 +46,14 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
     }
 
     return (
-        <Form {...form}>
+        <Form {...form} resetField={resetField}>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 enableScrollbar">
                 {/* Workout selector */}
                 {isNewWorkout
                     ?
+                    /**
+                     * User chooses to add a new workout
+                     */
                     <FormField
                         control={form.control}
                         name="workoutName"
@@ -70,6 +73,9 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
                         )}
                     />
                     :
+                    /**
+                   * User selects workout from combobox
+                   */
                     <FormField
                         control={form.control}
                         name="workoutName"
@@ -77,7 +83,11 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
                             <FormItem className="flex flex-col">
                                 <FormLabel>Workout</FormLabel>
                                 <FormControl>
-                                    <WorkoutCombobox formField={field} />
+                                    <WorkoutCombobox
+                                        formField={field}
+                                        appendToFormField={append}
+                                        removeFormField={remove}
+                                    />
                                 </FormControl>
                                 <FormDescription>
                                     <span>
