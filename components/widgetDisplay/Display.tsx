@@ -4,7 +4,7 @@ import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
 import { useMemo } from "react";
 import { displaySize } from "./types";
-import WorkoutTracker from "../widgets/workoutTracker/WorkoutTracker";
+import WorkoutTracker from "../workoutTracker/dashboard/Dashboard";
 import { displays } from "@/lib/constants";
 const DashboardDisplay = ({ displayId }: { displayId: DisplayId }) => {
 

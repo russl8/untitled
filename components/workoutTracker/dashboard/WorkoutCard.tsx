@@ -5,7 +5,7 @@ import { ScrollArea } from "@/components/ui/scrollarea";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn, getmmdd } from "@/lib/utils";
 import toast from "react-hot-toast";
-import WorkoutDetails from "./WorkoutDetails";
+import WorkoutDetails from "../details/WorkoutDetails";
 import { displaySize } from "@/components/widgetDisplay/types";
 import { displays } from "@/lib/constants";
 import { useMemo } from "react";

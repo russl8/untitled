@@ -95,9 +95,9 @@ export function WorkoutCombobox({ formField, appendToFormField, resetExercises }
             </PopoverTrigger>
             <PopoverContent className="w-[200px] p-0">
                 <Command>
-                    <CommandInput placeholder="Search framework..." />
+                    <CommandInput placeholder="Search past workouts..." />
                     <CommandList>
-                        <CommandEmpty>No framework found.</CommandEmpty>
+                        <CommandEmpty>No workout found.</CommandEmpty>
                         <CommandGroup>
                             {Object.values(allWorkouts).map((workout) => (
                                 <CommandItem

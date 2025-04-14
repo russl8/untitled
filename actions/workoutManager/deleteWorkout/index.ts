@@ -1,7 +1,7 @@
 "use server";
 
 import { getCurrentUserOrGuestID } from "@/app/api/helpers";
-import WorkoutTracker from "@/components/widgets/workoutTracker/WorkoutTracker";
+import WorkoutTracker from "@/components/workoutTracker/dashboard/Dashboard";
 import { connectToDatabase } from "@/lib/db";
 import { getRedisWeeklyReportKey, getRedisWorkoutKey, redis } from "@/lib/redis";
 import Workout from "@/model/workout";

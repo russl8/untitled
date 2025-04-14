@@ -5,18 +5,18 @@ import { LucideBook, PencilLineIcon, Plus, PlusCircle, ReceiptText } from "lucid
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { DialogHeader } from "@/components/ui/dialog";
 import { Dialog, DialogTrigger, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import AddWorkoutForm from "./AddWorkoutForm";
+import AddWorkoutForm from "../add-workout/AddWorkoutForm";
 import { Workout } from "@/actions/workoutManager/createWorkout/schema";
 import { ScrollArea, ScrollBar } from "@/components/ui/scrollarea"
 import WorkoutCard from "./WorkoutCard";
 import { cn, getmmdd } from "@/lib/utils";
-import WeeklyReport from "./WeeklyReport";
-import FrequencyChart, { FrequencyChartData } from "./FrequencyChart";
+import WeeklyReport from "../weekly-report/WeeklyReport";
+import FrequencyChart, { FrequencyChartData } from "../frequency-chart/FrequencyChart";
 
 type WorkoutItem = {
 
 }
-const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
+const Dashboard = ({ displaySize }: { displaySize: displaySize }) => {
 
     const [recentWorkouts, setRecentWorkouts] = useState<Array<Workout>>([])
     const [chartData, setChartData] = useState<FrequencyChartData>([])
@@ -149,4 +149,4 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
     );
 }
 
-export default WorkoutTracker;
+export default Dashboard;
