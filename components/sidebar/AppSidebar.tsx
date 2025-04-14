@@ -39,12 +39,12 @@ export function AppSidebar() {
           <SidebarGroupLabel>Dashboard</SidebarGroupLabel>
           <SidebarMenuSub  className="border-l-1 border-lusion-lightgray">
 
-            {Object.values(displays).map(d => (
+            {/* {Object.values(displays).map(d => (
               <SidebarCheckbox
                 key={d.displayId}
                 display={d}
               />
-            ))}
+            ))} */}
           </SidebarMenuSub>
 
         </SidebarGroup>

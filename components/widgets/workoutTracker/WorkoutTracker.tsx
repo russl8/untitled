@@ -63,7 +63,11 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
     }, [recentWorkouts])
 
 
-    if (loading) return <DisplayLoading />;
+    if (loading) return (
+        <div className="h-full w-full flex items-center justify-center">
+            Loading...
+        </div>
+    );
 
     return (
         <div className="flex flex-col justify-around items-center h-full">
@@ -110,6 +114,18 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
                         "grid grid-cols-1  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4": displaySize === "fullsize"
 
                     })}>
+                        {recentWorkouts.map(workout => {
+                            return (
+                                <div key={workout._id} className="flex justify-center items-center">
+                                    <WorkoutCard
+                                        fetchWorkouts={fetchWorkouts}
+                                        workout={workout}
+                                        displaySize={displaySize}
+                                    />
+                                </div>
+
+                            )
+                        })}
                         {recentWorkouts.map(workout => {
                             return (
                                 <div key={workout._id} className="flex justify-center items-center">

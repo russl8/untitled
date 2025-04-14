@@ -41,26 +41,18 @@ interface WorkoutComboboxProps {
 }
 
 export function WorkoutCombobox({ formField, appendToFormField, resetExercises }: WorkoutComboboxProps) {
-    //TODO: populate the formfields using the selected workouts
     const [allWorkouts, setAllWorkouts] = React.useState<Record<string, Workout>>({})
-    // const [allWorkouts, setAllWorkouts] = React.useState<Array<Workout>>([])
-
     const [open, setOpen] = React.useState(false)
-
     React.useEffect(() => {
         const selectedWorkout = formField.value;
-    
         if (!selectedWorkout || !Object.keys(allWorkouts).includes(selectedWorkout)) return;
-    
         // clear current exercises before loading new ones
         resetExercises(); 
-    
         const workout = allWorkouts[selectedWorkout];
         for (const exercise of workout.exercises) {
             appendToFormField(exercise);
         }
     }, [formField.value, allWorkouts]);
-
     React.useEffect(() => {
         //get all distinct workouts form this year
         fetch("api/workoutTracker/getWorkoutsForCombobox")
@@ -68,7 +60,7 @@ export function WorkoutCombobox({ formField, appendToFormField, resetExercises }
                 if (res.ok) {
                     return res.json()
                         .then(data => {
-                            resetExercises()
+                            resetExercises();
                             const map: Record<any, any> = {}
                             for (const workout of data) {
                                 map[workout.workoutName] = workout
