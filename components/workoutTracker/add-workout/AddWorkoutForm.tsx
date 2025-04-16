@@ -144,12 +144,12 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
                 />
 
                 {/* Exercise list */}
-                <div className="grid grid-cols-8 gap-1 max-h-[200px] overflow-auto scroll-m-1">
+                <div className="grid grid-cols-8 gap-1 max-h-[200px] overflow-auto scroll-m-1 !text-xs md:text-sm">
                     <div className="col-span-2">Exercise</div>
                     <div className="col-span-1">Sets</div>
                     <div className="col-span-1">Reps</div>
                     <div className="col-span-1">Weight</div>
-                    <div className="col-span-3">Notes</div>
+                    <div className="col-span-3"><p className="ml-2"> Notes</p></div>
 
                     {fields.map((field, index) => (
                         <div key={field.id} className="contents">
@@ -159,7 +159,7 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
                                 render={({ field }) => (
                                     <FormItem className="col-span-2">
                                         <FormControl>
-                                            <Input {...field} />
+                                            <Input {...field}  />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -171,7 +171,7 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
                                 render={({ field }) => (
                                     <FormItem className="col-span-1">
                                         <FormControl>
-                                            <Input type="number" {...field} onChange={(e) => field.onChange(Number(e.target.value))} />
+                                            <Input className="!text-xs md:text-sm" type="number" {...field} onChange={(e) => field.onChange(Number(e.target.value))} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -183,7 +183,7 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
                                 render={({ field }) => (
                                     <FormItem className="col-span-1">
                                         <FormControl>
-                                            <Input type="number" {...field} onChange={(e) => field.onChange(Number(e.target.value))} />
+                                            <Input className="!text-xs md:text-sm" type="number" {...field} onChange={(e) => field.onChange(Number(e.target.value))} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -195,7 +195,7 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
                                 render={({ field }) => (
                                     <FormItem className="col-span-1">
                                         <FormControl>
-                                            <Input type="number" {...field} onChange={(e) => field.onChange(Number(e.target.value))} />
+                                            <Input className="!text-xs md:text-sm" type="number" {...field} onChange={(e) => field.onChange(Number(e.target.value))} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -207,7 +207,7 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
                                 render={({ field }) => (
                                     <FormItem className="col-span-2">
                                         <FormControl>
-                                            <Input {...field} placeholder="Extra Info" />
+                                            <Input className="!text-xs md:text-sm" {...field} placeholder="Extra Info" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>

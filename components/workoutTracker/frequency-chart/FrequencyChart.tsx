@@ -7,7 +7,6 @@ import { CartesianGrid, XAxis, Bar, BarChart } from "recharts";
 export type FrequencyChartData = Array<{ day: string, workouts: number }>
 
 interface FrequencyChartProps {
-    displaySize: displaySize;
     frequencyChartData: FrequencyChartData;
 }
 const chartConfig = {
@@ -20,7 +19,7 @@ const chartConfig = {
 /**
  * Frequency chart that opens up a weekly report when clicked.
  */
-const FrequencyChart = ({ displaySize, frequencyChartData }: FrequencyChartProps) => {
+const FrequencyChart = ({ frequencyChartData }: FrequencyChartProps) => {
     return (
 
 
@@ -28,11 +27,7 @@ const FrequencyChart = ({ displaySize, frequencyChartData }: FrequencyChartProps
             <Tooltip>
                 <TooltipTrigger asChild>
                     <ChartContainer config={chartConfig}
-                        className={cn("flex-1 w-auto cursor-crosshair ", {
-                            "max-h-14 w-48": displaySize === "quartersize",
-                            "max-h-24 w-60": displaySize === "halfsize",
-                            "max-h-24 xl:max-h-36 w-96 ": displaySize === "fullsize",
-                        })}>
+                        className={cn("flex-1 h-28 md:h-32 lg:h-44 w-full px-[20%] md:px-[30%]", )}>
                         <BarChart accessibilityLayer data={frequencyChartData} className="hover:bg-lusion-lightgray/10 transition-colors delay-150 hover:!cursor-pointer">
                             <CartesianGrid vertical={false} />
                             <XAxis
