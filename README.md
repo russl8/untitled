@@ -1,5 +1,5 @@
 ## About the project
-A workout tracker that goes offering AI-driven feedback, and clean visualizations to help you stay consistentan d on track with your goals!
+A workout tracker offering AI-driven feedback and clean visualizations to help you stay consistent and on track with your goals!
 
 ### Features
 - **Effortless workout logging** with dropdown menu that previous exercises for quicker entry<br/>
