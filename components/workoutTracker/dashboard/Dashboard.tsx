@@ -118,17 +118,6 @@ const Dashboard = ({  }: {  }) => {
 
                             )
                         })}
-                        {recentWorkouts.map(workout => {
-                            return (
-                                <div key={workout._id} className="flex justify-center items-center">
-                                    <WorkoutCard
-                                        fetchWorkouts={fetchWorkouts}
-                                        workout={workout}
-                                    />
-                                </div>
-
-                            )
-                        })}
                     </div>
                     <ScrollBar orientation="vertical" />
                 </ScrollArea>

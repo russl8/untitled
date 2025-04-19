@@ -92,7 +92,7 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
                                 <FormDescription>
                                     <span>
                                         Select from an existing workout, or add a new one{' '}
-                                        <span className="underline cursor-pointer hover:text-gray-700" onClick={() => setIsNewWorkout(true)}>
+                                        <span id="customWorkoutOption" className="underline cursor-pointer hover:text-gray-700" onClick={() => setIsNewWorkout(true)}>
                                             here
                                         </span>
                                     </span>
@@ -156,6 +156,7 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
                             <FormField
                                 control={control}
                                 name={`exercises.${index}.exerciseName`}
+                                
                                 render={({ field }) => (
                                     <FormItem className="col-span-2">
                                         <FormControl>
@@ -219,7 +220,10 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
                         </div>
                     ))}
 
-                    <Button type="button" onClick={() => append({ exerciseName: "", sets: 1, reps: 1, weight: 0, extraInfo: "" })} variant="outline">
+                    <Button 
+                    id="addExerciseButton"
+                    type="button"
+                     onClick={() => append({ exerciseName: "", sets: 1, reps: 1, weight: 0, extraInfo: "" })} variant="outline">
                         <Plus />
                     </Button>
                 </div>

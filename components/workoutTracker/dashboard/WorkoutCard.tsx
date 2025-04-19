@@ -36,7 +36,7 @@ const WorkoutCard = ({ workout, fetchWorkouts }: WorkoutCardProps) => {
             <TooltipProvider>
                 <Tooltip>
 
-                    <DialogTrigger id="workoutDetailsModalTriggerClick">
+                    <DialogTrigger id="workoutDetailsModalTriggerClick"  className="workoutCard">
                         <TooltipTrigger asChild>
 
                         <div
