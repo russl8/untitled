@@ -1,4 +1,4 @@
-import WeeklyReport from "@/components/widgets/workoutTracker/WeeklyReport";
+import WeeklyReport from "@/components/workoutTracker/weekly-report/WeeklyReport";
 import Workout from "@/model/workout";
 import openai from "@/lib/openai";
 import { getExerciseTipPrompt, getOverallSummaryPrompt } from "./prompts";

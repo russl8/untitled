@@ -1,4 +1,4 @@
-import WeeklyReport from "@/components/widgets/workoutTracker/WeeklyReport";
+import WeeklyReport from "@/components/workoutTracker/weekly-report/WeeklyReport";
 
 export const getOverallSummaryPrompt = (
   userWorkoutReport: WeeklyReport["workouts"]

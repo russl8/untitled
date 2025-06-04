@@ -13,13 +13,15 @@ export type Workout = {
   workoutName: string;
   exercises: Array<Exercise>;
   lastUpdated: Date;
+  s3FileKey: string;
+  workoutImageLink: string;
 };
 
 export const exerciseSchema = z.object({
   exerciseName: z.string().min(1, "Required"),
   sets: z.number().min(1, "Must be at least 1"),
   reps: z.number().min(1, "Must be at least 1"),
-  weight:z.number().min(0, "Must be a positive number!"),
+  weight: z.number().min(0, "Must be a positive number!"),
   extraInfo: z.string().optional().default(""),
 });
 
@@ -35,4 +37,18 @@ export const workoutFormSchema = z.object({
     .array(exerciseSchema)
     .min(1, "At least one exercise is required"),
   lastUpdated: z.date({ required_error: "Please pick a date!" }),
+  workoutImage: z
+    .instanceof(Blob)
+    .refine(
+      (file) =>
+        [
+          "image/png",
+          "image/jpeg",
+          "image/jpg",
+          "image/svg+xml",
+          "image/gif",
+        ].includes(file.type),
+      { message: "Invalid image file type" }
+    )
+    .optional(),
 });

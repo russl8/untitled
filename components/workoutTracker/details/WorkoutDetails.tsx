@@ -12,6 +12,7 @@ import { z } from "zod";
 import { getmmdd } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import updateWorkout from "@/actions/workoutManager/updateWorkout";
+import Image from "next/image";
 const WorkoutDetails = ({ workout, fetchWorkouts }: { workout: Workout, fetchWorkouts: () => void }) => {
 
     const form = useForm<z.infer<typeof updateFormSchema>>({
@@ -116,7 +117,7 @@ const WorkoutDetails = ({ workout, fetchWorkouts }: { workout: Workout, fetchWor
                                     name={`exercises.${index}.extraInfo`}
                                     render={({ field }) => (
                                         <FormItem className={cn("col-span-3", {
-                                            "col-span-2":isEditing
+                                            "col-span-2": isEditing
                                         })}>
                                             <FormControl>
                                                 <Input disabled={!isEditing} {...field} placeholder="Extra Info" />
@@ -139,7 +140,17 @@ const WorkoutDetails = ({ workout, fetchWorkouts }: { workout: Workout, fetchWor
                             </Button>
                         }
                     </div>
-
+                    {workout.workoutImageLink
+                        &&
+                        <div className="max-w-[500px] max-h-[350px] overflow-auto">
+                            <Image
+                                alt="image"
+                                src={workout.workoutImageLink}
+                                height={3000}
+                                width={3000}
+                            />
+                        </div>
+                    }
                     {isEditing && <Button type="submit">Make Changes</Button>}
                 </form>
             </Form>

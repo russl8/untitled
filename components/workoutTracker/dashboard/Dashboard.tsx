@@ -5,23 +5,21 @@ import { LucideBook, PencilLineIcon, Plus, PlusCircle, ReceiptText } from "lucid
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { DialogHeader } from "@/components/ui/dialog";
 import { Dialog, DialogTrigger, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import AddWorkoutForm from "./AddWorkoutForm";
+import AddWorkoutForm from "../add-workout/AddWorkoutForm";
 import { Workout } from "@/actions/workoutManager/createWorkout/schema";
 import { ScrollArea, ScrollBar } from "@/components/ui/scrollarea"
 import WorkoutCard from "./WorkoutCard";
 import { cn, getmmdd } from "@/lib/utils";
-import WeeklyReport from "./WeeklyReport";
-import FrequencyChart, { FrequencyChartData } from "./FrequencyChart";
+import WeeklyReport from "../weekly-report/WeeklyReport";
+import FrequencyChart, { FrequencyChartData } from "../frequency-chart/FrequencyChart";
 
 type WorkoutItem = {
 
 }
-const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
-
+const Dashboard = ({  }: {  }) => {
     const [recentWorkouts, setRecentWorkouts] = useState<Array<Workout>>([])
     const [chartData, setChartData] = useState<FrequencyChartData>([])
     const [loading, setLoading] = useState(true);
-
     const fetchWorkouts = useCallback(() => {
         fetch("api/workoutTracker/getRecentWorkouts")
             .then(res => res.json())
@@ -33,6 +31,7 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
                 if (loading) setLoading(false)
             });
     }, [])
+    
     useEffect(() => {
         fetchWorkouts()
     }, [])
@@ -63,17 +62,21 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
     }, [recentWorkouts])
 
 
-    if (loading) return <DisplayLoading />;
+    if (loading) return (
+        <div className="h-full w-full flex items-center justify-center">
+            Loading...
+        </div>
+    );
 
     return (
         <div className="flex flex-col justify-around items-center h-full">
             <div className="h-full w-full flex flex-col align-top">
                 <div className={cn("flex flex-col justify-between  border-b-1 border-lusion-lightgray",
-                    "md:flex-row",
+                    "",
                 )}>
                     <Dialog >
                         <DialogTrigger id="addWorkoutModalTrigger" className="mb-2">
-                            <div className="flex items-center h-10 py-2 px-4 cursor-pointer border border-input bg-background shadow-xs hover:bg-accent rounded-md hover:text-accent-foreground">
+                            <div className="flex items-center justify-center w-32 h-10 py-2 px-4 cursor-pointer border border-input bg-background shadow-xs hover:bg-accent rounded-md hover:text-accent-foreground">
                                 <PlusCircle className="mr-2" />
                                 <p>Add</p>
                             </div>
@@ -91,7 +94,6 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
                         <DialogTrigger id="addWorkoutModalTrigger" className="mb-2">
                             <FrequencyChart
                                 frequencyChartData={chartData}
-                                displaySize={displaySize}
                             />
                         </DialogTrigger>
                         <DialogContent className="max-h-[80%] overflow-auto">
@@ -104,26 +106,20 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
                 </div>
 
                 <ScrollArea className="flex whitespace-nowrap rounded-md border-none text-white">
-                    <div className={cn("", {
-                        "w-full flex flex-row justify-center items-center": displaySize === "quartersize",
-                        "grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3": displaySize === "halfsize",
-                        "grid grid-cols-1  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4": displaySize === "fullsize"
-
-                    })}>
+                    <div className={cn("grid grid-cols-1  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4")}>
                         {recentWorkouts.map(workout => {
                             return (
                                 <div key={workout._id} className="flex justify-center items-center">
                                     <WorkoutCard
                                         fetchWorkouts={fetchWorkouts}
                                         workout={workout}
-                                        displaySize={displaySize}
                                     />
                                 </div>
 
                             )
                         })}
                     </div>
-                    <ScrollBar orientation={displaySize === "quartersize" ? "horizontal" : "vertical"} />
+                    <ScrollBar orientation="vertical" />
                 </ScrollArea>
 
             </div>
@@ -133,4 +129,4 @@ const WorkoutTracker = ({ displaySize }: { displaySize: displaySize }) => {
     );
 }
 
-export default WorkoutTracker;
+export default Dashboard;

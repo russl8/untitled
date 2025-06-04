@@ -1,5 +1,6 @@
 ## About the project
-A centralized dashboard designed to bring together all my daily tools in one place. Currently includes a bookmark manager, and a workout tracker offering AI-driven feedback, and clean visualizations to help you stay consistent and on track with your goals!
+A workout tracker offering AI-driven feedback and clean visualizations to help you stay consistent and on track with your goals!
+
 
 ### Features
 - **Effortless workout logging** with dropdown menu that previous exercises for quicker entry<br/>

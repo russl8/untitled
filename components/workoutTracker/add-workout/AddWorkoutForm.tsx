@@ -19,12 +19,13 @@ import { Calendar } from "@/components/ui/calendar";
 
 
 const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
-    const { resetField,...form} = useForm<z.infer<typeof workoutFormSchema>>({
+    const { resetField, ...form } = useForm<z.infer<typeof workoutFormSchema>>({
         resolver: zodResolver(workoutFormSchema),
         defaultValues: {
             workoutName: "",
             exercises: [{ exerciseName: "", sets: 1, reps: 1, weight: 0, extraInfo: "" },],
-            lastUpdated: new Date()
+            lastUpdated: new Date(),
+            workoutImage: undefined
         }
     });
     const [isNewWorkout, setIsNewWorkout] = useState<boolean>(false)
@@ -86,13 +87,13 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
                                     <WorkoutCombobox
                                         formField={field}
                                         appendToFormField={append}
-                                        resetExercises={()=>remove()}
+                                        resetExercises={() => remove()}
                                     />
                                 </FormControl>
                                 <FormDescription>
                                     <span>
                                         Select from an existing workout, or add a new one{' '}
-                                        <span className="underline cursor-pointer hover:text-gray-700" onClick={() => setIsNewWorkout(true)}>
+                                        <span id="customWorkoutOption" className="underline cursor-pointer hover:text-gray-700" onClick={() => setIsNewWorkout(true)}>
                                             here
                                         </span>
                                     </span>
@@ -144,18 +145,19 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
                 />
 
                 {/* Exercise list */}
-                <div className="grid grid-cols-8 gap-1 max-h-[200px] overflow-auto scroll-m-1">
+                <div className="grid grid-cols-8 gap-1 max-h-[200px] overflow-auto scroll-m-1 !text-xs md:text-sm">
                     <div className="col-span-2">Exercise</div>
                     <div className="col-span-1">Sets</div>
                     <div className="col-span-1">Reps</div>
                     <div className="col-span-1">Weight</div>
-                    <div className="col-span-3">Notes</div>
+                    <div className="col-span-3"><p className="ml-2"> Notes</p></div>
 
                     {fields.map((field, index) => (
                         <div key={field.id} className="contents">
                             <FormField
                                 control={control}
                                 name={`exercises.${index}.exerciseName`}
+
                                 render={({ field }) => (
                                     <FormItem className="col-span-2">
                                         <FormControl>
@@ -171,7 +173,7 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
                                 render={({ field }) => (
                                     <FormItem className="col-span-1">
                                         <FormControl>
-                                            <Input type="number" {...field} onChange={(e) => field.onChange(Number(e.target.value))} />
+                                            <Input className="!text-xs md:text-sm" type="number" {...field} onChange={(e) => field.onChange(Number(e.target.value))} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -183,7 +185,7 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
                                 render={({ field }) => (
                                     <FormItem className="col-span-1">
                                         <FormControl>
-                                            <Input type="number" {...field} onChange={(e) => field.onChange(Number(e.target.value))} />
+                                            <Input className="!text-xs md:text-sm" type="number" {...field} onChange={(e) => field.onChange(Number(e.target.value))} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -195,7 +197,7 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
                                 render={({ field }) => (
                                     <FormItem className="col-span-1">
                                         <FormControl>
-                                            <Input type="number" {...field} onChange={(e) => field.onChange(Number(e.target.value))} />
+                                            <Input className="!text-xs md:text-sm" type="number" {...field} onChange={(e) => field.onChange(Number(e.target.value))} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -207,7 +209,7 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
                                 render={({ field }) => (
                                     <FormItem className="col-span-2">
                                         <FormControl>
-                                            <Input {...field} placeholder="Extra Info" />
+                                            <Input className="!text-xs md:text-sm" {...field} placeholder="Extra Info" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -218,12 +220,37 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
                             </Button>
                         </div>
                     ))}
-
-                    <Button type="button" onClick={() => append({ exerciseName: "", sets: 1, reps: 1, weight: 0, extraInfo: "" })} variant="outline">
+                    <Button
+                        id="addExerciseButton"
+                        type="button"
+                        onClick={() => append({ exerciseName: "", sets: 1, reps: 1, weight: 0, extraInfo: "" })} variant="outline">
                         <Plus />
                     </Button>
                 </div>
-
+                <FormField
+                    control={form.control}
+                    name="workoutImage"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Add an image to your workout!</FormLabel>
+                            <FormControl>
+                                <Input
+                                    placeholder="addBookmarkImage"
+                                    id="addBookmarkFileInput"
+                                    className="cursor-pointer"
+                                    type="file"
+                                    accept="image/png, image/jpeg, image/jpg, image/svg+xml, image/gif"
+                                    onChange={(event) => {
+                                        const file = event.target.files?.[0];
+                                        field.onChange(file);
+                                    }}
+                                />
+                            </FormControl>
+                            <FormDescription>Accepted types: .png, .jpeg, .jpg, .svg, .gif</FormDescription>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
                 <Button type="submit">Submit</Button>
             </form>
         </Form>
