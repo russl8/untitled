@@ -15,7 +15,7 @@ const WorkoutSchema = new mongoose.Schema({
       exerciseName: String;
       sets: Number;
       reps: Number;
-      weight:number;
+      weight: number;
       extraInfo: String;
     }>,
     required: true,
@@ -23,6 +23,14 @@ const WorkoutSchema = new mongoose.Schema({
   lastUpdated: {
     type: Date,
     required: true,
+  },
+  workoutImageLink: {
+    type: String,
+    required: false,
+  },
+  s3FileKey: {
+    type: String,
+    required: false,
   },
 });
 

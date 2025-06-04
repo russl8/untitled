@@ -19,12 +19,13 @@ import { Calendar } from "@/components/ui/calendar";
 
 
 const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
-    const { resetField,...form} = useForm<z.infer<typeof workoutFormSchema>>({
+    const { resetField, ...form } = useForm<z.infer<typeof workoutFormSchema>>({
         resolver: zodResolver(workoutFormSchema),
         defaultValues: {
             workoutName: "",
             exercises: [{ exerciseName: "", sets: 1, reps: 1, weight: 0, extraInfo: "" },],
-            lastUpdated: new Date()
+            lastUpdated: new Date(),
+            workoutImage: undefined
         }
     });
     const [isNewWorkout, setIsNewWorkout] = useState<boolean>(false)
@@ -86,7 +87,7 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
                                     <WorkoutCombobox
                                         formField={field}
                                         appendToFormField={append}
-                                        resetExercises={()=>remove()}
+                                        resetExercises={() => remove()}
                                     />
                                 </FormControl>
                                 <FormDescription>
@@ -156,11 +157,11 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
                             <FormField
                                 control={control}
                                 name={`exercises.${index}.exerciseName`}
-                                
+
                                 render={({ field }) => (
                                     <FormItem className="col-span-2">
                                         <FormControl>
-                                            <Input {...field}  />
+                                            <Input {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -219,15 +220,37 @@ const AddWorkoutForm = ({ fetchWorkouts }: { fetchWorkouts: () => void }) => {
                             </Button>
                         </div>
                     ))}
-
-                    <Button 
-                    id="addExerciseButton"
-                    type="button"
-                     onClick={() => append({ exerciseName: "", sets: 1, reps: 1, weight: 0, extraInfo: "" })} variant="outline">
+                    <Button
+                        id="addExerciseButton"
+                        type="button"
+                        onClick={() => append({ exerciseName: "", sets: 1, reps: 1, weight: 0, extraInfo: "" })} variant="outline">
                         <Plus />
                     </Button>
                 </div>
-
+                <FormField
+                    control={form.control}
+                    name="workoutImage"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Add an image to your workout!</FormLabel>
+                            <FormControl>
+                                <Input
+                                    placeholder="addBookmarkImage"
+                                    id="addBookmarkFileInput"
+                                    className="cursor-pointer"
+                                    type="file"
+                                    accept="image/png, image/jpeg, image/jpg, image/svg+xml, image/gif"
+                                    onChange={(event) => {
+                                        const file = event.target.files?.[0];
+                                        field.onChange(file);
+                                    }}
+                                />
+                            </FormControl>
+                            <FormDescription>Accepted types: .png, .jpeg, .jpg, .svg, .gif</FormDescription>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
                 <Button type="submit">Submit</Button>
             </form>
         </Form>

@@ -36,7 +36,7 @@ export function AppSidebar() {
       <SidebarContent className="bg-lusion-background text-lusion-black">
 
         <SidebarGroup>
-          <SidebarGroupLabel>Dashboard</SidebarGroupLabel>
+          {/* <SidebarGroupLabel>Dashboard</SidebarGroupLabel> */}
           <SidebarMenuSub  className="border-l-1 border-lusion-lightgray">
 
             {/* {Object.values(displays).map(d => (
